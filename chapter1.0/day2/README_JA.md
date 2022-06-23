@@ -1,63 +1,61 @@
-# Chapter 1 - Day 2 - The Flow Blockchain & Cadence
+# Chapter 1 - Day 2 - Flow ブロックチェーン と Cadence
 
-Yo yo yo! It's meeeeee! Jacob here. Hello. Now that we learned what the Blockchain is, Day 2 will cover why we have decided to learn the Flow Blockchain and how it compares to other Blockchains out there.
+Yo yo yo！ 私です！ Jacob はここにいます！ こんにちは。ブロックチェーンとは何かを学んだので、2日目はなぜ Flow ブロックチェーンを学ぶことにしたのか、そして他のブロックチェーンと比較してどうなのかについて説明します。
 
 ## Video
 
-If you'd like to learn with a video, you can do that from the link below.
+動画で学びたい方は、以下のリンクからどうぞ。（※英語）
 
-[Introduction to Flow and Cadence](https://www.youtube.com/watch?v=iVevnipJbHo)
+[Flow と Cadence 入門](https://www.youtube.com/watch?v=iVevnipJbHo)
 
-## The Flow Blockchain
+## Flow ブロックチェーン
 
 <img src="../../images/flowb.png" alt="drawing" width="500"/>
 
-The Flow Blockchain is the best. Boom! I said it.
+Flow ブロックチェーンは最高です! Boom! 言っちゃった。
 
-### Little History Lesson
-
+### ちょっとした歴史の授業
 
 <img src="../../images/cryptokitty.png" alt="drawing" width="200"/>
 
-The Flow Blockchain is relatively new. I would say it did not become well known until the Summer of 2020 when the Flow team started to show it to the world and people became interested. Dapper Labs, the company that owns Flow, had originally created the famous [CryptoKitties DApp](https://www.cryptokitties.co/) which grew to insane levels of popularity during previous years. In fact, I would argue CryptoKitties was one of the first "blockchainy" things that the world actually adopted, which was a huge deal for the industry. 
+Flow ブロックチェーンは、比較的新しいものです。よく知られるようになったのは、Flow チームが世界に公開し始め、人々が興味を持つようになった 2020 年の夏頃と言えるでしょう。Flow を開発した Dapper Labs は、もともと有名な [CryptoKitties](https://www.cryptokitties.co/) を開発しており、以前の数年間に狂気のレベルの人気に成長しました。実際、CryptoKitties は、世界が実際に採用した最初の「ブロックチェーン的」なものの1つであり、業界にとって大きな出来事であったと言えるでしょう。
 
-After Dapper Labs had immense success with CryptoKitties, which was on Ethereum, they also began to see some issues with both Ethereum and Solidity, which is the Smart Contract programming language for many Blockchains on the Ethereum Virtual Machine (EVM). Thus, Cadence was born.
+Dapper Labs は、Ethereum 上の CryptoKitties で大きな成功を収めた後、Ethereum と、Ethereum Virtual Machine （EVM） 上の多くのブロックチェーンで使われているスマートコントラクト・プログラミング言語である Solidity の両方で、いくつかの問題を見出すようにもなりました。こうして、Cadence（ケイデンス）が誕生したのです。
 
-### Facts about Flow
+### Flow に関する事実
 
-- It is much, much, MUCH cheaper than Ethereum to do stuff on. As an example, on Ethereum, if you are to try and change the data on the Blockchain through a transaction (explained in day 1), it could cost on average around 80$ from personal experience. However, on Flow, they didn't even have transaction costs until around October 2021, and now, transactions cost fractions of a cent. Thus, Flow is much more approachable to build production-level DApps on for the average user.
-- It is very new, so there are still tons of things being improved upon. This means there are bound to be bugs here and there, but we will work through them together. This also means that it is the perfect opportunity to learn Flow and Cadence now.
-- There are barely any learning resources to get started on Flow. Hence, this course.
-- There have been many successful DApps on Flow, including [NBATopShot](https://nbatopshot.com/), which was (and still is) a massive success.
+- Ethereum よりもずっと、ずっと、安く、物事を行うことができます。例えば、Ethereum では、トランザクション（1日目に説明）を通じてブロックチェーン上のデータを変更しようとすると、個人的な経験では平均で 80 ドル程度のコストがかかる可能性があります。しかし、Flow では、2021 年 10 月頃まではトランザクション・コストすらかからず、今ではトランザクション・コストは 1 セント未満となっています。このように、Flow は一般ユーザーにとって、プロダクションレベルの DApps を構築する上で、よりアプローチしやすいものとなっています。
+- 非常に新しいものなので、まだ改善されていることが山ほどあります。つまり、あちこちにバグがあるはずですが、私たちはそれを一緒に解決していくでしょう。これは、Flow と Cadence を今学ぶ絶好の機会であることも意味しています。
+- Flow を始めるための学習リソースはほとんどありません。それゆえ、この講座があるのです。
+- Flow 上では、[NBA Top Shot](https://nbatopshot.com/) をはじめ、多くの DApps が大成功を収めています（現在も大成功を収めているところです）。
 
 ## Cadence
 
-
 <img src="../../images/cadence.png" alt="drawing" width="600"/>
 
-Cadence is the Smart Contract programming language for the Flow Blockchain. That is, the code you will be writing to make Smart Contracts in this course will be in Cadence.
+Cadence は、Flow ブロックチェーンのためのスマートコントラクト・プログラミング言語です。つまり、このコースでスマートコントラクトを作るために書くコードは、Cadence で書かれます。
 
-Because Flow was largely founded to address some of the issues on Ethereum, the foundational elements of Cadence are rather responses/improvements (some would argue against this, but take it as you will) to Solidity. These are listed below.
+Flow は主に Ethereum の問題のいくつかに対処するために設立されたため、Cadence の基本要素はむしろ Solidity への対応/改良（これに対して反論する人もいますが、好きに解釈してください）であると言えます。それらを以下に列挙します。
 
-The fundamentals, or rather, "Cadence Programming Language Pillars":
-1. **Safety and Security**: Every Smart Contract must be secure. Cadence maximizes efficiency while maintaining the highest levels of safety and security. It accomplishes this because of its insanely strong type system, separation between contracts and transactions, and Resource Oriented Programming (see #5).
-2. **Clarity**: Code should be easy to read, especially Smart Contract code so that we, as users, can verify it is safe. This is achieved by making the code declarative and allowing the developer to express their intentions directly. Cadence makes those intentions very clear by design, which, along with readability, make auditing and reviewing more efficient.
-3. **Approachability**: The way Cadence is written is very familiar to other programming languages, making it easy to transition to if you have prior experience.
-4. **Developer Experience**: The developer should be able to debug in an easy manner, understand what does where, and not feel frustrated. Cadence does this by making error messages very clear.
-5. **Resource Oriented Programming**: This is by far the most important, and will take up about 80% of our time in this course. Cadence at its core uses things called `Resources`, and they define pretty much everything we do on Flow. I will not get into this now, because we will have an entire lesson on `Resources` at some point.
+基礎、いやむしろ、「Cadence プログラミング言語の柱」:
+1. **安全性とセキュリティ**: すべてのスマートコントラクトは安全でなければなりません。Cadence は、最高レベルの安全性とセキュリティを維持しながら、効率を最大化します。これは、非常に強力な型システム、コントラクトとトランザクションの分離、リソース指向プログラミング（#5 参照）により達成されます。
+2. **明快さ**: コードは読みやすく、特にスマートコントラクトのコードは、ユーザーとして安全であることを確認できるようにする必要があります。これは、コードを宣言的にし、開発者が自分の意図を直接表現できるようにすることで達成されます。Cadence は、デザインによってそれらの意図を非常に明確にしており、読みやすさとともに、監査やレビューをより効率的に行うことができます。
+3. **親しみやすさ**: Cadence の記述方法は、他のプログラミング言語と非常に親和性が高く、経験のある方であれば容易に移行することができます。
+4. **開発者の経験**: 開発者は、簡単な方法でデバッグでき、何がどこでどうなっているのかを理解し、イライラしないようにする必要があります。Cadence は、エラーメッセージを非常に明快にすることで、これを実現しています。
+5. **リソース指向プログラミング**: これは圧倒的に重要で、このコースの時間の約 80 %を占めます。Cadence の核となるのは「リソース」と呼ばれるもので、Flow 上で行うことのほとんどすべてを定義しています。この点については、いずれ「リソース」についての全体的なレッスンを行う予定なので、今は触れません。
 
-*You can view them more in-depth on the Flow website [here](https://docs.onflow.org/cadence/#cadences-programming-language-pillars).*
+*リソースについては、Flow の [こちら](https://docs.onflow.org/cadence/#cadences-programming-language-pillars) のウェブサイトでより詳しく見ることができます。*
 
-If you do not understand these, that is perfectly fine. We will touch on these topics throughout the entire course, and you will learn why each of these is so crucial to Cadence.
+もし、これらを理解できなくても、まったく問題ありません。これらのトピックはコース全体を通して触れられ、なぜこれらのトピックが Cadence にとって非常に重要であるのかを学ぶことができます。
 
-## Conclusion
+## まとめ
 
-That about wraps things up for today! In the next day, we will start getting into some Cadence code.
+以上で本日の講義は終了です。次回は、Cadence のコードに触れます。
 
-# Quests
+# クエスト
 
-Please feel free to answer in the language of your choice.
+お好きな言語でご自由にお答えください。
 
-1. What are the 5 Cadence Programming Language Pillars? 
+1. Cadence プログラミング言語の 5 つの柱とは何ですか？
 
-2. In your opinion, even without knowing anything about the Blockchain or coding, why could the 5 Pillars be useful (you don't have to answer this for #5)?
+2. ブロックチェーンやコーディングについて何も知らなくても、なぜ 5 つの柱が役に立つと思いますか？（#5 については答えなくても大丈夫です）
