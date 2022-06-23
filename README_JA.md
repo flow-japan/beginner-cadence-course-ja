@@ -1,70 +1,71 @@
-# WELCOME EVERYBODY!
+# ようこそ、皆さん！
 
 <img src="./images/welcome.jpeg" alt="drawing" width="500"/>
 
-If you're seeing this message, you have arrived at the very first part of the Beginner Cadence Course. WELCOME! My name is Jacob Tucker, and I will give a brief introduction of the course and what you can expect.
+このメッセージを見ているあなたは、ビギナー Cadence コースの一番最初のパートに到着しています。ようこそ！ 私は Jacob Tucker です。このコースの簡単な紹介とあなたが期待できることを説明します。
 
-# *Want to watch a Welcome Video instead of reading this text? You can watch <a href="https://www.youtube.com/watch?v=JBtmLjZBR6M" target="_blank">here</a>.*
+# *この文章を読む代わりに、ウェルカム・ビデオをご覧になりたいですか？ <a href="https://www.youtube.com/watch?v=JBtmLjZBR6M" target="_blank">ここで</a>見ることができます。*
 
-## "What will this course look like?"
+## 「このコースはどのようなものになるのでしょうか？」
 
 <img src="./images/course.png" alt="drawing" width="500"/>
 
-In this course, you will learn the basic Cadence concepts needed to deploy your own contracts. Specifically, you will learn how to code out your own NFT contract by the end of this course.
+このコースでは、独自のコントラクトをデプロイするために必要な Cadence の基本的なコンセプトを学びます。具体的には、このコースが終了するまでに、独自の NFT コントラクトのコードを書く方法を学びます。
 
-The lessons will be split into "chapters," and chapters will be split into "days." I did it this way so you can manage your time and progress through the course as you like. Do not feel pressured to do this every day. Do it at your own pace and have fun with it! It will always be here :)
+レッスンは「chapter（チャプター）」に、さらに chapter は「day（日）」に分かれています。このようにしたのは、あなたが時間を管理し、好きなようにコースを進められるようにするためです。毎日やらなければいけないというプレッシャーは感じないでください。自分のペースで、楽しくやってください！いつでもここにいますよ :)
 
-Here's an overview of what this will look like:
-- Lessons split into days
-- Written & video content associated with each day. The videos will be from my [YouTube Channel](https://www.youtube.com/channel/UCf6DzMRwj7SJ3nPrZqd5hHw).
-- Quests to complete (if you would like to. This is not necessary)
-- A completion certificate if you have completed all the quests. This will be proof that you have significant Cadence knowledge, and you will be able to show it to whoever you like as proof of expertise. Or just for fun! :D
+以下はその概要です:
+- レッスンは日ごとにわかれている
+- それぞれの日に関連する文章とビデオ・コンテンツがある。ビデオは、私の [YouTube チャンネル](https://www.youtube.com/channel/UCf6DzMRwj7SJ3nPrZqd5hHw) から配信される
+- 完了するためのクエストがある（もしよろしければ。これは必須ではありません）
+- 全てのクエストをクリアした方には、修了証を差し上げます。これは Cadence の知識が豊富であることの証明となり、好きな人に見せることができます。もしくは、ただ楽しむために! :D
 
-I would like to be very clear that how you learn from this course is completely up to you. If you'd like to just watch the videos, you can do that. If you only want to read the text, you can do that. If you want to skip right to the quests, you can do that. Note that you will only recieve the certificate of completion if you submit all the quests.
+このコースでどのように学ぶかは、完全にあなた次第であることをはっきりさせておきたいと思います。もしあなたがビデオを見るだけでいいのなら、そうすればいいのです。テキストを読むだけでいいなら、そうすればいい。クエストを先に進めたい方は、そうしてください。なお、修了証は、すべてのクエストを提出した場合にのみ発行されます。
 
-## "What do I need ahead of time?"
+## 「事前に必要なものは？」
 
-Nothing.
+何もありません。
 
-In order to complete this course, you need to know absolutely nothing about coding. I included Chapter 1.5 that teaches you the basics of computer programming. 
+このコースを修了するにあたって、コーディングについて何か知っていることは必須ではありません。コンピュータ・プログラミングの基本を学ぶ 1.5 章を用意しました。
 
-**Although Chapter 1.5 is a great introduction to programming, if you have never written code before, you may also want to do some outside learning before this course, because it can get complicated very quick. It is impossible to learn how to Code by watching tutorials/reading articles. You must mess up on your own to make true progress.**
+**1.5 章はプログラミングの素晴らしい入門書ですが、コードを書いたことがない人は、すぐに複雑になってしまうので、このコースの前に外部で学習した方がいいかもしれません。チュートリアルを見たり、記事を読んだりするだけでは、コードの書き方を習得することはできません。自分自身で解決していかなければ、真の進歩はありません。**
 
-If you would to learn a similar language to Cadence to get a good grasp of how to program, I would suggest trying to learn the basics of Javascript to get some programming fundamentals down. Knowing Javascript will be benefitial, however it is not necessary. 
+もし、Cadence と似たような言語でプログラミングを学びたいのであれば、JavaScript の基本を学び、プログラミングの基礎を身につけることをお勧めします。JavaScript を知っていることは有益ですが、必須ではありません。
 
-*I will introduce you to all the tools and programming concepts necessary, even if you are not a developer.*
+*開発者でなくても、必要なツールやプログラミングの概念はすべて紹介します。*
 
-## "What are quests?"
+## 「クエストって何？」
 
 <img src="./images/quests.png" alt="drawing" width="300"/>
 
-You do not have to do quests to learn all the material. However, they will help your understanding, and if you'd like a certificate of completion, you must complete them.
+クエストを行わなくても、すべての教材を学習することができます。しかし、クエストはあなたの理解を助けるものであり、修了証が必要な場合は、クエストを完了する必要があります。
 
-There will be quests associated with each day. They will test your understanding of the concepts that are in that day's content. 
+日ごとにクエストが用意されています。その日のコンテンツに含まれるコンセプトの理解度がテストされます。
 
-### How to Submit Quests
+### クエストの提出方法
 
-When you finish a quest, please store all your quests together. Then, when you want me to review them, you can send me a link to all of your quests and tell me which day you'd like me to review.
+クエストを終了したら、すべてのクエストをまとめて保存してください。そして、私にレビューしてほしいときは、すべてのクエストのリンクを送って、どの日をレビューしてほしいかを教えてください。
 
-If you are ready for me to see one of your quests to review it, please message in the [Emerald City DAO Discord](https://discord.gg/z6zgjr7HEm) (the #quest-submissions channel). Once you do that, I will personally review your submissions, give you valuable insight on what you could improve, and mark it as complete.
+もし、私があなたのクエストのレビュー準備ができたら、[Emerald City DAO Discord](https://discord.gg/z6zgjr7HEm) (#quest-submissions channel) にメッセージを送ってください。そうしていただければ、私が個人的にあなたの提出物を確認し、改善点についての貴重な洞察を与え、完了の印をつけます。
 
-*Note: The Emerald City DAO is the first DAO on the Flow Blockchain. I founded it in November 2021 and it has some amazing people in it! We are dedicated to teaching people all about Flow and Cadence, as well as building the tooling for all DAOs on Flow. If you'd like to learn more about it or learn how to get involved, please join our [Discord](https://discord.gg/emeraldcity).*
+*注： Emerald City DAO は、Flow ブロックチェーン上の最初の DAO です。2021 年 11 月に設立したのですが、素晴らしい人たちが集まっています。私たちは、Flow と Cadence のすべてを人々に教えること、そして Flow 上のすべての DAO のためのツールを構築することに専念しています。もっと詳しく知りたい、どうやったら参加できるのか知りたいという方は、ぜひ私たちの [Discord](https://discord.gg/emeraldcity) に参加してください。*
 
-## "When can I start?"
+## 「いつから始められるの？」
 
-Whenever you want my friend! :)
+いつでも好きな時にどうぞ! :)
 
-You can start the first day [here](https://github.com/emerald-dao/beginner-cadence-course/tree/main/chapter1.0/day1).
+初日は [こちら](https://github.com/emerald-dao/beginner-cadence-course/tree/main/chapter1.0/day1) からスタートできます。
 
-## <a href="https://academy.ecdao.org" target="_blank">Emerald Academy</a>
+## <a href="https://academy.ecdao.org" target="_blank">Emerald アカデミー</a>
 
-This course is being used inside of <a href="https://academy.ecdao.org" target="_blank">Emerald Academy</a>, which is a series of educational resources & bootcamps created by your *best* friends at Emerald City. If you're interested in more educational content or getting involved in the broader Emerald City community, come join our <a href="https://discord.gg/emeraldcity" target="_blank">Discord</a> :)
+このコースは、Emerald City の*最高の*友人によって作成された教育リソースとブートキャンプのシリーズである <a href="https://academy.ecdao.org" target="_blank">Emerald アカデミー</a> の中で使われています。もしあなたがより多くの教育コンテンツに興味があったり、より広い Emerald City コミュニティに参加したいのであれば、私たちの <a href="https://discord.gg/emeraldcity" target="_blank">Discord</a> に参加してください :)
 
-## Ending Remarks
+## さいごに
 
-If you have any feedback, please let me know. You can message me on Twitter, on Discord, on YouTube, anything. I am not smarter than any of you. If you have suggestions, I am sure they are great and I'd love to hear them.
+何か感想があれば、ぜひ教えてください。Twitterでも、Discordでも、YouTubeでも、何でもいいのでメッセージをください。
+私はあなた方の誰よりも賢くありません。もし提案があればそれはきっと素晴らしいものだと思うので、ぜひ聞かせてください。
 
-Feel free to reach out to me on any of these platforms:
+どのプラットフォームでもいいので、気軽に声をかけてください。
 
 [Twitter](https://twitter.com/jacobmtucker)
 
