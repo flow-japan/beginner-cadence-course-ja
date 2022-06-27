@@ -28,7 +28,7 @@ var jacob: String = "isCool"`
 このように型を記述しておくと、プログラムのどこで間違ったのかを推論するのに便利です。また、Cadence は変数が異なる型であることを意図している場合、あなたが間違いを犯したことを率直に教えてくれるでしょう。例えば、次のようにタイプしてみましょう。
 
 ```cadence
-var jacob: String = 3` と入力してみてください。
+var jacob: String = 3
 ```
 
 すると、Cadence は「おい！この型は一致しないぞ。というようなことを言うでしょう。しかし、重要なのは、どこで間違ったのかを理解するために、型を含めることができるということです。
@@ -119,7 +119,7 @@ log(people.length) // 3
 var names: {String: String} = {"Jacob": "Tucker", "Bob": "Vance", "Ochako": "Unaraka"} // anyone watch The Office?
 ```
 
-上記の例では，`String` を `String` にマッピングしています．具体的には、誰かの姓と名をマッピングしています。これは、ディクショナリ型 `{Type: Type}` を使っています。このディクショナリを使って、次のように人々の姓を取得できます。
+上記の例では、`String` を `String` にマッピングしています．具体的には、誰かの姓と名をマッピングしています。これは、ディクショナリ型 `{Type: Type}` を使っています。このディクショナリを使って、次のように人々の姓を取得できます。
 
 ```cadence
 var names: {String: String} = {"Jacob": "Tucker", "Bob": "Vance", "Ochako": "Unaraka"}
