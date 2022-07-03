@@ -1,175 +1,177 @@
-# Chapter 1.5 - Basic Computer Programming Concepts
+# Chapter 1.5 - コンピュータ・プログラミングの基本概念
 
-This chapter will cover the very basics of computer programming. ***If you have ever coded before, this will be very boring for you, so please skip this chapter if you want to.***
+この章では、コンピュータ・プログラミングのごく基本的なことを説明します。**_プログラミングをしたことがある人にとっては、とても退屈な内容ですので、この章は読み飛ばしてください。_**
 
 <img src="./images/programmingdiagram.png" />
 
-## The Most Important
+## 最も重要なこと
 
-If you are reading this chapter, that means you have probably never coded before, or you want to review the basics. 
+この章を読んでいるということは、おそらくあなたは今まで一度もコードを書いたことがないか、基本を復習したいのでしょう。
 
-The most important thing I could ever tell you as a beginner programmer is that the hardest part of computer science is learning **how to think like a programmer**. Often, it's not the coding itself that's hard, it's training yourself to think like an efficient programmer to write good programs. No matter what people tell you, that can not be taught. It is up to you to play around with code and be patient to truly grasp that skill.
+初心者のプログラマに伝えるべき最も重要なことは、コンピュータサイエンスの最も難しい部分は、**プログラマのように考える方法を学ぶこと**だということです。多くの場合、難しいのはコーディングそのものではなく、良いプログラムを書くために効率的なプログラマーのように考える訓練をすることなのです。人々があなたに何を話しても、それは教えられるものではありません。その技術を真に理解するためには、あなたがコードで遊び、忍耐強くなることが必要なのです。
 
-Thus, if you find yourself getting frustrated, I totally understand! I did too. But the only way to really learn it to mess up A LOT and figure out errors on your own. That will be way more helpful to you than watching tutorials or reading articles online.
+だから、もしあなたがイライラしているのなら、それはよくわかります。私もそうでした。でも、本当に学ぶには、たくさん失敗して、自分でエラーを見つけるしかないんです。その方が、チュートリアルを見たり、ネットの記事を読んだりするよりもずっと役に立ちます。
 
-With that being said, let's learn about programming!
+というわけで、プログラミングについて学んでいきましょう！
 
-## Programming
+## プログラミング
 
 <img src="./images/programming.png" />
 
-What is programming? What is coding?
+プログラミングとは？コーディングとは？
 
-Basically, programs are just a bunch of numbers and letters you type on a screen that *do things*. For example, if I want to write a program that says "Good Morning" to me every time I click a button, I can do that!
+基本的にプログラムとは、画面上に入力された数字や文字の集まりで、「何かをする」ものです。例えば、ボタンをクリックするたびに「おはようございます」と言ってくれるようなプログラムを書きたかったら、そうできます。
 
-In order for a program to work, you need to use something called "syntax". Every single programming language has a different syntax that allows you to communicate with the computer. For this bootcamp, you will be using the syntax provided by the Cadence programming language, but you have probably heard of others like Javascript, Python, C++, HTML, CSS, and many others. 
+プログラムを動作させるには、「構文」と呼ばれるものを使う必要があります。プログラミング言語はひとつひとつ異なる構文を持っていて、それによってコンピュータとコミュニケーションをとることができます。このブートキャンプでは、Cadence というプログラミング言語が提供する構文を使いますが、JavaScript、Python、C++、HTML、CSS など、他の言語についても聞いたことがあるかと思います。
 
-## How to Tell the Computer What to Do
+## コンピュータに何をすべきかを伝える方法
 
-Well, how do we actually tell the computer what to do? 
+では、実際にコンピュータに何をすべきかを伝えるにはどうしたらよいのでしょうか。
 
-We have to use the syntax that the computer wants. So, in Cadence, there's a bunch of things that are pre-defined for us that allow us to communicate with the computer, and well, the blockchain in general.
+コンピュータが求める構文を使わなければなりません。Cadence では、コンピュータやブロックチェーン全般とコミュニケーションできるように、あらかじめ定義されたものがたくさんあります。
 
-### Functions
+### 関数
 
-When you're coding a program, there are always a lot of useful tools to help you do what you want. For example, we can use things called `functions` to execute a piece of code when it is called. 
+プログラムをコーディングするとき、やりたいことを実現するための便利な道具がたくさんあります。例えば、あるコードが呼ばれたときにそれを実行するために `関数` というものを使えます。
 
-The most basic function in Cadence is `log`, which means, "print this to the screen so I can read it." You can write it in code like this:
+Cadence で最も基本的な関数は `log` で、これは「これを画面に表示して読めるようにする」という意味です。このようなコードで書けます：
 
 ```cadence
 log("Hello, idiot!")
 ```
 
-See what we did? We wrote `log`, followed by a set of parenthesis. Functions always take in things called `arguments` (also called `parameters`) that get put into the function so it knows what to do. If we were to execute that program, it would say, "Hello, idiot!" which is exactly what we want. :)
+私たちが何をしたのかわかりますか？私たちは `log` と書き、その後に一対の括弧を書きました。関数は常に `引数`（あるいは `パラメータ`）と呼ばれるものを受け取り、それを関数に入れることで何をすべきかを知ることができます。このプログラムを実行すると、「Hello, idiot!」と言うでしょう。 :）
 
-Let's look at an example program I wrote in Cadence:
+私が Cadence で書いたプログラムの例を見てみましょう：
 
 <img src="./images/hello.png" />
 
-You can see the `log` statement in the middle there. But what is surrounding it? Hey, it's another function! But this time, we had to define the function ourselves. `log` already exists in the language, it's part of the syntax. But the function `main` is something I wrote myself. You don't have to worry about how I did that, just know that the function `main` gets executed when the program starts. It will print "Hello there!" back to us, like this:
+真ん中の `log` という文が見えると思います。しかし、それを取り囲んでいるものは何でしょうか？これは別の関数です。今回、私たちは自分で関数を定義しなければなりません。`log` は言語の中にあらかじめ存在し、構文の一部になっています。しかし、関数 `main` は私が自分で書いたものです。どうなっているか気にする必要はありません。ただ、プログラムが起動したときに `main` という関数が実行されることを知っておいてください。これは以下のように、「Hello there!」と表示して、私たちのもとに戻ってきます（関数が終了します）：
 
 <img src="./images/hello_there.png">
 
-You can actually run this code yourself if you go to https://play.onflow.org and type the same code into the "Script" tab on the left.
+https://play.onflow.org にアクセスして、左側の「Script」タブに同じコードを入力すれば、このコードを実際に自分で実行できます。
 
-https://play.onflow.org is a "playground" for you to write programs in Cadence. Furthermore, the Script tab is a place where we can write some simple programs to test our understanding.
+https://play.onflow.org は、Cadence でプログラムを書くための「プレイグラウンド」（遊び場）なのです。さらに、「Script」タブでは、理解度を確認するための簡単なプログラムを書けます。
 
-### Variables
+### 変数
 
-Variables are easier than functions, honestly. While a function allows you to execute some logic, a variable simply stores data inside of it.
+変数は正直なところ、関数よりも簡単です。関数は何らかのロジックを実行できますが、変数は単にその中にデータを格納するだけです。
 
-You can think of variables as something that holds a piece of data at a certain point in time. You can change what the variable represents (if you're allowed to) so that it points to something else. Here's an example:
+変数とは、ある時点のデータを保持するものと考えればよいでしょう。変数が表すものは、（許されるなら）他のものを指すように変更できます。以下はその例です：
 
 <img src="./images/x.png" />
 
-In this case, `x` is a `variable`. On line 2, you can see that we bring x into existence by "declaring" it. We say, `var x = 5`, which is the Cadence way of saying "I want to create a variable named x that stores a value of 5."
+この場合、`x` が `変数` です。2 行目で、x を「宣言」することによってそれが存在することがわかります。これは Cadence 流に言えば、「5 という値を格納する x という名前の変数を作りたい」ということです。
 
-At the beginning of the program, `x` held the value of 5, which is a number. After we log it, we change `x` to hold 3 instead, and we log it afterwards as well. You can see the values being logged at the bottom.
+プログラムの最初で、`x` は 5 という値を保持していました。それをログに記録した後、代わりに `x` が 3 を保持するように変更し、同様にその後ログに記録しています。下の方に、ログに記録される値が表示されているのがわかります。
 
-### Types
+### 型
 
-In Cadence (and most other programming languages), everything has something called a "type". A type is the broader representation of what *kind* of thing something is. For example, `5` is a number. But, `"Hello World"` is a piece of text. How can we differentiate between these two?
+Cadence（および他の多くのプログラミング言語）では、すべてのものに「型」と呼ばれるものがあります。型とは、あるものがどのような _種類_ であるかを、より広く表現したものです。例えば、`5` は数です。しかし、`"Hello World"` はテキストです。この 2 つはどのように区別するのでしょうか。
 
-In Cadence, we call a number an "Integer". More specifically, it has type `Int`. However, we call text a "String", also known as `String`. Here's an example:
+Cadence では、数を「Integer」（整数）と呼びます。具体的には、`Int` 型です。しかし、テキストは「文字列」と呼び、`String` とも呼ばれます。以下はその例です：
 
 ```cadence
 let x: Int = 5
 let text: String = "Hello idiot"
 ```
 
-You can see the different types of the variables here. And don't worry, we will learn all about this later on.
+変数の種類の違いについては[こちら](https://docs.onflow.org/cadence/language/values-and-types/)で確認できます。そして、これについては後ですべて学ぶので、ご心配なく。
 
-Here's an example mistake so you can see the difference:
+ここに間違いの例があるので、違いがわかると思います：
 
 ```cadence
-let x: String = 5 // WRONG
-let y: String = "5" // GOOD
+let x: String = 5 // 間違い
+let y: String = "5" // 正しい
 ```
 
-Make sure not to get confused between different types. `"5"` is a `String`, but `5` is an `Int`. 
+型の違いに混乱しないように注意してください。`"5"` は `String` ですが、`5` は `Int` です。
 
-In Cadence, you will see many different types. For example, `UInt64` is a fancy way of saying "a positive number between 0 and 18,446,744,073,709,551,615." The trick is to not lose hope, and you will get used to it over time :)
+Cadence では、さまざまな型を目にするでしょう。
 
-## Writing our Own Functions
+例えば、`UInt64` は「0 から 18,446,744,073,709,551,615 のあいだの正の数」というしゃれた言い方をされます。希望を失わないことがコツで、時間が経てば慣れるはずです :)
 
-Let's come up with an example of writing our own functions to test our understanding.
+## 自分の関数を書いてみよう
 
-Open the <a href="https://play.onflow.org" target="_blank">Flow playground</a> and go to the Script tab. Let's start with this:
+理解度をテストするために、自分で関数を書く例を考えてみましょう。
+
+<a href="https://play.onflow.org" target="_blank">Flow プレイグラウンド</a> を開いて、Script タブに進んでください。まず、これから始めましょう：
 
 <img src="./images/step1.png" />
 
-Sweet! All we did so far is say our variable `x` represents the number `5`.
+素晴らしい！ここまででやったことは、変数 `x` が数字 `5` を表している、というだけのことです。
 
-Let's make our own function now and call it.
+では、自分たちの関数を作って呼んでみましょう。
 
 <img src="./images/step2.png" />
 
-Woah, we added a lot. Let's look at it in steps:
-1. On line 6, we defined our own function named `myFunction`. Remember, a function is just something that does a thing when you call it. Don't worry about how I made this function. All you have to know is that when we call it, it'll do something (which is on line 7).
-2. Notice that `myFunction` takes in 1 "argument": a `number` that is an Integer. 
-3. On line 7, we "log" `number` to the console.
-4. On line 3, we call `myFunction` so that it executes.
+わーお、たくさん追加しましたね。順を追って見ていきましょう：
 
-When you click `Execute`, you should see this:
+1. 6 行目で、`myFunction` という自分の関数を定義しています。関数というのは、呼び出したら何かをしてくれるものだということを覚えておいてください。私がこの関数をどのように作ったかは気にしないでください。知っておかなければならないのは、これを呼び出したら何かをしてくれることです（これは 7 行目にあります）。
+2. `myFunction` が 1 つの「引数」、つまり Integer である `number` を取ることに注意してください。
+3. 7 行目で、`number` をコンソール（実行している画面）に「log」しています。
+4. 3 行目で、`myFunction` を呼び出して、実行します。
+
+実行` をクリックすると、次のように表示されます：
 
 <img src="./images/result.png" />
 
-Great! We got our expected answer.
+素晴らしい！期待通りの答えが得られました。
 
-Notice that if we had not put line 3, `myFunction` would have never gotten called, and we would've never logged `number` to the console.
+もし 3 行目を書かなかったら、 `myFunction` は決して呼び出されず、 `number` がコンソールに記録されることもなかったことに注意してください。
 
-We can change our code up a bit to log a LOT of different numbers to the console. Let's do that here:
+コードを少し変更して、たくさんの違う数をコンソールに記録できます。ここではそれをやってみましょう：
 
 <img src="./images/newresult.png" />
 
-In this example, we defined 3 different variables:
-`x`, `y`, and `z`, all of which hold a different number. For each of them, we pass them into `myFunction` so that it logs to the console. Woohoo!!
+この例では、3 つの異なる変数を定義します：
+`x`、`y`、`z` の 3 つの変数を定義し、それぞれに異なる数を格納します。それぞれについて、`myFunction` に渡して、コンソールにログを出力しています。やったー！！
 
-## "Why do we write functions?"
+## 「なぜ関数を書くのでしょうか？」
 
-You'll begin to notice that functions are helpful for writing out some code that we may want to do more than once. It saves us from having to write that code over and over and over again. For example, let's look at this code:
+何度もやりたくなるようなコードを書くときに、関数が役に立つことに気がつき始めるでしょう。何度も何度もそのコードを書かなくて済むからです。例えば、次のようなコードを見てみましょう：
 
 <img src="./images/nofunction.png" />
 
-In this example, we define two variables `greeting` and `person` that store a message inside of them. Then, we use the pre-defined `concat` function to combine the two messages. We then log it to the console.
+この例では、`greeting` と `person` という 2 つの変数を定義して、その中にメッセージを格納しています。そして、あらかじめ定義されている `concat` 関数を使用して、2 つのメッセージを結合します。そして、それをコンソールにログ出力します。
 
-This is great and all, but what happens when we want to do this a bunch of times, with different greetings and people?
+これは素晴らしいことですが、これを何度も、異なる挨拶や人物で行いたい場合はどうなるでしょうか？
 
 <img src="./images/long.png" />
 
-Okay, that's a LOT of code. What's the issue with this?
+なるほど、これはたくさんのコードですね。これの何が問題なのでしょうか？
 
-The problem is we are constantly writing the same code that combines the two pieces of text together. Why re-write the same logic over and over again? Is there a way we could make this easier? Or make it so that we only have to write that logic one time, and then use it multiple times? Of course! Let's use a function:
+問題は、2 つのテキストを結合する同じコードを常に書き続けていることです。なぜ同じロジックを何度も書き直すのでしょうか？もっと簡単にできる方法はないでしょうか？あるいは、そのロジックを 1 回だけ書いて、何度も使えるようにする方法はないでしょうか？もちろんあります！関数を使いましょう：
 
 <img src="./images/better.png" />
 
-In this example, we define a function called `combine`, which does the following:
-1. Takes in 2 messages
-2. Uses a pre-defined `concat` function that combines them together
-3. Logs it to the console
+この例では、`combine`という関数を定義し、以下の処理を行います。
 
-What's the purpose of this? Well, now that we wrote the `combine` function, we don't have to update our `newMessage` a ton of times and continuously combine the two pieces of text. Now, we can call `combine` to do that for us!
+1. 2 つのメッセージを受け取る
+2. 定義済みの `concat` 関数を使用して、2 つのメッセージを結合する
+3. コンソールにログを出力する
 
-It may not look really benefitial to make a function right now, but if we had more complex code that was repeated a lot, you would save tons of time coding by making a function.
+この目的は何でしょうか？さて、 `combine` 関数を書いたので、 `newMessage` を何度も更新して、2 つのテキストを継続的に結合する必要はありません。今、私たちは `combine` を呼び出して、それをやってもらうことができるのです！
 
-## Functions and Return Values
+このような関数を作るのはそこまでメリットがないかもしれませんが、もっと複雑で何度も繰り返すようなコードであれば、関数を作ることでコーディングの時間を大幅に短縮することができるはずです。
 
-The last thing I'll mention is that functions can also give you back some information as well. Let's look at an example:
+## 関数と戻り値
+
+最後に、関数も同様に情報を返すことができることを述べておきます。例を見てみましょう：
 
 <img src="./images/add.png" />
 
-In this example, we define a function called `add` that takes in 2 numbers, adds them, and returns them back. You can tell a function returns a value because of the `: Int` on line 12. That means, "this function returns an Integer."
+この例では、2 つの数値を受け取って足し算して返す `add` という関数を定義しています。関数が値を返していることがわかるのは、12 行目の `: Int` です。これは、「この関数は Integer を返す」という意味です。
 
-You can see on line 2 for example that we set `answer` equal to the result of the `add` function. That's super cool!
+例えば 2 行目で、`answer` に `add` 関数の結果を入れていることがわかるでしょう。これはとてもクールです！
 
-## Conclusion
+## まとめ
 
-I wanted to show you the very basics of computer programming, however there is only so much I can do. After all, I need to be out there saving the world right now, I don't have time for noobs like you!
+コンピュータ・プログラミングの基礎をお見せしたかったのですが、私ができることは限られています。結局のところ、私は今すぐ世界を救わなければならないので、これ以上時間を割くことはできません！
 
-In all seriousness, if you want to learn more about basic computer programming concepts, or you struggled with this chapter, I'd recommend looking up YouTube tutorials online. However, the only way to really learn is to mess around with code yourself. I promise you, you will never improve by just reading/watching videos. You have to try it yourself!
+もし、あなたがコンピュータ・プログラミングの基本的な概念についてもっと学びたいなら、あるいはこの章で苦労したなら、YouTube のチュートリアルを見ることをお勧めします。しかし、本当に学ぶには、自分でコードをいじってみるしかありません。動画を読んだり見たりしているだけでは、絶対に上達しません。自分でやってみるしかないんです。
 
-
-
-That's all, and enjoy the course! With love,
+以上です！楽しんでください。愛をこめて。
 
 Jacob
