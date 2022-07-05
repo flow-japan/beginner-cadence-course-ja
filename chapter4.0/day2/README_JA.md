@@ -13,6 +13,7 @@ You can watch this video from 14:45 to the end (we watched the first half in the
 <img src="../images/accountstorage1.PNG" />
 
 Quick review:
+
 1. `/storage/` is only accessible to the account owner. We use `.save()`, `.load()` and `.borrow()` functions to interact with it.
 2. `/public/` is available to everyone.
 3. `/private/` is available to the account owner and people who the owner gives access to.
@@ -37,12 +38,13 @@ pub contract Stuff {
 ```
 
 And don't forget that we saved the resource to our storage like this:
+
 ```cadence
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
     let testResource <- Stuff.createTest()
-    signer.save(<- testResource, to: /storage/MyTestResource) 
+    signer.save(<- testResource, to: /storage/MyTestResource)
     // saves `testResource` to my account storage at this path:
     // /storage/MyTestResource
   }
@@ -59,7 +61,7 @@ Okay, we're ready to go.
 
 Previously, when we saved something to account storage, only the account owner could access it. That is because it was saved to the `/storage/` path. But what if we want other people to read the `name` field from my resource? Well, you may have guessed it. Let's make our resource publically accessible!
 
-```cadence 
+```cadence
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
@@ -76,6 +78,7 @@ transaction() {
 In the example above, we used the `.link()` function to "link" our resource to the `/public/` path. In simpler terms, we took the thing at `/storage/MyTestResource` and exposed a `&Stuff.Test` to the public so they can read from it.
 
 `.link()` takes in two parameters:
+
 1. A `/public/` or `/private/` path
 2. a `target` parameter that is a `/storage/` path where the data you're linking currently lives
 
@@ -83,11 +86,11 @@ Now, anyone can run a script to read the `name` field on our resource. I will sh
 
 ## Capabilities
 
-When you "link" something to the `/public/` or `/private/` paths, you are creating something called a capability. Nothing *actually* lives in the `/public/` or `/private/` paths, everything lives in your `/storage/`. However, we can think of capabilities like "pointers" that point from a `/public/` or `/private/` path to its associated `/storage/` path. Here's a helpful visualization:
+When you "link" something to the `/public/` or `/private/` paths, you are creating something called a capability. Nothing _actually_ lives in the `/public/` or `/private/` paths, everything lives in your `/storage/`. However, we can think of capabilities like "pointers" that point from a `/public/` or `/private/` path to its associated `/storage/` path. Here's a helpful visualization:
 
 <img src="../images/capabilities.PNG" />
 
-The cool part is that you can make your `/public/` or `/private/` capabilities *more restrictive* than what is inside your `/storage/` path. This is super cool because you can limit what other people are able to do, but still allow them to do some things. We will do this with resource interfaces later.
+The cool part is that you can make your `/public/` or `/private/` capabilities _more restrictive_ than what is inside your `/storage/` path. This is super cool because you can limit what other people are able to do, but still allow them to do some things. We will do this with resource interfaces later.
 
 ## `PublicAccount` vs. `AuthAccount`
 
@@ -119,6 +122,7 @@ pub fun main(address: Address): String {
 ```
 
 Sweet! We read the name of our resource from the `/public/` path. Here are the steps:
+
 1. Get the public account of the address we're reading from: `getAccount(address)`
 2. Get the capability that is pointing to a `&Stuff.Test` type at the `/public/MyTestResource` path: `getCapability<&Stuff.Test>(/public/MyTestResource)`
 3. Borrow the capability to return the actual reference: `let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability is invalid")`
@@ -178,6 +182,7 @@ transaction(address: Address) {
 See the problem? Because we linked our resource to the public, anyone can call `changeName` and change our name! That's not fair.
 
 The way to solve this is to:
+
 1. Define a new resource interface that only exposes the `name` field, and NOT `changeName`
 2. When we `.link()` the resource to the `/public/` path, we restrict the reference to use that resource interface in step 1).
 
@@ -212,7 +217,7 @@ pub contract Stuff {
 
 Awesome! Now `Test` implements a resource interface named `ITest` that only has the `name` in it. Now we can link our resource to the public by doing this:
 
-```cadence 
+```cadence
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
@@ -243,7 +248,7 @@ transaction(address: Address) {
     let publicCapability: Capability<&Stuff.Test> =
       getAccount(address).getCapability<&Stuff.Test>(/public/MyTestResource)
 
-    // ERROR: "The capability doesn't exist or you did not 
+    // ERROR: "The capability doesn't exist or you did not
     // specify the right type when you got the capability."
     let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
@@ -300,7 +305,7 @@ Yaaaaaaay! Exactly like we wanted :)
 
 Holy cow. That was a lot. The good news? You have learned an insane amount about Cadence so far. And even better, you have learned all the complicated stuff. I am so, so proud of you.
 
-I also intentionally didn't go into depth on `/private/`. This is because, in practice, you will rarely ever use `/private/`, and I didn't want to shove too much info into your head. 
+I also intentionally didn't go into depth on `/private/`. This is because, in practice, you will rarely ever use `/private/`, and I didn't want to shove too much info into your head.
 
 And, well... I'm hungry. So I'm going to eat food. Maybe I'll add it to this chapter later ;)
 
@@ -314,8 +319,8 @@ Please answer in the language of your choice.
 
 3. Deploy a contract that contains a resource that implements a resource interface. Then, do the following:
 
-    1) In a transaction, save the resource to storage and link it to the public with the restrictive interface. 
+   1. In a transaction, save the resource to storage and link it to the public with the restrictive interface.
 
-    2) Run a script that tries to access a non-exposed field in the resource interface, and see the error pop up.
+   2. Run a script that tries to access a non-exposed field in the resource interface, and see the error pop up.
 
-    3) Run the script and access something you CAN read from. Return it from the script.
+   3. Run the script and access something you CAN read from. Return it from the script.

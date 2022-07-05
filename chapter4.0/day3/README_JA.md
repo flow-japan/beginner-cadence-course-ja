@@ -42,6 +42,7 @@ pub contract CryptoPoops {
 ```
 
 We start off by:
+
 1. Defining a `totalSupply` (setting it to 0 initially)
 2. Creating an `NFT` type. We give the `NFT` 1 field: `id`. The `id` is set to `self.uuid`, which is a unique identifier that every resource has on Flow. There will never be two resources with the same `uuid`, so it works perfectly as an `id` for an NFT, since a NFT is a token that is completely unique from any other token.
 3. Creating a `createNFT` function that returns an `NFT` resource, so anyone can mint their own NFT.
@@ -54,7 +55,7 @@ transaction() {
   prepare(signer: AuthAccount) {
     // store an NFT to the `/storage/MyNFT` storage path
     signer.save(<- CryptoPoops.createNFT(), to: /storage/MyNFT)
-    
+
     // link it to the public so anyone can read my NFT's `id` field
     signer.link<&CryptoPoops.NFT>(/public/MyNFT, target: /storage/MyNFT)
   }
@@ -69,22 +70,22 @@ pub fun main(address: Address): UInt64 {
   let nft = getAccount(address).getCapability(/public/MyNFT)
               .borrow<&CryptoPoops.NFT>()
               ?? panic("An NFT does not exist here.")
-  
-  return nft.id // 3525 (some random number, because it's the `uuid` of 
+
+  return nft.id // 3525 (some random number, because it's the `uuid` of
                 // the resource. This will probably be different for you.)
 }
 ```
 
-Awesome! We did some good stuff. But let's think about this for a second. What would happen if we want to store *another* NFT in our account?
+Awesome! We did some good stuff. But let's think about this for a second. What would happen if we want to store _another_ NFT in our account?
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // ERROR: "failed to save object: path /storage/MyNFT 
+    // ERROR: "failed to save object: path /storage/MyNFT
     // in account 0x1 already stores an object"
     signer.save(<- CryptoPoops.createNFT(), to: /storage/MyNFT)
-    
+
     signer.link<&CryptoPoops.NFT>(/public/MyNFT, target: /storage/MyNFT)
   }
 }
@@ -98,7 +99,7 @@ transaction() {
   prepare(signer: AuthAccount) {
     // Note we use `MyNFT02` as the path now
     signer.save(<- CryptoPoops.createNFT(), to: /storage/MyNFT02)
-    
+
     signer.link<&CryptoPoops.NFT>(/public/MyNFT02, target: /storage/MyNFT02)
   }
 }
@@ -145,7 +146,7 @@ pub contract CryptoPoops {
     //
     // If the NFT does not exist, it panics
     pub fun withdraw(withdrawID: UInt64): @NFT {
-      let nft <- self.ownedNFTs.remove(key: withdrawID) 
+      let nft <- self.ownedNFTs.remove(key: withdrawID)
               ?? panic("This NFT does not exist in this Collection.")
       return <- nft
     }
@@ -175,6 +176,7 @@ pub contract CryptoPoops {
 ```
 
 Awesome. We've defined a `Collection` resource that does a few things:
+
 1. Stores a dictionary called `ownedNFTs` that maps an `id` to the `NFT` with that `id`.
 2. Defines a `deposit` function to be able to deposit `NFT`s.
 3. Defines a `withdraw` function to be able to withdraw `NFT`s.
@@ -189,7 +191,7 @@ transaction() {
   prepare(signer: AuthAccount) {
     // Store a `CryptoPoops.Collection` in our account storage.
     signer.save(<- CryptoPoops.createEmptyCollection(), to: /storage/MyCollection)
-    
+
     // Link it to the public.
     signer.link<&CryptoPoops.Collection>(/public/MyCollection, target: /storage/MyCollection)
   }
@@ -202,7 +204,7 @@ Take a few minutes to really read that code. What is wrong with it? Think about 
 
 ....
 
-Did you think of it yet? The reason is because now, **anyone can withdraw from our Collection!** That's really bad. 
+Did you think of it yet? The reason is because now, **anyone can withdraw from our Collection!** That's really bad.
 
 The problem, though, is that we do want the public to be able to `deposit` NFTs into our Collection, and we want them to also read the NFT ids that we own. How can we solve this issue?
 
@@ -239,7 +241,7 @@ pub contract CryptoPoops {
     }
 
     pub fun withdraw(withdrawID: UInt64): @NFT {
-      let nft <- self.ownedNFTs.remove(key: withdrawID) 
+      let nft <- self.ownedNFTs.remove(key: withdrawID)
               ?? panic("This NFT does not exist in this Collection.")
       return <- nft
     }
@@ -275,8 +277,8 @@ transaction() {
   prepare(signer: AuthAccount) {
     // Store a `CryptoPoops.Collection` in our account storage.
     signer.save(<- CryptoPoops.createEmptyCollection(), to: /storage/MyCollection)
-    
-    // NOTE: We expose `&CryptoPoops.Collection{CryptoPoops.CollectionPublic}`, which 
+
+    // NOTE: We expose `&CryptoPoops.Collection{CryptoPoops.CollectionPublic}`, which
     // only contains `deposit` and `getIDs`.
     signer.link<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>(/public/MyCollection, target: /storage/MyCollection)
   }
@@ -293,7 +295,7 @@ transaction() {
     // Get a reference to our `CryptoPoops.Collection`
     let collection = signer.borrow<&CryptoPoops.Collection>(from: /storage/MyCollection)
                       ?? panic("The recipient does not have a Collection.")
-    
+
     // deposits an `NFT` to our Collection
     collection.deposit(token: <- CryptoPoops.createNFT())
 
@@ -301,7 +303,7 @@ transaction() {
 
     // withdraw the `NFT` from our Collection
     let nft <- collection.withdraw(withdrawID: 2353) // We get this number from the ids array above
-  
+
     log(collection.getIDs()) // []
 
     destroy nft
@@ -320,7 +322,7 @@ transaction(recipient: Address) {
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>()
                                   ?? panic("The recipient does not have a Collection.")
-    
+
     // deposits an `NFT` to our Collection
     recipientsCollection.deposit(token: <- CryptoPoops.createNFT())
   }
@@ -328,7 +330,7 @@ transaction(recipient: Address) {
 }
 ```
 
-Niiiiiice. We deposited to someone elses account, which is fully possible because they linked `&CryptoPoops.Collection{CryptoPoops.CollectionPublic}` to the public. And this is fine. Who cares if we give someone a free NFT? That's awesome! 
+Niiiiiice. We deposited to someone elses account, which is fully possible because they linked `&CryptoPoops.Collection{CryptoPoops.CollectionPublic}` to the public. And this is fine. Who cares if we give someone a free NFT? That's awesome!
 
 Now, what happens if we try to withdraw from someone's Collection?
 
@@ -341,7 +343,7 @@ transaction(recipient: Address, withdrawID: UInt64) {
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>()
                                   ?? panic("The recipient does not have a Collection.")
-    
+
     // ERROR: "Member of restricted type is not accessible: withdraw"
     recipientsCollection.withdraw(withdrawID: withdrawID)
   }
@@ -359,7 +361,7 @@ pub fun main(address: Address): [UInt64] {
   let publicCollection = getAccount(address).getCapability(/public/MyCollection)
               .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>()
               ?? panic("The address does not have a Collection.")
-  
+
   return publicCollection.getIDs() // [2353]
 }
 ```
@@ -380,6 +382,6 @@ And with that, give yourself a round of applause. You implemented a functioning 
 
 3. Brainstorm some extra things we may want to add to this contract. Think about what might be problematic with this contract and how we could fix it.
 
-    - Idea #1: Do we really want everyone to be able to mint an NFT? 🤔. 
+   - Idea #1: Do we really want everyone to be able to mint an NFT? 🤔.
 
-    - Idea #2: If we want to read information about our NFTs inside our Collection, right now we have to take it out of the Collection to do so. Is this good?
+   - Idea #2: If we want to read information about our NFTs inside our Collection, right now we have to take it out of the Collection to do so. Is this good?
