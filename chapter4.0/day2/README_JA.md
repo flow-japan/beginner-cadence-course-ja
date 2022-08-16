@@ -43,8 +43,7 @@ transaction() {
   prepare(signer: AuthAccount) {
     let testResource <- Stuff.createTest()
     signer.save(<- testResource, to: /storage/MyTestResource) 
-    // saves `testResource` to my account storage at this path:
-    // /storage/MyTestResource
+    // 自分のアカウントの /storage/MyTestResource パスに`testResource`を保存しています
   }
 
   execute {
@@ -63,7 +62,7 @@ transaction() {
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Links our resource to the public so other people can now access it
+    // 他の人がアクセスできるように、リソースを `/public/` にリンクしています
     signer.link<&Stuff.Test>(/public/MyTestResource, target: /storage/MyTestResource)
   }
 
@@ -95,7 +94,7 @@ transaction() {
 
 ```cadence
 let account: PublicAccount = getAccount(0x1)
-// `account` now holds the PublicAccount of address 0x1
+// `account` はアドレス0x1のPublicAccountを保持しています
 ```
 
 なぜこのような話をするかというと、`/public/` パスからケイパビリティを取得する唯一の方法は `PublicAccount` を使用することだからです。一方、`/private/` のパスからケイパビリティを取得するには、 `AuthAccount` を使用する必要があります。
@@ -107,11 +106,11 @@ let account: PublicAccount = getAccount(0x1)
 ```cadence
 import Stuff from 0x01
 pub fun main(address: Address): String {
-  // gets the public capability that is pointing to a `&Stuff.Test` type
+  // `&Stuff.Test`型を参照するパブリックなケイパビリティを取得します
   let publicCapability: Capability<&Stuff.Test> =
     getAccount(address).getCapability<&Stuff.Test>(/public/MyTestResource)
 
-  // Borrow the `&Stuff.Test` from the public capability
+  // パブリックなケイパビリティから`&Stuff.Test`を借用します
   let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
   return testResource.name // "Jacob"
@@ -121,10 +120,10 @@ pub fun main(address: Address): String {
 良いですね! リソースの名前を `/public/` パスから読み込みます。以下に手順をまとめます。
 1. 指定したアドレスの`PublicAccount`を取得します: `getAccount(address)`
 2. `/public/MyTestResource` パスにある `&Stuff.Test` 型を指すケイパビリティを取得します: `getCapability<&Stuff.Test>(/public/MyTestResource)`
-3. 参照先の実体を取得するために、ケイパビリティを借用します: `let testResource: &Stuff.Test = publicCapability.borrow() ?panic("The capability is invalid")`
-4. 名前を返す：`return testResource.name`
+3. 実際の参照を取得するために、ケイパビリティを借用します: `let testResource: &Stuff.Test = publicCapability.borrow() ?panic("The capability is invalid")`
+4. 名前を返します：`return testResource.name`
 
-なぜ `.borrow()` のときに参照先の型を指定する必要がなかったのか、不思議に思うかもしれません。答えは、ケイパビリティがすでに型を指定しているので、その型で借用できると仮定しているからです。もし、実体の型が異なっていたり、ケイパビリティがそもそも存在しなかったりした場合は、`nil`を返してパニックになります。
+なぜ `.borrow()` のときに参照先の型を指定する必要がなかったのか、不思議に思うかもしれません。答えは、ケイパビリティがすでに型を指定しているので、その型で借用できると仮定しているからです。もし、型が異なっていたり、ケイパビリティがそもそも存在しなかったりした場合は、`nil`を返してパニックになります。
 
 ## 型を制限するためにパブリックケイパビリティを使用する
 
@@ -170,7 +169,7 @@ transaction(address: Address) {
 
     let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
-    testResource.changeName(newName: "Sarah") // THIS IS A SECURITY PROBLEM!!!!!!!!!
+    testResource.changeName(newName: "Sarah") // これはセキュリティ的に大問題です!!!!!!!!!
   }
 }
 ```
@@ -190,7 +189,7 @@ pub contract Stuff {
     pub var name: String
   }
 
-  // `Test` now implements `ITest`
+  // `Test`は`ITest`を実装しています
   pub resource Test: ITest {
     pub var name: String
 
@@ -216,11 +215,12 @@ pub contract Stuff {
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Save the resource to account storage
+    // アカウントストレージにリソースを保存しています
     signer.save(<- Stuff.createTest(), to: /storage/MyTestResource)
 
-    // See what I did here? I only linked `&Stuff.Test{Stuff.ITest}`, NOT `&Stuff.Test`.
-    // Now the public only has access to the things in `Stuff.ITest`.
+    // おわかりいただけたでしょうか？私は`&Stuff.Test`ではなく、`&Stuff.Test{Stuff.ITest}`をリンクしました。
+    // これで、一般のユーザーは`Stuff.ITest`にあるものにのみアクセスできます
+
     signer.link<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource, target: /storage/MyTestResource)
   }
 
@@ -243,9 +243,8 @@ transaction(address: Address) {
     let publicCapability: Capability<&Stuff.Test> =
       getAccount(address).getCapability<&Stuff.Test>(/public/MyTestResource)
 
-    // ERROR: "The capability doesn't exist or you did not 
-    // specify the right type when you got the capability."
-    let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+    // ERROR: "ケイパビリティが存在しないか、ケイパビリティ取得時に正しい型を指定していません。" 
+    let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("ケイパビリティが存在しないか、ケイパビリティ取得時に正しい型を指定していません。")
 
     testResource.changeName(newName: "Sarah")
   }
@@ -268,8 +267,8 @@ transaction(address: Address) {
     let publicCapability: Capability<&Stuff.Test{Stuff.ITest}> =
       getAccount(address).getCapability<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource)
 
-    // This works...
-    let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+    // これは上手くいきます...
+    let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("ケイパビリティが存在しないか、ケイパビリティ取得時に正しい型を指定していません。")
 
     // ERROR: "Member of restricted type is not accessible: changeName"
     testResource.changeName(newName: "Sarah")
@@ -289,7 +288,7 @@ pub fun main(address: Address): String {
 
   let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
-  // This works because `name` is in `&Stuff.Test{Stuff.ITest}`
+  // `name`というフィールドは`&Stuff.Test{Stuff.ITest}`に存在するので、これは上手くいきます
   return testResource.name
 }
 ```
@@ -312,5 +311,5 @@ pub fun main(address: Address): String {
 
 3. リソースインターフェースを実装したリソースを含むコントラクトをデプロイしてください。その後、以下を実行しましょう。
     1) トランザクションで、リソースをストレージに保存し、制限付きインターフェースでパブリックにリンクする。
-    2) リソースインターフェースの非露出フィールドにアクセスしようとするスクリプトを実行し、エラーがポップアップするのを確認する。
+    2) リソースインターフェースの公開されていないフィールドにアクセスしようとするスクリプトを実行し、エラーがポップアップされるのを確認する。
     3) スクリプトを実行し、読み込み可能なものにアクセスする。スクリプトからそれを返す。
