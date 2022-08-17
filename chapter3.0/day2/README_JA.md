@@ -1,6 +1,6 @@
 # Chapter 3 Day 2 - Resources in Dictionaries & Arrays
 
-Hellooooooo peoples. Today we will be taking our understanding of Resources and applying it to arrays and dictionaries, something we covered in Chapter 2. On their own they may be somewhat easy to handle, but you put them together and it gets a bit complicated. 
+Hellooooooo peoples. Today we will be taking our understanding of Resources and applying it to arrays and dictionaries, something we covered in Chapter 2. On their own they may be somewhat easy to handle, but you put them together and it gets a bit complicated.
 
 ## Video
 
@@ -8,9 +8,10 @@ You can watch this video from 08:00 - The End (we covered the beginning in the l
 
 ## Why Dictionaries & Arrays?
 
-First of all, why are we talking about resources in dictionaries, but not resources in structs? Well, it's important to note at the beginning that *you cannot store resources inside of a struct*. Although a struct is a container of data, we cannot put resources inside of them. 
+First of all, why are we talking about resources in dictionaries, but not resources in structs? Well, it's important to note at the beginning that _you cannot store resources inside of a struct_. Although a struct is a container of data, we cannot put resources inside of them.
 
-Okay. So then where can we store a resource? 
+Okay. So then where can we store a resource?
+
 1. Inside a dictionary or array
 2. Inside another resource
 3. As a contract state variable
@@ -56,7 +57,7 @@ pub contract Test {
 }
 ```
 
-Notice the type of `arrayOfGreetings`: `@[Greeting]`. We learned yesterday that resources always have the symbol `@` in front of it. This also applies to array types that have resources inside of them, you must tell Cadence it is an array of resources by putting the `@` in front of it. And you must make sure the `@` is outside the brackets, not inside. 
+Notice the type of `arrayOfGreetings`: `@[Greeting]`. We learned yesterday that resources always have the symbol `@` in front of it. This also applies to array types that have resources inside of them, you must tell Cadence it is an array of resources by putting the `@` in front of it. And you must make sure the `@` is outside the brackets, not inside.
 
 `[@Greeting]` - this is wrong
 
@@ -68,7 +69,7 @@ Also notice that inside the `init` function, we initialize it with the `<-` oper
 
 Sweet! We made our own array of resources. Let's look at how to add a resource to an array.
 
-*NOTE: Today, we will be passing resources around as arguments to our functions. This means we are not worrying about how the resources were created, we're just using sample functions to show you how to add to arrays and dictionaries.*
+_NOTE: Today, we will be passing resources around as arguments to our functions. This means we are not worrying about how the resources were created, we're just using sample functions to show you how to add to arrays and dictionaries._
 
 ```cadence
 pub contract Test {
@@ -97,7 +98,7 @@ In this example, we added a new function `addGreeting` that takes in a `@Greetin
 
 ### Removing from an Array
 
-Alright, we added to the array. Now how do we remove a resource from it? 
+Alright, we added to the array. Now how do we remove a resource from it?
 
 ```cadence
 pub contract Test {
@@ -130,7 +131,7 @@ Once again, it's pretty straightforward. In a normal array, you would use the `r
 
 ## Resources in Dictionaries
 
-Resources in dictionaries is a bit more complicated. One of the reasons for this is because, if you remember from Chapter 2 Day 3, dictionaries always return optionals when you access the values inside of it. This makes storing and retrieving resources a lot more difficult. Either way, I would say that resources *most commonly get stored in dictionaries*, so it's important to learn how it's done.
+Resources in dictionaries is a bit more complicated. One of the reasons for this is because, if you remember from Chapter 2 Day 3, dictionaries always return optionals when you access the values inside of it. This makes storing and retrieving resources a lot more difficult. Either way, I would say that resources _most commonly get stored in dictionaries_, so it's important to learn how it's done.
 
 Let's use a similar contract for this example:
 
@@ -209,7 +210,7 @@ pub contract Test {
 
     pub fun addGreeting(greeting: @Greeting) {
         let key = greeting.message
-        
+
         let oldGreeting <- self.dictionaryOfGreetings[key] <- greeting
         destroy oldGreeting
     }
@@ -222,6 +223,7 @@ pub contract Test {
 ```
 
 In this example, you can see some weird double move operator thing happening. What does it mean? Let's break it down into steps:
+
 1. Take whatever value is at the specific `key` and move it into `oldGreeting`
 2. Now that we know nothing is mapped to `key`, move `greeting` to that location
 3. Destroy `oldGreeting`
@@ -246,7 +248,7 @@ pub contract Test {
 
     pub fun addGreeting(greeting: @Greeting) {
         let key = greeting.message
-        
+
         let oldGreeting <- self.dictionaryOfGreetings[key] <- greeting
         destroy oldGreeting
     }
@@ -285,7 +287,7 @@ pub fun removeGreeting(key: String): @Greeting {
 
 ## Conclusion
 
-That's all for today! :D Now, you may be wondering: "What if I want to *access* an element of an array/dictionary that has a resource, and do something with it?" You can do that, but you would first have to move the resource out of the array/dictionary, do something, and then move it back in. Tomorrow we'll talk about references, which will allow you to do things with resources without having to move them everywhere. Peace!
+That's all for today! :D Now, you may be wondering: "What if I want to _access_ an element of an array/dictionary that has a resource, and do something with it?" You can do that, but you would first have to move the resource out of the array/dictionary, do something, and then move it back in. Tomorrow we'll talk about references, which will allow you to do things with resources without having to move them everywhere. Peace!
 
 ## Quests
 

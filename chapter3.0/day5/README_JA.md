@@ -8,11 +8,12 @@ I STRONGLY ENCOURAGE you watch the video for today's content. It will help you s
 
 ## Introduction to Access Control & Access Modifiers
 
-Access Control is an extremely powerful feature in Cadence, and makes it very special. 
+Access Control is an extremely powerful feature in Cadence, and makes it very special.
 
-Access Control describes the way in which we can use things called "Access Modifiers" to increase the security of our smart contracts. 
+Access Control describes the way in which we can use things called "Access Modifiers" to increase the security of our smart contracts.
 
 Previously, in all of our lessons, we declared all of our variables and functions using the `pub` keyword, like so:
+
 ```cadence
 pub let x: Bool
 
@@ -36,21 +37,25 @@ We are only going to focus on the `var` rows, because `let` does not have a writ
 Scope is the area in which you can access, modify, or call your "things" (variables, constants, fields, or functions). There are 4 types of scope:
 
 ### 1. All Scope
+
 This means we can access our thing from **anywhere**. Inside the contract, in transactions and scripts, wherever.
 
 <img src="../images/allscope.PNG" />
 
 ### 2. Current & Inner Scope
+
 This means we can only access our thing from where it is defined and inside of that.
 
 <img src="../images/currentandinner.PNG" />
 
 ### 3. Containing Contract Scope
+
 This means we can access our thing anywhere inside the contract that it is defined.
 
 <img src="../images/contractscope.PNG" />
 
 ### 4. Account Scope
+
 This means we can access our thing anywhere inside the account that it is defined. This means all of the contracts that are in the account. Remember: we can deploy multiple contracts to one account.
 
 ## Back to Access Modifiers
@@ -66,6 +71,7 @@ Now it is easier to understand what it's saying. Let's walk through all of the a
 `pub(set)` only applies to variables, constants, and fields. Functions **cannot** be publically settable. It is also the most dangerous and easily accessible modifier.
 
 Ex.
+
 ```cadence
 pub(set) var x: String
 ```
@@ -79,6 +85,7 @@ Read Scope - **All Scope**
 `pub` is the same thing as `access(all)`. This is the next layer down from pub(set).
 
 Ex.
+
 ```cadence
 pub var x: String
 access(all) var y: String
@@ -96,6 +103,7 @@ Read Scope - **All Scope**
 `access(account)` is a little more restrictive than `pub` due to its read scope.
 
 Ex.
+
 ```cadence
 access(account) var x: String
 
@@ -111,6 +119,7 @@ Read Scope - All Contracts in the Account
 `access(contract)` is a little more restrictive than `access(account)` due to its read scope.
 
 Ex.
+
 ```cadence
 access(contract) var x: String
 
@@ -126,6 +135,7 @@ Read Scope - Containing Contract
 `priv` is the same thing as `access(self)`. This is the most restrictive (and safe) access modifier.
 
 Ex.
+
 ```cadence
 priv var x: String
 access(self) var y: String
@@ -142,7 +152,7 @@ Read Scope - Current & Inner
 
 <img src="../images/pleasenote.jpeg" />
 
-After looking at our access modifiers, we must make an extremely important distinction: **Even though some access modifiers like `priv` make fields unreadable in your Cadence code, this does not mean people cannot read this info by looking at the blockchain. *Everything on the blockchain is public*, regardless of its read scope.** Access modifiers simply let you determine what is readable/writeable in the context of your Cadence code. Never store private information on the blockchain!
+After looking at our access modifiers, we must make an extremely important distinction: **Even though some access modifiers like `priv` make fields unreadable in your Cadence code, this does not mean people cannot read this info by looking at the blockchain. _Everything on the blockchain is public_, regardless of its read scope.** Access modifiers simply let you determine what is readable/writeable in the context of your Cadence code. Never store private information on the blockchain!
 
 ## Conclusion
 
@@ -231,6 +241,7 @@ access(all) contract SomeContract {
 ```
 
 This is a script that imports the contract above:
+
 ```cadence
 import SomeContract from 0x01
 

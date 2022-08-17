@@ -12,7 +12,7 @@ In simplest terms, a reference is a way for you to interact with a piece of data
 
 ## References in Cadence
 
-In Cadence, references are *almost always* used on Structs or Resources. It doesn't really make sense to make a reference of a string, number, or basic data type. But it certainly makes sense to make a reference of things we don't want to pass around a lot. 
+In Cadence, references are _almost always_ used on Structs or Resources. It doesn't really make sense to make a reference of a string, number, or basic data type. But it certainly makes sense to make a reference of things we don't want to pass around a lot.
 
 References always use the `&` symbol in front of them. Let's look at an example:
 
@@ -34,7 +34,7 @@ pub contract Test {
 
     init() {
         self.dictionaryOfGreetings <- {
-            "Hello!": <- create Greeting(_language: "English"), 
+            "Hello!": <- create Greeting(_language: "English"),
             "Bonjour!": <- create Greeting(_language: "French")
         }
     }
@@ -42,12 +42,14 @@ pub contract Test {
 ```
 
 In the above example, you can see that `getReference` returns a `&Greeting?` type, which simply means "An optional reference to the `@Greeting` type." Inside the function, a few things are happening:
-1. We first get a reference of the value at `key` by doing `&self.dictionaryOfGreetings[key]`. 
+
+1. We first get a reference of the value at `key` by doing `&self.dictionaryOfGreetings[key]`.
 2. We "type cast" the reference by doing `as &Greeting?`. Notice that it is an optional, which makes sense because when we index into dictionaries, it returns an optional type.
 
 Notice that if we had forgotten the `as &Greeting?`, Cadence would yell at us and say "expected casting expression." This is because in Cadence, **you have to type cast when getting a reference**. Type casting is when you tell Cadence the type you're getting the reference as, which is what `as &Greeting?` is doing. It's saying "get this optional reference that is a &Greeting reference." If it's not, we will abort the program.
 
 Now, you might be wondering "how can I unwrap this optional reference?" You can do that like so:
+
 ```cadence
 pub fun getReference(key: String): &Greeting {
     return (&self.dictionaryOfGreetings[key] as &Greeting?)!
@@ -67,11 +69,12 @@ pub fun main(): String {
 }
 ```
 
-Notice we didn't have to move the resource anywhere in order to do this! That's the beauty of references. 
+Notice we didn't have to move the resource anywhere in order to do this! That's the beauty of references.
 
 ## Conclusion
 
 References aren't so bad right? The main two points are:
+
 1. You can use references to get information without moving resources around.
 2. You MUST "type cast" a reference when getting it, or you'll receive an error.
 
@@ -81,7 +84,6 @@ References are not going to go away, though. They will be EXTREMELY important wh
 
 1. Define your own contract that stores a dictionary of resources. Add a function to get a reference to one of the resources in the dictionary.
 
-2. Create a script that reads information from that resource using the reference from the function you defined in part 1. 
+2. Create a script that reads information from that resource using the reference from the function you defined in part 1.
 
 3. Explain, in your own words, why references can be useful in Cadence.
-

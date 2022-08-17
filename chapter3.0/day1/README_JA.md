@@ -13,6 +13,7 @@ Uh oh. We're on the most important topic in all of Cadence: Resources. Seriously
 Resources are probably the most crucial element of Cadence, and the reason Cadence is so unique. By the way they look, **a Resource is a more secure Struct**. That's the simple way to put it. But more importantly, because of their securities, they are used in many interesting ways we will explore.
 
 It's always helpful to look at code, so let's do that first:
+
 ```cadence
 pub resource Greeting {
     pub let message: String
@@ -31,10 +32,11 @@ In Cadence, structs are merely containers of data. You can copy them, overwrite 
 1. They cannot be copied
 2. They cannot be lost (or overwritten)
 3. They cannot be created whenever you want
-4. You must be *extremely* explicit about how you handle a resource (for example, moving them)
+4. You must be _extremely_ explicit about how you handle a resource (for example, moving them)
 5. Resources are much harder to deal with
 
 Let's look at some code below to figure out resources:
+
 ```cadence
 pub contract Test {
 
@@ -59,7 +61,7 @@ There are so many important things happening here, so let's look at them in step
 3. We create a new `Greeting` type with the `create` keyword and assign it to `myGreeting` using the `<-` "move" operator. In Cadence, you cannot simply use the `=` to put a resource somewhere. You MUST use the `<-` "move operator" to explicity "move" the resource around.
 4. We return the new `Greeting` by moving the resource again to the return value.
 
-Okay, this is cool. But what if we *want* to destroy a resource? Well, we can do that pretty easily:
+Okay, this is cool. But what if we _want_ to destroy a resource? Well, we can do that pretty easily:
 
 ```cadence
 pub contract Test {
@@ -73,14 +75,15 @@ pub contract Test {
 
     pub fun makeAndDestroy() {
         let myGreeting <- create Greeting()
-        destroy myGreeting 
-        // Note: This is the only time you don't use the 
+        destroy myGreeting
+        // Note: This is the only time you don't use the
         // `<-` operator to change the location of a resource.
     }
 }
 ```
 
 You can already see resources are very different from structs. We have to be much more communicative with how we handle resources. Let's look at some things we can't do with resources:
+
 ```cadence
 pub contract Test {
 
@@ -97,8 +100,8 @@ pub contract Test {
         /*
             myGreeting <- create Greeting()
 
-            You CANNOT do the above. This would "overwrite" 
-            the myGreeting variable and effectively lose the 
+            You CANNOT do the above. This would "overwrite"
+            the myGreeting variable and effectively lose the
             previous resource that is already stored there.
         */
 
@@ -106,21 +109,21 @@ pub contract Test {
             let copiedMyGreeting = myGreeting
 
             You CANNOT do the above. This would try to "copy"
-            the myGreeting resource, which is not allowed. 
+            the myGreeting resource, which is not allowed.
             Resources can never be copied. If you wanted to
             move the myGreeting "into" the copiedMyGreeting,
             you could do:
 
             let copiedMyGreeting <- myGreeting
 
-            After you do this, myGreeting would store nothing 
+            After you do this, myGreeting would store nothing
             inside of it, so you could no longer use it.
         */
 
         /*
             return myGreeting
-            
-            You CANNOT do the above. You must explicity "move" 
+
+            You CANNOT do the above. You must explicity "move"
             the resource using the <- operator like we do below.
         */
         return <- myGreeting
@@ -128,9 +131,10 @@ pub contract Test {
 }
 ```
 
-So, why is this useful? Isn't this just super fricken annoying? No, haha. This is super useful actually. Let's say we want to give someone an NFT worth billions of dollars. Don't we want to make sure we don't lose that NFT? Like *really sure*? We can do this in Cadence because it's *so so so so so* hard to lose our Resource unless we LITERALLY tell it to destroy. This plays into the overall theme in Cadence: **Cadence makes it very hard for the developer to mess up. Which is good.**
+So, why is this useful? Isn't this just super fricken annoying? No, haha. This is super useful actually. Let's say we want to give someone an NFT worth billions of dollars. Don't we want to make sure we don't lose that NFT? Like _really sure_? We can do this in Cadence because it's _so so so so so_ hard to lose our Resource unless we LITERALLY tell it to destroy. This plays into the overall theme in Cadence: **Cadence makes it very hard for the developer to mess up. Which is good.**
 
 Here's a summary of the differences between them:
+
 - Structs are containers of data. That's it.
 - Resources are extremely secure, hard to lose, impossible to copy, well kept-track-of containers of data that cannot be lost.
 
@@ -143,7 +147,7 @@ Here are a few notes to learn for when you're actually coding:
 - You use the `<-` symbol to move a resource around.
 - You use the `destroy` keyword to, well, destroy a resource.
 
-## That Wasn't So Scary? 
+## That Wasn't So Scary?
 
 Hey, you made it! That wasn't so bad right? I think you're all gonna do just fine. Let's end things there for today, and tomorrow, I'll make it impossible for you. Just kiddin' ;)
 

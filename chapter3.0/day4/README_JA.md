@@ -9,6 +9,7 @@ If you'd like to watch a video on Resource Interfaces, you can go here: https://
 ## What is an Interface?
 
 Interfaces are very common in traditional programming languages. There are two main things interfaces are used for:
+
 1. It specifies a set of requirements for something to implement
 2. It allows you to only expose certain things to certain people
 
@@ -20,7 +21,7 @@ Let's look at some code to figure out what I mean.
 
 In this lesson, I will only be using resource interfaces, however, **struct interfaces are exactly the same thing, just for structs. Lol.** Just keep that in mind.
 
-In Cadence, resource/struct interfaces are essentially "requirements," or ways for you to expose data from a resource/struct. On their own, interfaces don't do anything. They just sit there. But when they're *applied* to a resource/struct, that's when they do something.
+In Cadence, resource/struct interfaces are essentially "requirements," or ways for you to expose data from a resource/struct. On their own, interfaces don't do anything. They just sit there. But when they're _applied_ to a resource/struct, that's when they do something.
 
 Resource interfaces are defined with the `resource interface` keyword (for structs it is `struct interface`):
 
@@ -39,6 +40,7 @@ pub contract Stuff {
 ```
 
 In the above example, you can see that we did two things:
+
 1. We defined an empty `resource interface` named `ITest`.
 2. We defined an empty `resource` named `Test`.
 
@@ -60,7 +62,7 @@ pub contract Stuff {
 }
 ```
 
-Now, `ITest` contains a `name` field. Cool! But ITest still isn't doing anything. It's just sitting there in space. So let's make `Test` *implement* the `ITest` resource interface.
+Now, `ITest` contains a `name` field. Cool! But ITest still isn't doing anything. It's just sitting there in space. So let's make `Test` _implement_ the `ITest` resource interface.
 
 ```cadence
 pub contract Stuff {
@@ -69,7 +71,7 @@ pub contract Stuff {
       pub let name: String
     }
 
-    // ERROR: 
+    // ERROR:
     // `resource Stuff.Test does not conform
     // to resource interface Stuff.ITest`
     pub resource Test: ITest {
@@ -82,7 +84,7 @@ pub contract Stuff {
 
 Notice what we just did. We made `Test` implement `ITest` by adding the `: ITest` syntax. What that means is, "This resource implements the resource interfaces after the `:`".
 
-But you'll notice there's an error: "resource Stuff.Test does not conform to resource interface Stuff.ITest". Remember what we said above? Resource interfaces are *requirements*. If a resource implements a resource interface, it MUST define the things in the interface. Let's fix it.
+But you'll notice there's an error: "resource Stuff.Test does not conform to resource interface Stuff.ITest". Remember what we said above? Resource interfaces are _requirements_. If a resource implements a resource interface, it MUST define the things in the interface. Let's fix it.
 
 ```cadence
 pub contract Stuff {
@@ -140,6 +142,7 @@ pub contract Stuff {
 ```
 
 Okay, what the heck just happened. There's a lot going on:
+
 1. We made a function called `noInterface`. This function creates a new resource (with type `@Test`) and logs its `number` field. This works perfectly.
 2. We made a function called `yesInterface`. This function creates a new resource **that is restricted to the `ITest` interface** (with type `@Test{ITest}`) and tries to log the `number` field, but fails.
 
@@ -248,7 +251,7 @@ Great job in getting through today's content. Resource interfaces will be extrem
 
 2. Define your own contract. Make your own resource interface and a resource that implements the interface. Create 2 functions. In the 1st function, show an example of not restricting the type of the resource and accessing its content. In the 2nd function, show an example of restricting the type of the resource and NOT being able to access its content.
 
-3. How would we fix this code? 
+3. How would we fix this code?
 
 ```cadence
 pub contract Stuff {
@@ -259,7 +262,7 @@ pub contract Stuff {
     }
 
     // ERROR:
-    // `structure Stuff.Test does not conform 
+    // `structure Stuff.Test does not conform
     // to structure interface Stuff.ITest`
     pub struct Test: ITest {
       pub var greeting: String
