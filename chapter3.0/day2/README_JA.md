@@ -1,27 +1,27 @@
-# Chapter 3 Day 2 - Resources in Dictionaries & Arrays
+# 第 3 章 2 日目 - ディクショナリと配列の中にあるリソース
 
-Hellooooooo peoples. Today we will be taking our understanding of Resources and applying it to arrays and dictionaries, something we covered in Chapter 2. On their own they may be somewhat easy to handle, but you put them together and it gets a bit complicated.
+皆さん、こんにちは〜。今日は、第 2 章で学んだリソースを、配列とディクショナリといっしょに扱います。この 2 つは単体では簡単に扱えますが、組み合わせるとちょっと複雑なことになります。
 
-## Video
+## 動画
 
-You can watch this video from 08:00 - The End (we covered the beginning in the last day): https://www.youtube.com/watch?v=SGa2mnDFafc
+この動画の 8:00 - 最後まで見てください（冒頭部分については最終日にカバーします）: https://www.youtube.com/watch?v=SGa2mnDFafc
 
-## Why Dictionaries & Arrays?
+## なぜディクショナリと配列？
 
-First of all, why are we talking about resources in dictionaries, but not resources in structs? Well, it's important to note at the beginning that _you cannot store resources inside of a struct_. Although a struct is a container of data, we cannot put resources inside of them.
+まず最初に、ディクショナリ内のリソースについて説明しますが、構造体の中のリソースについて説明しないのはなぜでしょう。まあ、最初に言っておくと、_構造体の中にリソースを格納することはできない_ ということです。構造体はデータの入れ物ですが、その中にリソースを入れることはできないのです。
 
-Okay. So then where can we store a resource?
+では、どこにリソースを格納できるのでしょうか？
 
-1. Inside a dictionary or array
-2. Inside another resource
-3. As a contract state variable
-4. Inside account storage (we will talk about this later)
+1. ディクショナリや配列の内部
+2. 他のリソースの内部
+3. コントラクトのステート変数として
+4. アカウント・ストレージの内部（これについては後述します）
 
-That is all. Today, we will be talking about 1.
+これで全部です。本日は、1 について話します。
 
-## Resources in Arrays
+## 配列の中のリソース
 
-It's always better to learn by examples, so let's open up a Flow playground and deploy the contract we used in Chapter 3 Day 1:
+例で学ぶのが一番なので、Flow Playground を開いて、3 章 1 日目で使ったコントラクトをデプロイしてみましょう。
 
 ```cadence
 pub contract Test {
@@ -36,7 +36,7 @@ pub contract Test {
 }
 ```
 
-So far we just have 1 resource with the type `@Greeting`. Cool! Now let's try and have a state variable that stores a list of Greetings in an array.
+今のところ、`@Greeting`という型を持つリソースが 1 つあるだけです。いいですね！では、Greeting のリストを、配列に格納するステート変数をつくってみましょう。
 
 ```cadence
 pub contract Test {
@@ -57,19 +57,19 @@ pub contract Test {
 }
 ```
 
-Notice the type of `arrayOfGreetings`: `@[Greeting]`. We learned yesterday that resources always have the symbol `@` in front of it. This also applies to array types that have resources inside of them, you must tell Cadence it is an array of resources by putting the `@` in front of it. And you must make sure the `@` is outside the brackets, not inside.
+`arrayOfGreetings` の型に注目してください。`@[Greeting]` です。昨日、リソースは常に `@` という記号が前についていることを学びました。これは中にリソースがある配列型にも当てはまり、`@` を前につけることによって、Cadence にこれがリソースの配列であることを伝えなければなりません。また、`@` は括弧の中ではなく、外側に付けるようにしてください。
 
-`[@Greeting]` - this is wrong
+`[@Greeting]` - これは間違い
 
-`@[Greeting]` - this is correct
+`@[Greeting]` - これは正しい
 
-Also notice that inside the `init` function, we initialize it with the `<-` operator, not `=`. Once again, when dealing with resources (whether they are in arrays, dictionaries, or on their own), we must use `<-`.
+また、`init` 関数の内部では `=` ではなく、`<-` 演算子で初期化していることに注意してください。もう一度言いますが、リソースを扱うときには (配列やディクショナリ、あるいは単体であろうと) `<-` を使わなければなりません。
 
-### Adding to an Array
+### 配列に追加する
 
-Sweet! We made our own array of resources. Let's look at how to add a resource to an array.
+素晴らしい！リソースの配列を作りました。では、リソースを配列に追加する方法を見てみましょう。
 
-_NOTE: Today, we will be passing resources around as arguments to our functions. This means we are not worrying about how the resources were created, we're just using sample functions to show you how to add to arrays and dictionaries._
+_注記：本日は、関数の引数としてリソースを渡します。つまり、リソースがどのように作られたかは気にせず、サンプルの関数を使って配列やディクショナリに追加する方法を紹介します。_
 
 ```cadence
 pub contract Test {
@@ -94,11 +94,11 @@ pub contract Test {
 }
 ```
 
-In this example, we added a new function `addGreeting` that takes in a `@Greeting` type and adds it to the array using the `append` function. Seems easy enough right? This is exactly what it looks like to append to an array normally, we just use the `<-` operator to "move" the resource into the array.
+この例では、 `@Greeting` 型を受け取り、 `append` 関数を使って配列に追加する新しい関数 `addGreeting` を追加しています。簡単そうでしょう？これは、普通に配列に追加するのと全く同じで、 `<-` 演算子を使ってリソースを配列に「移動」しているだけです。
 
-### Removing from an Array
+### 配列から取り出す
 
-Alright, we added to the array. Now how do we remove a resource from it?
+さて、配列に追加しました。では、どのようにリソースを配列から取り出すのでしょうか？
 
 ```cadence
 pub contract Test {
@@ -127,13 +127,13 @@ pub contract Test {
 }
 ```
 
-Once again, it's pretty straightforward. In a normal array, you would use the `remove` function to take an element out. It is the same for resources, the only difference is you use the `<-` to "move" the resource out of the array. Awesome!
+もう一度言いますが、これはとても簡単なことです。通常の配列では、要素を取り出すために `remove` 関数を使います。リソースの場合も同じで、唯一の違いは `<-` を使ってリソースを配列から「移動」させることです。すごい！
 
-## Resources in Dictionaries
+## ディクショナリ内のリソース
 
-Resources in dictionaries is a bit more complicated. One of the reasons for this is because, if you remember from Chapter 2 Day 3, dictionaries always return optionals when you access the values inside of it. This makes storing and retrieving resources a lot more difficult. Either way, I would say that resources _most commonly get stored in dictionaries_, so it's important to learn how it's done.
+ディクショナリの中のリソースは少し複雑です。その理由のひとつは、2 日目の 3 章でやったように、ディクショナリはその中の値にアクセスすると常にオプショナルを返すからです。このため、リソースの保存と取り出しがかなり難しくなっています。いずれにせよ、リソースは _最も一般的に_ ディクショナリに格納されるので、それがどのように行われるかを学ぶことが重要であると言えるでしょう。
 
-Let's use a similar contract for this example:
+この例では、似たようなコントラクトを使ってみましょう：
 
 ```cadence
 pub contract Test {
@@ -154,15 +154,15 @@ pub contract Test {
 }
 ```
 
-We will have a dictionary that maps a `message` to the `@Greeting` resource that contains that message. Notice the type of the dictionary: `@{String: Greeting}`. The `@` is outside the curly brackets.
+`message` と `@Greeting` リソースを対応させるディクショナリを用意します。ディクショナリの型に注目してください。`@{String: Greeting}` です。この `@` は中括弧の外側にあります。
 
-### Adding to a Dictionary
+### ディクショナリに追加する
 
-There are 2 different ways to add a resource to a dictionary. Let's look at both.
+ディクショナリにリソースを追加するには 2 種類の方法があります。両方みてみましょう。
 
-#### #1 - Easiest, but Strict
+#### #1 - 最も簡単だが、厳格な方法
 
-The easiest way to add a resource to a dictionary is by using the "force-move" operator `<-!`, like so:
+リソースをディクショナリに追加する最も簡単な方法は、「強制移動」演算子 `<-!` を使って、次のように行います：
 
 ```cadence
 pub contract Test {
@@ -188,13 +188,13 @@ pub contract Test {
 }
 ```
 
-In the `addGreeting` function, we first get the `key` by accessing the `message` inside our `greeting`. We then add to the dictionary by "force moving" the `greeting` into the `dictionaryOfGreetings` dictionary at the specific `key`.
+`addGreeting` 関数では、まず `greeting` の中にある `message` を、`key` として取得します。そして、`greeting` を、`dictionaryOfGreetings` の特定の `key` の場所に「強制的に移動」して、ディクショナリに追加しています。
 
-The force-move operator `<-!` basically means: "If there is already a value at the destination, panic and abort the program. Otherwise, put it there."
+強制移動の演算子 `<-!` は基本的に次のような意味です：「もし、移動先にすでに値がある場合は、panic になってプログラムを中断してください。そうでなければ、そこに入れなさい」。
 
-#### #2 - Complicated, but Handle Duplicates
+#### #2 - 複雑だが、重複を処理する
 
-The second way to move a resource into a dictionary is by using the double move syntax, like so:
+リソースを辞書に移動させる 2 つ目の方法は、次のような二重の移動構文を使うことです：
 
 ```cadence
 pub contract Test {
@@ -222,17 +222,17 @@ pub contract Test {
 }
 ```
 
-In this example, you can see some weird double move operator thing happening. What does it mean? Let's break it down into steps:
+この例では、奇妙な 2 つの移動演算子があるのがわかると思います。これはどういうことでしょうか？ステップに分解して考えてみましょう。
 
-1. Take whatever value is at the specific `key` and move it into `oldGreeting`
-2. Now that we know nothing is mapped to `key`, move `greeting` to that location
-3. Destroy `oldGreeting`
+1. `key` にある値を取り出し、 `oldGreeting` に移動する
+2. `greeting` をその場所に移動する（`key` には何もマッピングされていないことがわかっている）
+3. `oldGreeting` を破棄する
 
-In essence, this way is more annoying and looks weird, but it **allows you to handle the case where there's already a value there.** In the case above, we simply destroy the resource, but if you wanted to you could do anything else.
+本質的には、この方法はより厄介で奇妙に見えますが、 **既にそこに値がある場合の処理を可能にします。** 上記のケースでは、単にリソースを破棄していますが、やろうと思えば他のこともできます。
 
-### Removing from a Dictionary
+### ディクショナリから削除する
 
-Here's how you would remove a resource from a dictionary:
+以下は、ディクショナリからリソースを削除する方法です：
 
 ```cadence
 pub contract Test {
@@ -254,7 +254,7 @@ pub contract Test {
     }
 
     pub fun removeGreeting(key: String): @Greeting {
-        let greeting <- self.dictionaryOfGreetings.remove(key: key) ?? panic("Could not find the greeting!")
+        let greeting <- self.dictionaryOfGreetings.remove(key: key) ?? panic("greeting がみつかりません!")
         return <- greeting
     }
 
@@ -265,7 +265,7 @@ pub contract Test {
 }
 ```
 
-Remember in the 'Removing from an Array' section, all we had to do was call the `remove` function. In dictionaries, accessing an element return an optional, so we have to "unwrap" it somehow. If we had just written this...
+「配列から削除する」のセクションで、私たちは `remove` 関数を呼び出す必要があったことを思い出してください。ディクショナリでは、要素へのアクセスはオプショナルなものを返すので、何らかの方法で「アンラップ」する必要があります。もし、これをそのまま書いていたら...
 
 ```cadence
 pub fun removeGreeting(key: String): @Greeting {
@@ -274,23 +274,24 @@ pub fun removeGreeting(key: String): @Greeting {
 }
 ```
 
-we would get an error: "Mismatched types. Expected `Test.Greeting`, got `Test.Greeting?`" To fix it, we can either use `panic`, or the force-unwrap operator `!`, like so:
+「Mismatched types. Expected `Test.Greeting`, got `Test.Greeting?`」というエラーが返されます。
+これを修正するには、 `panic` を使うか、以下のように強制アンラップ演算子 `!` を使います。
 
 ```cadence
 pub fun removeGreeting(key: String): @Greeting {
-    let greeting <- self.dictionaryOfGreetings.remove(key: key) ?? panic("Could not find the greeting!")
-    // OR...
+    let greeting <- self.dictionaryOfGreetings.remove(key: key) ?? panic("greeting がみつかりません!")
+    // もしくは...
     // let greeting <- self.dictionaryOfGreetings.remove(key: key)!
     return <- greeting
 }
 ```
 
-## Conclusion
+## まとめ
 
-That's all for today! :D Now, you may be wondering: "What if I want to _access_ an element of an array/dictionary that has a resource, and do something with it?" You can do that, but you would first have to move the resource out of the array/dictionary, do something, and then move it back in. Tomorrow we'll talk about references, which will allow you to do things with resources without having to move them everywhere. Peace!
+今日はここまでです！ :D さて、皆さんは疑問に思っているかもしれません。「リソースを持つ配列/ディクショナリの要素に _アクセス_ して、それを使って何かをしたい場合はどうすればよいのでしょうか? それは可能ですが、まずリソースを配列/ディクショナリの外に出して、何かを行い、そしてまた戻す必要があります。明日は、リソースをどこにでも移動させることなく、リソースを使って何かをすることができるようになる「参照」について説明します。じゃあね！
 
-## Quests
+## クエスト
 
-For today's quest, you'll have 1 large quest instead of a few little ones.
+今日のクエストでは、いくつかの小さなクエストの代わりに、1 つの大きなクエストがあります。
 
-1. Write your own smart contract that contains two state variables: an array of resources, and a dictionary of resources. Add functions to remove and add to each of them. They must be different from the examples above.
+1. リソースの配列と、リソースのディクショナリ、という 2 つのステート変数を持った、独自のスマートコントラクトを書きなさい。それぞれに、取り出しと追加を行う関数を追加します。これらは、上記の例とは異なるものでなければなりません。
