@@ -1,16 +1,18 @@
-# Chapter 3 Day 1 - Resources
+# 第 3 章 1 日目 - リソース
 
-Uh oh. We're on the most important topic in all of Cadence: Resources. Seriously, this is the most important thing you'll learn from me. Let's get into it!
+おっとー。Cadence の中で最も重要なトピック、それはリソースです。まじめな話、これはあなたが私から学ぶ最も重要なことなのです。さぁ、始めましょう！
 
-## Video
+## 動画
 
-1. You can watch this video from 00:00 - 08:00 (we will cover the rest later): https://www.youtube.com/watch?v=SGa2mnDFafc
+1. この動画の 00:00 - 08:00 をみてください（残りは、後のほうで取り上げます）: https://www.youtube.com/watch?v=SGa2mnDFafc
 
-## Resources
+## リソース
 
 <img src="../images/resources.jpeg" alt="drawing" width="500" />
 
-Resources are probably the most crucial element of Cadence, and the reason Cadence is so unique. By the way they look, **a Resource is a more secure Struct**. That's the simple way to put it. But more importantly, because of their securities, they are used in many interesting ways we will explore.
+リソースは Cadence の最も重要な要素であり、Cadence が非常にユニークである理由でもあります。その見た目からして、**リソースはより安全な構造** というのが簡単な表現です。しかしもっと重要なのは、その安全性ゆえに、これから述べるような興味深い方法で使われることです。
+
+コードを見るのはいつも役に立ちます。まずやってみましょう。
 
 It's always helpful to look at code, so let's do that first:
 
@@ -23,19 +25,19 @@ pub resource Greeting {
 }
 ```
 
-Doesn't this look very similar to a Struct? In code, they do actually look pretty similar. Here, the resource `Greeting` is a container that stores a message, which is a `String` type. But there are many, many differences behind the scenes.
+これは構造体とよく似ていると思いませんか？コードで見ると、実はかなり似ているのです。ここでは、リソース `Greeting` は、`String` 型のメッセージを格納する入れ物です。しかし、裏側では多くの違いがあります。
 
-### Resources vs. Structs
+### リソース vs 構造体
 
-In Cadence, structs are merely containers of data. You can copy them, overwrite them, and create them whenever you want. All of these things are completely false for resources. Here are some important facts that define resources:
+Cadence では、構造体は単なるデータの入れ物です。好きなときにコピーしたり、上書きしたり、作成したりできます。これらのことはすべて、リソースの場合ではまったく異なります。ここでは、リソースを定義するいくつかの重要なことを説明します。
 
-1. They cannot be copied
-2. They cannot be lost (or overwritten)
-3. They cannot be created whenever you want
-4. You must be _extremely_ explicit about how you handle a resource (for example, moving them)
-5. Resources are much harder to deal with
+1. コピーできない
+2. 紛失（または上書き）できない
+3. いつでも好きなときに作成できるわけではない
+4. リソースをどのように扱うか（例えば、移動させるなど）、明確である必要がある
+5. リソースを扱うのはずっと難しい
 
-Let's look at some code below to figure out resources:
+リソースを理解するために、以下のコードを見てみましょう。
 
 ```cadence
 pub contract Test {
@@ -54,14 +56,14 @@ pub contract Test {
 }
 ```
 
-There are so many important things happening here, so let's look at them in steps:
+ここでは、重要なことがたくさん起こっているので、順を追って見ていこうと思います。
 
-1. We initialize a resource type called `Greeting` that contains a `message` field. You know this already.
-2. We define a function named `createGreeting` that returns a `Greeting` resource. Note that resources in Cadence use the `@` symbol in front of their type to say, "this is a resource."
-3. We create a new `Greeting` type with the `create` keyword and assign it to `myGreeting` using the `<-` "move" operator. In Cadence, you cannot simply use the `=` to put a resource somewhere. You MUST use the `<-` "move operator" to explicity "move" the resource around.
-4. We return the new `Greeting` by moving the resource again to the return value.
+1. `message` フィールドを含む `Greeting` というリソース型を初期化します。これはもうお分かりですね。
+2. `Greeting` リソースを返す `createGreeting` という名前の関数を定義します。Cadence のリソースは、型の前に `@` 記号を使って「これはリソースです」と示します。
+3. `create` キーワードで新しい `Greeting` 型を作成し、`<-` 「移動演算子」を使って `myGreeting` にアサインします。Cadence では、`=` を使ってリソースをどこかに置くことはできません。リソースを明確に「移動」させるには、必ず `<-` 「移動演算子」を使わなければなりません。
+4. リソースを再び戻り値に移動させて、新しい `Greeting` を返します。
 
-Okay, this is cool. But what if we _want_ to destroy a resource? Well, we can do that pretty easily:
+さて、これはクールです。しかし、もしリソースを破壊したい場合はどうすればいいのでしょうか？まあ、それはかなり簡単にできます。
 
 ```cadence
 pub contract Test {
@@ -76,13 +78,13 @@ pub contract Test {
     pub fun makeAndDestroy() {
         let myGreeting <- create Greeting()
         destroy myGreeting
-        // Note: This is the only time you don't use the
-        // `<-` operator to change the location of a resource.
+        // 注記: リソースの場所を変更するのに
+        // `<-` 演算子を使わないのはこのときだけです
     }
 }
 ```
 
-You can already see resources are very different from structs. We have to be much more communicative with how we handle resources. Let's look at some things we can't do with resources:
+リソースが構造体と大きく異なることは、すでにお分かりかと思います。リソースをどのように扱うかについて、より明確に伝える必要があるのです。では、リソースでできないことをいくつか見てみましょう。
 
 ```cadence
 pub contract Test {
@@ -100,70 +102,68 @@ pub contract Test {
         /*
             myGreeting <- create Greeting()
 
-            You CANNOT do the above. This would "overwrite"
-            the myGreeting variable and effectively lose the
-            previous resource that is already stored there.
+            上記のようなことはできません。
+            これは myGreeting 変数を「上書き」してしまい、
+            すでに格納されている以前のリソースを事実上失ってしまうことになります。
         */
 
         /*
             let copiedMyGreeting = myGreeting
 
-            You CANNOT do the above. This would try to "copy"
-            the myGreeting resource, which is not allowed.
-            Resources can never be copied. If you wanted to
-            move the myGreeting "into" the copiedMyGreeting,
-            you could do:
+            上記のようなことはできません。
+            これは myGreeting リソースを「コピー」しようとするもので、許されません。
+            リソースは決してコピーできません。もし myGreeting を copiedMyGreeting の中に移動させたいなら、次のようにします。
 
             let copiedMyGreeting <- myGreeting
 
-            After you do this, myGreeting would store nothing
-            inside of it, so you could no longer use it.
+            このようにすると、myGreeting はもう中に何も保存されていないので、
+            使うことはできなくなります。
         */
 
         /*
             return myGreeting
 
-            You CANNOT do the above. You must explicity "move"
-            the resource using the <- operator like we do below.
+            上記のようなことはできません。以下のように、
+            <- 演算子を使って明確にリソースを「移動」させる必要があります。
         */
         return <- myGreeting
     }
 }
 ```
 
-So, why is this useful? Isn't this just super fricken annoying? No, haha. This is super useful actually. Let's say we want to give someone an NFT worth billions of dollars. Don't we want to make sure we don't lose that NFT? Like _really sure_? We can do this in Cadence because it's _so so so so so_ hard to lose our Resource unless we LITERALLY tell it to destroy. This plays into the overall theme in Cadence: **Cadence makes it very hard for the developer to mess up. Which is good.**
+では、なぜこれが便利なの？これは、超ムカつくだけじゃないの？いいえ、そうではありません。実はこれ、超便利なんです。誰かに何十億ドルもの NFT を渡すとします。その NFT を失わないようにしたいとは思いませんか？本当にそんなことができるのでしょうか？はい、Cadence では、「破壊せよ」という命令をしない限り、リソースを失うことはありません。これは Cadence の全体的なテーマでもあります。**Cadence は開発者が失敗することを難しくします**。これは良いことです。
 
-Here's a summary of the differences between them:
+両者の違いをまとめると、以下のようになります。
 
-- Structs are containers of data. That's it.
-- Resources are extremely secure, hard to lose, impossible to copy, well kept-track-of containers of data that cannot be lost.
+- 構造体は、データの入れ物です。それだけです。
+- リソースは非常に安全で、紛失しにくく、コピーも不可能で、紛失することのないデータの入れ物として、しっかりと管理されています。
 
-## A Few Coding Notes
+## コーディングの注意点
 
-Here are a few notes to learn for when you're actually coding:
+実際にコーディングするときのために、覚えておきたい注意点をいくつか紹介します。
 
-- You can only make a new resource with the `create` keyword. The `create` keyword can only ever be used inside the contract. This means you, as the developer, can control when they are made. This is not true for structs, since structs can be created outside the contract.
-- You have to use the `@` symbol in front of a resource's type, like so: `@Greeting`.
-- You use the `<-` symbol to move a resource around.
-- You use the `destroy` keyword to, well, destroy a resource.
+- 新しいリソースを作成するには、 `create` キーワードを使います。create` キーワードはコントラクトの中でしか使えません。つまり、開発者であるあなたは、リソースがいつ作られるかをコントロールできます。構造体はコントラクトの外側で作成できるので、これは構造体には当てはまりません。
+- リソース型の前には `@` 記号を使う必要があります。例えば、 `@Greeting` のようにです。
+- リソースを移動させるには、 `<-` 記号を使います。
+- キーワード `destroy` はリソースを破壊するために使います。
 
-## That Wasn't So Scary?
+## そんなに怖くなかった？
 
-Hey, you made it! That wasn't so bad right? I think you're all gonna do just fine. Let's end things there for today, and tomorrow, I'll make it impossible for you. Just kiddin' ;)
+やあ、やったね! そんなに悪くなかったでしょ？皆さんはうまくやれると思います。今日はここまでにして、明日からはもっと難しくしましょう。冗談です。 ;)
 
-## Quests
+## クエスト
 
-As always, feel free to answer in the language of your choice.
+いつものように、あなたの好きな言語で自由に答えてください。
 
-1. In words, list 3 reasons why structs are different from resources.
+1. 構造体がリソースと異なる理由を 3 つ挙げてください。
 
-2. Describe a situation where a resource might be better to use than a struct.
+2. 構造体よりもリソースを使った方が良い状況を説明してください。
 
-3. What is the keyword to make a new resource?
+3. 新しいリソースを作成するためのキーワードは何ですか？
 
-4. Can a resource be created in a script or transaction (assuming there isn't a public function to create one)?
+4. リソースを、スクリプトやトランザクションで作成できますか？（作成するためのパブリック関数がないと仮定して）
 
-5. What is the type of the resource below?
+5. 下のリソースの型は何ですか？
 
 ```cadence
 pub resource Jacob {
@@ -171,12 +171,12 @@ pub resource Jacob {
 }
 ```
 
-6. Let's play the "I Spy" game from when we were kids. I Spy 4 things wrong with this code. Please fix them.
+6. 間違い探しゲームをしましょう。このコードには 4 つの間違いがあります。修正してください。
 
 ```cadence
 pub contract Test {
 
-    // Hint: There's nothing wrong here ;)
+    // ヒント: ここは何も間違ってません ;)
     pub resource Jacob {
         pub let rocks: Bool
         init() {
@@ -184,9 +184,9 @@ pub contract Test {
         }
     }
 
-    pub fun createJacob(): Jacob { // there is 1 here
-        let myJacob = Jacob() // there are 2 here
-        return myJacob // there is 1 here
+    pub fun createJacob(): Jacob { // ここに 1 つ間違いがあります
+        let myJacob = Jacob() // ここに 2 つ間違いがあります
+        return myJacob // ここに 1 つ間違いがあります
     }
 }
 ```
