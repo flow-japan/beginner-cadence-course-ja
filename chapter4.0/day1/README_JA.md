@@ -1,50 +1,48 @@
-# Chapter 4 Day 1 - Account Storage
+# 第 4 章 1 日目 - アカウントストレージ
 
-Alriiiiighty then. We made it through 3 chapters. But there's lots to go ;) Let's do this.
+いやはや、ようやく3章が終わりました。でも、まだまだこれからです;) やっていきましょう。
 
-## Video
+## 動画
 
-Watch this video up until 14:45: https://www.youtube.com/watch?v=01zvWVoDKmU
+この動画の 14:45 までを見てください: [https://www.youtube.com/watch?v=01zvWVoDKmU](https://www.youtube.com/watch?v=01zvWVoDKmU)
 
-We will cover the rest tomorrow.
+残りは明日解説します。
 
-## Accounts on Flow
+## Flowのアカウント
 
-If you remember back to Chapter 2 Day 1 when we learned about transactions, I also talked about accounts on flow and how they can store data. I'm going to copy and paste that below because it's helpful to review:
+第2章1日目のトランザクションについて学んだとき、Flowのアカウントと、それがどのようにデータを保存できるかお話ししたと思います。一応復習のため、以下にコピー＆ペーストしておきます。
 
-On Flow, accounts can store their own data. What does this mean? Well, if I own an NFT on Flow, that NFT gets stored in my account. This is _very different_ than other blockchains like Ethereum. On Ethereum, your NFT gets stored in the smart contract. On Flow, we actually allow accounts to store their own data themselves, which is super cool. But how do we access the data in their account? We can do that with the `AuthAccount` type. Every time a user (like you and me) sends a transaction, you have to pay for the transaction, and then you "sign" it. All that means is you clicked a button saying "hey, I want to approve this transaction." When you sign it, the transaction takes in your `AuthAccount` and can access the data in your account.
+Flowでは、アカウントは自分自身のデータを保存することができます。これがどういうことかと言うと、FlowでNFTを所有すると、そのNFTは私のアカウントに保存されるということです。これは、Ethereumのような他のブロックチェーンとは*非常に異なる*ものです。Ethereumでは、NFTはスマートコントラクトに格納されます。Flowでは、実際にアカウント自身が自分のデータを保存することを可能にしており、これはとてもクールです。しかし、そのアカウントのデータにはどうやってアクセスするのでしょうか？それは `AuthAccount` 型で実現できます。あなたや私のようなユーザーがトランザクションを送信するたびに、トランザクションの代金を支払って、それに「署名」する必要があります。つまり、「このトランザクションを承認します」というボタンをクリックするだけです。あなたが署名すると、そのトランザクションはあなたの `AuthAccount` を取り込み、あなたのアカウントのデータにアクセスできるようになります。
 
-You can see this being done in the `prepare` portion of the transaction, and that's the whole point of the `prepare` phase: to access the information/data in your account. On the other hand, the `execute` phase can't do that. But it can call functions and do stuff to change the data on the blockchain. NOTE: In reality, you never _actually_ need the `execute` phase. You could technically do everything in the `prepare` phase, but the code is less clear that way. It's better to separate the logic.
-
-## What lives in an account?
+これはトランザクションの `prepare` 部分で行われているのがわかります。これが `prepare` フェーズの要点で、あなたのアカウント内のデータにアクセスするために必要なフェーズです。一方、`execute`フェーズでは、アカウント内のデータにはアクセスできません。しかし、関数を呼び出して、ブロックチェーン上のデータを変更することは可能です。注：実際には、`execute`フェーズは必ずしも必要ではありません。技術的には `prepare` フェーズですべての処理を行うこともできますが、その場合、コードが分かりにくくなります。ロジックを分離する方が良いのです。
+ 
+## アカウント内には何があるのか?
 
 <img src="../images/accountstorage1.PNG" />
 
-As you read above, on Flow, accounts actually store their own data. What this means is, if I have an `NFT` resource, I can actually store that in my own account. But where?
+上で読んだように、Flowでは、アカウントは実際に自分自身のデータを保存します。つまり、`NFT`リソースがあれば、それを自分のアカウントに格納することができるのです。しかし、実際にどこに保存するのでしょうか？
 
-Using the above diagram (I'm so proud of it), let's talk about what lives in an account:
+上の図を使って、アカウントに何が格納されているのかを説明しましょう。
+1. コントラクトコード - コントラクトはアカウントにデプロイされ、アカウント内に格納されます。複数のコントラクトを一つのアカウントにデプロイすることが可能です。
+2. アカウントストレージ - あなたのデータはすべてアカウントストレージに保存されます。
 
-1. Contract Code - contract get deployed to an account, and live inside the account. Multiple contracts can live inside an account.
-2. Account Storage - all your data gets stored inside account storage
+## アカウントストレージ
 
-## Account Storage
+では、アカウントストレージとは何でしょうか？アカウントストレージは、特定のパスに存在するデータの「容れ物」だと考えることができます。`/storage/`という特定のパスに存在します。Flowのアカウントでは、特定のデータにアクセスするための3つの方法があります。
+1. `/storage/` - アカウントの所有者だけがアクセスできます（他者にデータを盗まれないための仕様です）。あなたのデータはすべてここにあります。
+2. `/public/` - 誰でもアクセス可能です。
+3. `/private/` - アカウントの所有者と、その所有者がアクセスを許可した人だけが利用可能です。
 
-Well, what is account storage then? You can think of account storage as a "container" of data that lives at a specific path: `/storage/`. In a Flow account, there are 3 paths to get to certain data:
+重要なのは、アカウント所有者だけが自分の `/storage/` にアクセスすることができますが、必要に応じて `/public/` や `/private/` にデータを格納することができるということです。例えば、私が自分のNFTを簡単に見せたい場合、私のNFTの読み取り可能なバージョンを `/public/` パスに置き、あなたが閲覧できるようにしますが、私のアカウントからは引き出すことができないように十分な制限をかけることができます。
 
-1. `/storage/` - only the account owner can access this (thank goodness, or someone could steal all of your data). ALL of your data lives here.
-2. `/public/` - available to everybody
-3. `/private/` - only available to the account owner and the people that the account owner gives access to
+*ヒント：リソースインターフェースがどのように役に立つのでしょうか？;)*
 
-The key part to remember is that only the account owner can ever access their `/storage/`, but they have the ability to place things in the `/public/` and `/private/` paths if they want to. For example, if I want to simply show you my NFT, I can put a readable version of my NFT in my `/public/` path so you can see it, but restrict it just enough so you can't withraw it from my account.
-
-_Hint hint: Do you see how resource interfaces may be useful here? ;)_
-
-You may be wondering: "well, how do I access my `/storage/`?" The answer is your `AuthAccount` type. If you remember, when you sign a transaction, the signer's `AuthAccount` gets placed as a parameter in the `prepare` phase, like so:
+あなたは不思議に思っているかもしれません。「どうやって `/storage/` にアクセスすればいいんだろう？」 その答えは `AuthAccount` 型です。トランザクションに署名するとき、署名者の `AuthAccount` は `prepare` フェーズで以下のようにパラメータとして置かれます。
 
 ```cadence
 transaction() {
   prepare(signer: AuthAccount) {
-    // We can access the signer's /storage/ path here!
+    // ここで署名者の /storage/ パスにアクセスできます!
   }
 
   execute {
@@ -53,11 +51,11 @@ transaction() {
 }
 ```
 
-As you can see above, we can access the signer's `/storage/` in the `prepare` phase. This means we can do anything we want with their account. That is why it's so scary to think of accidentally signing a transaction! Be careful folks.
+上で見たように、`prepare`の段階で署名者の `/storage/` にアクセスすることができます。これはつまり、彼らのアカウントでやりたいことが何でもできるということです。そのため、誤ってトランザクションに署名してしまうことがどれほど恐ろしいことかわかります。 皆さん、気をつけてください。
 
-## Save and Load Functions
+## リソースを保存して取り出す
 
-Let's practice storing something in an account. First let's define a contract:
+では、アカウントに何かを保存してみましょう。まずはコントラクトを定義します。
 
 ```cadence
 pub contract Stuff {
@@ -76,7 +74,7 @@ pub contract Stuff {
 }
 ```
 
-We have defined a simple contract that lets you create and return a `@Test` resource type. Let's get this in a transaction:
+リソース型 `@Test` を作成し、返却する簡単なコントラクトを定義しました。これをトランザクションで取得してみましょう。
 
 ```cadence
 import Stuff from 0x01
@@ -92,16 +90,15 @@ transaction() {
 }
 ```
 
-All we're doing is creating and destroying a `@Test`. But what if we wanted to store it in our account? Let's see how that's done, and then we'll walk through it:
+やっていることは `@Test` を作成し、破棄することだけです。次は、それを自分のアカウントに保存するにはどうすればいいか見ていきましょう。
 
 ```cadence
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
     let testResource <- Stuff.createTest()
-    signer.save(<- testResource, to: /storage/MyTestResource)
-    // saves `testResource` to my account storage at this path:
-    // /storage/MyTestResource
+    signer.save(<- testResource, to: /storage/MyTestResource) 
+    // 自分のアカウントの /storage/MyTestResource パスに`testResource`を保存しています
   }
 
   execute {
@@ -110,21 +107,21 @@ transaction() {
 }
 ```
 
-Look at how we saved it to our account. First, we **have to have an `AuthAccount` to save it to.** In this case, we have the `signer` variable. Then, we can do `signer.save(...)` which means we're saving something to a `/storage/` path.
+どのようにアカウントに保存したかを見てみましょう。まず、 **保存先の `AuthAccount` が必要です。** この場合、 `signer` という変数を持っています。それから、 `signer.save(...)` とします。これは、 `/storage/` というパスに何かを保存することを意味します。
 
-`.save()` takes two parameters:
+`.save()` は2つのパラメータを受け取ります。
+1. 保存する実際のデータ
+2. 保存先のパスを指定する `to` パラメータ (`/storage/` 以下のパスである必要があります)
 
-1. The actual data to save
-2. a `to` parameter that is the path we should save it to (it must be a `/storage/` path)
+上の例では、 `testResource` (リソースなので `<-` 構文に注意) をパス `/storage/MyTestResource` に保存しています。これで、`/storage/MyTestResource`パスにアクセスすることでいつでも`testResource`を取得できます。やってみましょう。
 
-In the example above, I saved `testResource` (note the `<-` syntax since it's a resource) to the path `/storage/MyTestResource`. Now, anytime we want to get it, we can go to that path. Let's do that below.
 
 ```cadence
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
     let testResource <- signer.load<@Stuff.Test>(from: /storage/MyTestResource)
-    // takes `testResource` out of my account storage
+    // 自分のアカウントストレージから`testResource`を取り出しています
 
     destroy testResource
   }
@@ -135,15 +132,14 @@ transaction() {
 }
 ```
 
-In the example above, we use the `.load()` function to take data OUT of our account storage.
+上記の例では、`.load()`関数を使用して、アカウントストレージからデータを取り出しています。
 
-You'll notice that we have to do this weird thing: `<@Stuff.Test>`. What is that? Well, when you're interacting with account storage, you have to specify the type you're looking at. Cadence has no idea that a `@Stuff.Test` is stored at that storage path. But as the coder, we know that is what's stored there, so we have to put `<@Stuff.Test>` to say "we expect a `@Stuff.Test` to come out of that storage path."
+このとき、`<@Stuff.Test>`という見慣れない構文が使用されていますね。これは何でしょうか？アカウントストレージとやりとりするときは、参照する型を指定する必要があります。Cadence は `@Stuff.Test` がそのストレージパスに保存されていることを知らないのです。しかし、コーダーとしては、それがそこに保存されていることは知っているので、「そのストレージパスから `@Stuff.Test` が出てくることを期待する」と表現するために `<@Stuff.Test>` と記述しなければならないのです。
 
-`.load()` takes one parameter:
+`.load()` は1つのパラメータを受け取ります。
+1. `from` パラメータは、取得するパスを指定します (`/storage/` 以下のパスでなければなりません)。
 
-1. a `from` parameter that is the path we should take it from (it must be a `/storage/` path)
-
-One more important thing is that when you `load` data from storage, it returns an optional. `testResource` actually has type `@Stuff.Test?`. The reason for this is because Cadence has no idea that you are telling the truth and something actually lives there, or that it's even the right type. So if you were wrong, it will return `nil`. Let's look at an example:
+もう一つ重要なことは、ストレージからデータを `load` すると、optionalの値が返されることです。`testResource` は実際には `@Stuff.Test?` という型を持っています。この理由は、本当に正しい型のデータがそこに保存されているかわからないからです。そのため、もしあなたが間違っていた場合は `nil` を返します。例を見てみましょう。
 
 ```cadence
 import Stuff from 0x01
@@ -161,7 +157,7 @@ transaction() {
 }
 ```
 
-See? It is an optional. To fix this, we can either use `panic` or the `!` operator. I like to use `panic` because you can specify an error message.
+ご覧の通り、これはoptionalです。これを修正するには、 `panic` を使うか、 `!` 演算子を使うかのどちらかになります。エラーメッセージを指定できるので、私は `panic` を使うのが好きです。
 
 ```cadence
 import Stuff from 0x01
@@ -180,11 +176,11 @@ transaction() {
 }
 ```
 
-## Borrow Function
+## Borrow関数
 
-Previously, we saved and loaded from our account. But what if we just want to look at something in an account? That's where references and the `.borrow()` function comes in.
+これまでに、アカウントからの保存と読み込みを行いました。しかし、あるアカウントに保存されたものを閲覧するだけならどうでしょうか？そこで、参照と `.borrow()` 関数の出番です。
 
-```cadence
+```cadence 
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
@@ -200,36 +196,33 @@ transaction() {
 }
 ```
 
-You can see that we used the `.borrow()` function to get a reference to the resource in our storage, not the resource itself. That is why the type we use is `<&Stuff.Test>` instead of `<@Stuff.Test>`.
+リソースそのものではなく、ストレージ内のリソースへの参照を取得するために `.borrow()` 関数を使用したことがお分かりになると思います。そのため、型は `<@Stuff.Test>` ではなく、 `<&Stuff.Test>` を使用しています。
 
-`.borrow()` takes one parameter (same as `.load()`):
+`.borrow()` は 1 つのパラメータを受け取ります (`.load()` と同じです)。
+1. `from` パラメータは、取得するパスを指定します。
 
-1. a `from` parameter that is the path we should take it from
+また、`.load()` を使っていないので、リソースはずっとアカウントストレージの中にあることに注意してください。
 
-Also note that because we aren't using `.load()`, the resource is staying inside our account storage the whole time. Wow, references are awesome!
+## まとめ
 
-## Conclusion
+もう一度この図を見てみましょう。
 
-Let's take a look at this diagram again:
+<img src="../images/accountstorage1.PNG" /> 
 
-<img src="../images/accountstorage1.PNG" />
+今のところ、`/storage/` が何であるかは理解しているはずです。明日の章では、 `/public/` と `/private/` のパスについて説明します。
 
-As of now, you should understand what `/storage/` is. In tomorrow's chapter, we'll talk about the `/public/` and `/private/` paths.
+## クエスト
 
-## Quests
+1. アカウントの中身を説明してください。
 
-1. Explain what lives inside of an account.
+2. `/storage/`、`/public/`、`/private/` のパスの違いは何ですか？
 
-2. What is the difference between the `/storage/`, `/public/`, and `/private/` paths?
+3. `.save()`、`.load()`、`.borrow()` が行うことは何ですか?
 
-3. What does `.save()` do? What does `.load()` do? What does `.borrow()` do?
+4. スクリプトの中で、なぜアカウントストレージに保存できないか説明してください。
 
-4. Explain why we couldn't save something to our account storage inside of a script.
+5. なぜ私があなたのアカウントに何かしらのデータをを保存できないのか、説明してください。
 
-5. Explain why I couldn't save something to your account.
-
-6. Define a contract that returns a resource that has at least 1 field in it. Then, write 2 transactions:
-
-   1. A transaction that first saves the resource to account storage, then loads it out of account storage, logs a field inside the resource, and destroys it.
-
-   2. A transaction that first saves the resource to account storage, then borrows a reference to it, and logs a field inside the resource.
+6. 少なくとも1つのフィールドを持つリソースを返すコントラクトを定義してください。そして、以下の2つのトランザクションを書いてください。
+ 1) まずリソースをアカウントストレージに保存し、次にそれをアカウントストレージからロードし、リソース内のフィールドを記録し、それを破棄するトランザクション。
+ 2) 最初にリソースをアカウントストレージに保存し、そのリソースの参照を借用し、リソース内のフィールドを記録するトランザクション。

@@ -1,24 +1,23 @@
-# Chapter 4 Day 2 - Capabilities
+# 第 4 章 2 日目 - ケイパビリティ
 
-In yesterday's chapter, we talked about the `/storage/` path of an account's storage. Today we will talk about the `/public/` and `/private/` paths, and what capabilities are.
+前回の章では、アカウントのストレージのパスである `/storage/` について説明しました。今回は `/public/` と `/private/` のパス、そしてケイパビリティとは何かについて説明します。
 
-**NOTE: THIS CHAPTER CAN GET VERY CONFUSING**. If you feel lost along the way, I will give you a virtual ghost hug. I promise, if you read through it a few times, you will get it eventually.
+**注意: この章は難解です。** もし途中でわからなくなっても、落ち着いて何度か読み返せば、いずれは理解できるようになるはずです。
 
-## Video
+## 動画
 
-You can watch this video from 14:45 to the end (we watched the first half in the last day): https://www.youtube.com/watch?v=01zvWVoDKmU
+この動画を 14:45 から最後まで見てください(前回、前半部分を視聴しました): [https://www.youtube.com/watch?v=01zvWVoDKmU](https://www.youtube.com/watch?v=01zvWVoDKmU)
 
-## Review from Yesterday
+## 前回の復習
 
 <img src="../images/accountstorage1.PNG" />
 
-Quick review:
+前回のまとめ:
+1. `/storage/`はアカウント所有者のみアクセス可能です。これには `.save()`, `.load()`, `.borrow()` という関数を使います。
+2. `/public/` は誰でも利用可能です。
+3. `/private/` は、アカウントのオーナーとオーナーがアクセス権を与えた人だけが利用できます。
 
-1. `/storage/` is only accessible to the account owner. We use `.save()`, `.load()` and `.borrow()` functions to interact with it.
-2. `/public/` is available to everyone.
-3. `/private/` is available to the account owner and people who the owner gives access to.
-
-For today's chapter, we will be using yesterday's contract code:
+今回の章では、前回のコントラクトコードを使用します。
 
 ```cadence
 pub contract Stuff {
@@ -37,16 +36,14 @@ pub contract Stuff {
 }
 ```
 
-And don't forget that we saved the resource to our storage like this:
-
+リソースをストレージに保存したことも頭に留めておいてください。
 ```cadence
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
     let testResource <- Stuff.createTest()
-    signer.save(<- testResource, to: /storage/MyTestResource)
-    // saves `testResource` to my account storage at this path:
-    // /storage/MyTestResource
+    signer.save(<- testResource, to: /storage/MyTestResource) 
+    // 自分のアカウントの /storage/MyTestResource パスに`testResource`を保存しています
   }
 
   execute {
@@ -55,17 +52,17 @@ transaction() {
 }
 ```
 
-Okay, we're ready to go.
+では、準備が整いました。
 
-## `/public/` path
+## `/public/` パス
 
-Previously, when we saved something to account storage, only the account owner could access it. That is because it was saved to the `/storage/` path. But what if we want other people to read the `name` field from my resource? Well, you may have guessed it. Let's make our resource publically accessible!
+以前は、アカウントストレージに何かを保存した場合、アカウント所有者だけがアクセスできました。これは、`/storage/`パスに保存されたからです。しかし、私のリソースから `name` フィールドを他の人が読み取れるようにしたい場合はどうすればよいでしょうか。おそらくお察しの通りです。リソースを公開することにしましょう。
 
-```cadence
+```cadence 
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Links our resource to the public so other people can now access it
+    // 他の人がアクセスできるように、リソースを `/public/` にリンクしています
     signer.link<&Stuff.Test>(/public/MyTestResource, target: /storage/MyTestResource)
   }
 
@@ -75,66 +72,64 @@ transaction() {
 }
 ```
 
-In the example above, we used the `.link()` function to "link" our resource to the `/public/` path. In simpler terms, we took the thing at `/storage/MyTestResource` and exposed a `&Stuff.Test` to the public so they can read from it.
+上記の例では、 `.link()` 関数を使用して、リソースを `/public/` パスに「リンク」しています。もっと簡単に言うと、 `/storage/MyTestResource` にあるものを、 `&Stuff.Test` として公開し、読み込めるようにしたのです。
 
-`.link()` takes in two parameters:
+`.link()` は2つのパラメータを受け取ります。
+1. `/public/` または `/private/` パス
+2. `target` パラメータには、現在リンクしているデータが保存されている `/storage/` のパスを指定します。
 
-1. A `/public/` or `/private/` path
-2. a `target` parameter that is a `/storage/` path where the data you're linking currently lives
+これで誰でもこのリソースの `name` フィールドを読み取るスクリプトを実行することができますが、スクリプトの説明の前にいくつかの他のことを紹介する必要があります。
 
-Now, anyone can run a script to read the `name` field on our resource. I will show you how to do that, but I need to introduce you to some things first.
+## ケイパビリティ
 
-## Capabilities
+何かを `/public/` や `/private/` のパスに「リンク」するとき、あなたはケイパビリティと呼ばれるものを作成しています。実際には、何も `/public/` や `/private/` のパスには存在せず、全ては `/storage/` に存在します。しかし、ケイパビリティは `/public/` や `/private/` のパスから、関連する `/storage/` のパスへの「ポインタ」のように考えることができます。以下の図をみてみましょう。
 
-When you "link" something to the `/public/` or `/private/` paths, you are creating something called a capability. Nothing _actually_ lives in the `/public/` or `/private/` paths, everything lives in your `/storage/`. However, we can think of capabilities like "pointers" that point from a `/public/` or `/private/` path to its associated `/storage/` path. Here's a helpful visualization:
+<img src="../images/capabilities.PNG" /> 
 
-<img src="../images/capabilities.PNG" />
+クールな点は、 `/public/` や `/private/` の機能を、 `/storage/` パスにあるものよりも *強く制限する*ことができることです。これはとても良いことで、他の人ができることを制限しつつ、柔軟な機能を提供してくれます。これは後でリソースインターフェースを介して行うことになります。
 
-The cool part is that you can make your `/public/` or `/private/` capabilities _more restrictive_ than what is inside your `/storage/` path. This is super cool because you can limit what other people are able to do, but still allow them to do some things. We will do this with resource interfaces later.
+## `PublicAccount` と `AuthAccount` の比較
 
-## `PublicAccount` vs. `AuthAccount`
-
-We already learned that an `AuthAccount` allows you to do anything you want with an account. On the other hand, `PublicAccount` allows anyone to read from it, but only the things that the account owner exposes. You can get a `PublicAccount` type by using the `getAccount` function like so:
+私たちはすでに `AuthAccount` がアカウントに対して何でもできることを学びました。一方、 `PublicAccount` は誰でもそのアカウントの情報を読み取ることができますが、それはそのアカウントの所有者が公開しているものだけです。以下のように `getAccount` 関数を使用すると、 `PublicAccount` 型を取得することができます。
 
 ```cadence
 let account: PublicAccount = getAccount(0x1)
-// `account` now holds the PublicAccount of address 0x1
+// `account` はアドレス0x1のPublicAccountを保持しています
 ```
 
-The reason I'm telling you this is because the only way to get a capability from a `/public/` path is to use `PublicAccount`. On the other hand, you can only get a capability from a `/private/` path with an `AuthAccount`.
+なぜこのような話をするかというと、`/public/` パスからケイパビリティを取得する唯一の方法は `PublicAccount` を使用することだからです。一方、`/private/` のパスからケイパビリティを取得するには、 `AuthAccount` を使用する必要があります。
 
-## Back to `/public/`
+## `/public/` の話の続き
 
-Okay, so we linked our resource to the public. Let's read from it in a script now, and apply some of what we've learned!
+さて、リソースをpublicにリンクしました。それでは、スクリプトでリソースを読み込んで、学習したことを実践してみましょう!
 
 ```cadence
 import Stuff from 0x01
 pub fun main(address: Address): String {
-  // gets the public capability that is pointing to a `&Stuff.Test` type
+  // `&Stuff.Test`型を参照するパブリックなケイパビリティを取得します
   let publicCapability: Capability<&Stuff.Test> =
     getAccount(address).getCapability<&Stuff.Test>(/public/MyTestResource)
 
-  // Borrow the `&Stuff.Test` from the public capability
+  // パブリックなケイパビリティから`&Stuff.Test`を借用します
   let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
   return testResource.name // "Jacob"
 }
 ```
 
-Sweet! We read the name of our resource from the `/public/` path. Here are the steps:
+良いですね! リソースの名前を `/public/` パスから読み込みます。以下に手順をまとめます。
+1. 指定したアドレスの`PublicAccount`を取得します: `getAccount(address)`
+2. `/public/MyTestResource` パスにある `&Stuff.Test` 型を指すケイパビリティを取得します: `getCapability<&Stuff.Test>(/public/MyTestResource)`
+3. 実際の参照を取得するために、ケイパビリティを借用します: `let testResource: &Stuff.Test = publicCapability.borrow() ?panic("The capability is invalid")`
+4. 名前を返します：`return testResource.name`
 
-1. Get the public account of the address we're reading from: `getAccount(address)`
-2. Get the capability that is pointing to a `&Stuff.Test` type at the `/public/MyTestResource` path: `getCapability<&Stuff.Test>(/public/MyTestResource)`
-3. Borrow the capability to return the actual reference: `let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability is invalid")`
-4. Return the name: `return testResource.name`
+なぜ `.borrow()` のときに参照先の型を指定する必要がなかったのか、不思議に思うかもしれません。答えは、ケイパビリティがすでに型を指定しているので、その型で借用できると仮定しているからです。もし、型が異なっていたり、ケイパビリティがそもそも存在しなかったりした場合は、`nil`を返してパニックになります。
 
-You may be wondering, why didn't we have to specify the type of the reference when we do `.borrow()`? The answer is because the capability already specifies the type, so it is assuming that is the type it's borrowing. If it borrows a different type, or the capability did not exist in the first place, it will return `nil` and panic.
+## 型を制限するためにパブリックケイパビリティを使用する
 
-## Using Public Capabilities to Restrict a Type
+いい感じですね。ここまで理解できたのは素晴らしいです。次のトピックは、一般ユーザーからの望ましくないアクションを防止するために、パブリックパス参照時に一部を制限する方法についてです。
 
-Alright! Awesomeness. We've made it here at least, i'm proud of you. The next topic is figuring out how to restrict certain parts of our reference so the public can't do things we don't want them to.
-
-Let's define another contract:
+別のコントラクトを定義してみましょう。
 
 ```cadence
 pub contract Stuff {
@@ -158,7 +153,7 @@ pub contract Stuff {
 }
 ```
 
-In this example, I added a `changeName` function that allows you to change the name in the resource. But what if we don't want the public to be able to do this? Right now we have a problem:
+この例では、リソース内の名前を変更できるように `changeName` 関数を追加しました。しかし、一般ユーザーがこれを実行できないようにしたい場合はどうすればよいでしょうか。このままでは問題がありますね。
 
 ```cadence
 import Stuff from 0x01
@@ -174,19 +169,18 @@ transaction(address: Address) {
 
     let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
-    testResource.changeName(newName: "Sarah") // THIS IS A SECURITY PROBLEM!!!!!!!!!
+    testResource.changeName(newName: "Sarah") // これはセキュリティ的に大問題です!!!!!!!!!
   }
 }
 ```
 
-See the problem? Because we linked our resource to the public, anyone can call `changeName` and change our name! That's not fair.
+ご覧の通り、リソースをパブリックパスにリンクしているので、誰でも `changeName` を呼び出して名前を変更することができます。これでは脆弱ですね。
 
-The way to solve this is to:
+解決方法は、以下の通りです。
+1. 新しいリソースインターフェースを定義して、 `name` フィールドのみを公開し、 `changeName` は公開しないようにします。
+2. リソースを `/public/` のパスに `.link()` するときに、ステップ1で定義したリソースインターフェースを使用するように参照を制限します。
 
-1. Define a new resource interface that only exposes the `name` field, and NOT `changeName`
-2. When we `.link()` the resource to the `/public/` path, we restrict the reference to use that resource interface in step 1).
-
-Let's add a resource interface to our contract:
+それでは、コントラクトにリソースインターフェースを追加してみましょう。
 
 ```cadence
 pub contract Stuff {
@@ -195,7 +189,7 @@ pub contract Stuff {
     pub var name: String
   }
 
-  // `Test` now implements `ITest`
+  // `Test`は`ITest`を実装しています
   pub resource Test: ITest {
     pub var name: String
 
@@ -215,17 +209,18 @@ pub contract Stuff {
 }
 ```
 
-Awesome! Now `Test` implements a resource interface named `ITest` that only has the `name` in it. Now we can link our resource to the public by doing this:
+良いですね。これで `Test` は `ITest` という名前のリソースインターフェースを実装し、その中には `name` という名前だけが含まれるようになりました。こうすることでリソースを安全に公開することができます。
 
-```cadence
+```cadence 
 import Stuff from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Save the resource to account storage
+    // アカウントストレージにリソースを保存しています
     signer.save(<- Stuff.createTest(), to: /storage/MyTestResource)
 
-    // See what I did here? I only linked `&Stuff.Test{Stuff.ITest}`, NOT `&Stuff.Test`.
-    // Now the public only has access to the things in `Stuff.ITest`.
+    // おわかりいただけたでしょうか？私は`&Stuff.Test`ではなく、`&Stuff.Test{Stuff.ITest}`をリンクしました。
+    // これで、一般のユーザーは`Stuff.ITest`にあるものにのみアクセスできます
+
     signer.link<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource, target: /storage/MyTestResource)
   }
 
@@ -235,7 +230,7 @@ transaction() {
 }
 ```
 
-So, what happens if we try to access the entire reference now in a script, like we did before?
+では、前回試したようにスクリプトで`&Stuff.Test`型にアクセスしようとするとどうなるでしょうか。
 
 ```cadence
 import Stuff from 0x01
@@ -248,18 +243,17 @@ transaction(address: Address) {
     let publicCapability: Capability<&Stuff.Test> =
       getAccount(address).getCapability<&Stuff.Test>(/public/MyTestResource)
 
-    // ERROR: "The capability doesn't exist or you did not
-    // specify the right type when you got the capability."
-    let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+    // ERROR: "ケイパビリティが存在しないか、ケイパビリティ取得時に正しい型を指定していません。" 
+    let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("ケイパビリティが存在しないか、ケイパビリティ取得時に正しい型を指定していません。")
 
     testResource.changeName(newName: "Sarah")
   }
 }
 ```
 
-Now, we get an error! Haha, get recked hacker! You can't borrow the capability because you tried to borrow a capability to `&Stuff.Test`, and I didn't make that available to you. I only made `&Stuff.Test{Stuff.ITest}` available. ;)
+今度はエラーが発生しました。あなたは`&Stuff.Test`のケイパビリティを借用しようとしましたが、私はそれを利用できるようにはしていません。私は`&Stuff.Test{Stuff.ITest}`を利用できるようにしただけなのです。
 
-What if we try this?
+では、以下を試してみるとどうでしょうか？
 
 ```cadence
 import Stuff from 0x01
@@ -273,8 +267,8 @@ transaction(address: Address) {
     let publicCapability: Capability<&Stuff.Test{Stuff.ITest}> =
       getAccount(address).getCapability<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource)
 
-    // This works...
-    let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+    // これは上手くいきます...
+    let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("ケイパビリティが存在しないか、ケイパビリティ取得時に正しい型を指定していません。")
 
     // ERROR: "Member of restricted type is not accessible: changeName"
     testResource.changeName(newName: "Sarah")
@@ -282,9 +276,9 @@ transaction(address: Address) {
 }
 ```
 
-And again! Get recked scammer. Even though you borrowed the right type, you can't call `changeName` because it's not accessible through the `&Stuff.Test{Stuff.ITest}` type.
+またエラーが出ましたね！正しい型を借用したにもかかわらず、`&Stuff.Test{Stuff.ITest}`型からはアクセスできないので、 `changeName` を呼び出すことができません。
 
-But, this will work:
+しかし、これならうまくいくでしょう。
 
 ```cadence
 import Stuff from 0x01
@@ -294,33 +288,28 @@ pub fun main(address: Address): String {
 
   let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
 
-  // This works because `name` is in `&Stuff.Test{Stuff.ITest}`
+  // `name`というフィールドは`&Stuff.Test{Stuff.ITest}`に存在するので、これは上手くいきます
   return testResource.name
 }
 ```
 
-Yaaaaaaay! Exactly like we wanted :)
+期待通り動作していますね！
 
-## Conclusion
+## まとめ
 
-Holy cow. That was a lot. The good news? You have learned an insane amount about Cadence so far. And even better, you have learned all the complicated stuff. I am so, so proud of you.
+大変でしたね。ですが、良い知らせです。ここまででCadenceについて非常に多くのことを学びました。そしてさらに、大体の難解なことは学びきりました。
 
-I also intentionally didn't go into depth on `/private/`. This is because, in practice, you will rarely ever use `/private/`, and I didn't want to shove too much info into your head.
+今回、私は意図的に `/private/` について深く掘り下げませんでした。というのも、実際には`/private/`を使うことはほとんどないでしょうし、学びの邪魔になる可能性が高いからです。
 
-And, well... I'm hungry. So I'm going to eat food. Maybe I'll add it to this chapter later ;)
+## クエスト
 
-## Quests
+好きな言語で答えてください。
 
-Please answer in the language of your choice.
+1. `.link()` は何をするものですか？
 
-1. What does `.link()` do?
+2. リソースインターフェースを使って、どのように `/public/` パスに特定のものだけを公開できるか、あなた自身の言葉で説明してください (コードは必要ありません)。
 
-2. In your own words (no code), explain how we can use resource interfaces to only expose certain things to the `/public/` path.
-
-3. Deploy a contract that contains a resource that implements a resource interface. Then, do the following:
-
-   1. In a transaction, save the resource to storage and link it to the public with the restrictive interface.
-
-   2. Run a script that tries to access a non-exposed field in the resource interface, and see the error pop up.
-
-   3. Run the script and access something you CAN read from. Return it from the script.
+3. リソースインターフェースを実装したリソースを含むコントラクトをデプロイしてください。その後、以下を実行しましょう。
+    1) トランザクションで、リソースをストレージに保存し、制限付きインターフェースでパブリックにリンクする。
+    2) リソースインターフェースの公開されていないフィールドにアクセスしようとするスクリプトを実行し、エラーがポップアップされるのを確認する。
+    3) スクリプトを実行し、読み込み可能なものにアクセスする。スクリプトからそれを返す。
