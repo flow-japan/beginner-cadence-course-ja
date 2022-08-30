@@ -1,20 +1,20 @@
-# Chapter 3 Day 3 - References
+# 第 3 章 3 日目 - 参照
 
-What's up Flow people. Today, we'll be talking about references, another important part of the Cadence programming language.
+Flow の皆さん、お元気ですか。今日は、Cadence プログラミング言語のもう一つの重要なこと、参照（Reference）についてお話します。
 
-## Video
+## 動画
 
-If you'd like to watch a video on References, you can go here: https://www.youtube.com/watch?v=mI3KC-5e81E
+参照についての動画をご覧になりたい方は、こちらへどうぞ: https://www.youtube.com/watch?v=mI3KC-5e81E
 
-## What is a Reference?
+## 参照とは？
 
-In simplest terms, a reference is a way for you to interact with a piece of data without actually having to have that piece of data. Right off the bat, you can imagine how helpful this will be for resources. Imagine a world where you don't have to move a resource 1,000 times just to look at or update its fields. Ahh, that world does exist! References are here to save the day.
+簡単に言うと、参照とは、実際にそのデータを持っていなくても、データの一部を操作できるようにする方法です。この機能は、リソースに対して非常に有効です。リソースのフィールドを見たり更新したりするために、リソースを 1,000 回も移動させる必要がない世界を想像してみてください。ああ、そんな世界があるんですね！参照は、このような状況を救ってくれるのです。
 
-## References in Cadence
+## Cadence における参照
 
-In Cadence, references are _almost always_ used on Structs or Resources. It doesn't really make sense to make a reference of a string, number, or basic data type. But it certainly makes sense to make a reference of things we don't want to pass around a lot.
+Cadence では、参照はほとんど常に構造体かリソースで使用されます。文字列や数値、基本的なデータ型の参照を作成することはあまり意味がありません。ただし、何度も受け渡たしたくないものを参照するのは意味があります。
 
-References always use the `&` symbol in front of them. Let's look at an example:
+参照は常に `&` という記号を前につけて行います。例を見てみましょう:
 
 ```cadence
 pub contract Test {
@@ -41,14 +41,14 @@ pub contract Test {
 }
 ```
 
-In the above example, you can see that `getReference` returns a `&Greeting?` type, which simply means "An optional reference to the `@Greeting` type." Inside the function, a few things are happening:
+上の例では、 `getReference` が `&Greeting?` 型を返していることがわかります。これは、単に 「`@Greeting` 型への参照のオプショナル型」を意味しています。この関数の内部では、いくつかのことが起こっています。
 
-1. We first get a reference of the value at `key` by doing `&self.dictionaryOfGreetings[key]`.
-2. We "type cast" the reference by doing `as &Greeting?`. Notice that it is an optional, which makes sense because when we index into dictionaries, it returns an optional type.
+1. `&self.dictionaryOfGreetings[key]` とすることで、まず `key` にある値の参照を取得します。
+2. `as &Greeting?` とすることで、この参照を「型キャスト」します。これは、オプショナル型であることに気をつけてください。ディクショナリでインデックスを指定すると、オプショナル型が返ります。
 
-Notice that if we had forgotten the `as &Greeting?`, Cadence would yell at us and say "expected casting expression." This is because in Cadence, **you have to type cast when getting a reference**. Type casting is when you tell Cadence the type you're getting the reference as, which is what `as &Greeting?` is doing. It's saying "get this optional reference that is a &Greeting reference." If it's not, we will abort the program.
+もし、`as &Greeting?`を忘れていたら、Cadence は "expected casting expression" と言うエラーを出すことでしょう。これは、Cadence では、**参照を取得するときに型キャストする必要がある** からです。型キャストとは、Cadence に参照を取得するときの型を伝えることで、`as &Greeting?` でこれをやっています。これは「このオプショナル型の参照を、&Greeting 型への参照として取得しなさい」ということです。もし型が違う場合、プログラムは停止されます。
 
-Now, you might be wondering "how can I unwrap this optional reference?" You can do that like so:
+さて、「このオプショナルな参照をどうやってアンラップすればいいんだろう？」と疑問に思うかもしれません。それはこんな風にすればいいんです:
 
 ```cadence
 pub fun getReference(key: String): &Greeting {
@@ -56,9 +56,9 @@ pub fun getReference(key: String): &Greeting {
 }
 ```
 
-Notice that we wrap the whole thing and use the force-unwrap operator `!` to unwrap it, like normal. It also changes the return type to a non-optional `&Greeting`. Make sure to change this in your code.
+全体を括弧でくくって、通常の強制アンラップ演算子 `!` でアンラップしていることに注意してください。また、戻り値の型もオプショナル型ではない `&Greeting` に変更しています。あなたのコードで、これが変更されることを確認してください。
 
-Now that we can get a reference, we can get the reference in a transaction or script like so:
+これで参照を取得できるようになったので、トランザクションやスクリプトで次のように参照を取得することができます:
 
 ```cadence
 import Test from 0x01
@@ -69,21 +69,21 @@ pub fun main(): String {
 }
 ```
 
-Notice we didn't have to move the resource anywhere in order to do this! That's the beauty of references.
+これをやるために、リソースをどこかに移動させる必要はありません！これが参照の良いところです。
 
-## Conclusion
+## まとめ
 
-References aren't so bad right? The main two points are:
+参照はそんなに悪いものではないでしょう？主なポイントは 2 つです。
 
-1. You can use references to get information without moving resources around.
-2. You MUST "type cast" a reference when getting it, or you'll receive an error.
+1. リソースを移動させることなく、参照を使って情報を得られる。
+2. 参照を取得するときは、必ず「型キャスト」しなければならない、さもなければエラーが発生する。
 
-References are not going to go away, though. They will be EXTREMELY important when we talk about account storage in the next chapter.
+参照はなくなることはありません。これらは次の章でアカウント・ストレージについて説明する際、非常に重要になります。
 
-## Quests
+## クエスト
 
-1. Define your own contract that stores a dictionary of resources. Add a function to get a reference to one of the resources in the dictionary.
+1. リソースのディクショナリを保存する独自のコントラクトを定義してください。ディクショナリの中のリソース 1 つに対する参照を取得する関数を追加してください。
 
-2. Create a script that reads information from that resource using the reference from the function you defined in part 1.
+2. 1 で定義した関数からの参照を使って、そのリソースから情報を読み取るスクリプトを作成してください。
 
-3. Explain, in your own words, why references can be useful in Cadence.
+3. Cadence で参照が有用である理由を、自分の言葉で説明してください。
