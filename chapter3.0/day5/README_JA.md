@@ -1,18 +1,18 @@
-# Chapter 3 Day 5 - Access Control
+# 第3章5日目 - アクセスコントロール
 
-SUUUUUUUUP! Today, we're learning about access control. Let's learn.
+調子はどうだい！今日はアクセスコントロールについて学びます。学びましょう。
 
-## Video
+## ビデオ
 
-I STRONGLY ENCOURAGE you watch the video for today's content. It will help you so much because access control is very confusing: https://www.youtube.com/watch?v=ly3rNs0xCRQ&t
+今日のビデオを見ることを強く推奨します。アクセスコントロールは非常にわかりにくいものですから： https://www.youtube.com/watch?v=ly3rNs0xCRQ&t
 
-## Introduction to Access Control & Access Modifiers
+## アクセスコントロールとアクセス修飾子の紹介
 
-Access Control is an extremely powerful feature in Cadence, and makes it very special.
+アクセスコントロールは Cadence の非常に強力な機能であり、Cadence を特別なものにしている。
 
-Access Control describes the way in which we can use things called "Access Modifiers" to increase the security of our smart contracts.
+アクセスコントロールは、スマートコントラクトのセキュリティを高めるために「アクセス修飾子」と呼ばれるものを使用する方法について説明している。
 
-Previously, in all of our lessons, we declared all of our variables and functions using the `pub` keyword, like so:
+以前は、すべてのレッスンで、変数や関数を `pub` キーワードを使って次のように宣言した：
 
 ```cadence
 pub let x: Bool
@@ -22,69 +22,70 @@ pub fun jacobIsAwesome(): Bool {
 }
 ```
 
-But what exactly does `pub` mean? Why are we putting it there? Are there other things we can do instead? That is what we'll be learning today.
+しかし、`pub` とは一体どういう意味なのだろうか？なぜそこに置くのか？代わりにできることは他にあるのだろうか？それが今日学ぶことです。
 
-## Access Modifiers
+## アクセス修飾子
 
-`pub` is something called an "Access Modifier" in Cadence. An Access Modifier is basically a level of security in our smart contracts. But there are a bunch of others we can use as well. Let's take a look at this diagram to help give us an idea of all the different access modifiers we can use.
+`pub` は Cadence では 「アクセス修飾子」と呼ばれるものです。。アクセス修飾子は基本的にスマートコントラクトのセキュリティレベルです。しかし、他にも使えるものがたくさんあります。この図を見て、様々なアクセス修飾子があることを理解しましょう。
 
 <img src="../images/access_modifiers.png" />
 
-We are only going to focus on the `var` rows, because `let` does not have a write scope since it is a constant. I really encourage you to watch the video before reading over this next section.
+ここでは `var` の行だけに注目する、なぜなら、`let `は定数なので書き込みスコープがないからです。次のセクションを読む前に、ぜひビデオを見てほしい。
 
-## What does "Scope" mean?
+## 「スコープ」とは何か？
 
-Scope is the area in which you can access, modify, or call your "things" (variables, constants, fields, or functions). There are 4 types of scope:
+スコープとは、「もの」（変数、定数、フィールド、関数）にアクセスしたり、変更したり、呼び出したりできる範囲のことです。スコープには4種類あります。：
 
-### 1. All Scope
+### 1. すべてのスコープ
 
-This means we can access our thing from **anywhere**. Inside the contract, in transactions and scripts, wherever.
+これは、**どこからでも**アクセスできるということです。コントラクトの内部でも、トランザクションでも、スクリプトでも、どこからでも。
 
 <img src="../images/allscope.PNG" />
 
-### 2. Current & Inner Scope
+### 2. カレント ＆ インナースコープ
 
-This means we can only access our thing from where it is defined and inside of that.
+これは、定義された場所とその内部からしかアクセスできないということだ。
 
 <img src="../images/currentandinner.PNG" />
 
-### 3. Containing Contract Scope
+### 3. コントラクトスコープを含む
 
-This means we can access our thing anywhere inside the contract that it is defined.
+これは、定義されているコントラクトの中であれば、どこにでもアクセスできるということだ。
 
 <img src="../images/contractscope.PNG" />
 
-### 4. Account Scope
+### 4. アカウントスコープ
 
-This means we can access our thing anywhere inside the account that it is defined. This means all of the contracts that are in the account. Remember: we can deploy multiple contracts to one account.
+これは、定義されたアカウント内のどこからでも自分のものにアクセスできるということを意味します。つまり、アカウント内にあるすべてのコントラクトにアクセスできます。覚えておいてください：1つのアカウントに複数のコントラクトをデプロイすることができます。
 
-## Back to Access Modifiers
+## アクセス修飾子に戻る
 
-Cool! We just reviewed what different "scopes" mean. Let's take a look at our graphic again...
+クールだ！異なる「スコープ」が何を意味するのか復習しました。もう一度図を見てみましょう。
 
 <img src="../images/access_modifiers.png" />
 
-Now it is easier to understand what it's saying. Let's walk through all of the access modifiers together...
+これで、何を言っているのか理解しやすくなった。それでは、アクセス修飾子をすべて一緒に見ていきましょう...
 
 ### pub(set)
 
-`pub(set)` only applies to variables, constants, and fields. Functions **cannot** be publically settable. It is also the most dangerous and easily accessible modifier.
+`pub(set)` は変数、定数、フィールドにのみ適用されます。関数は public に設定**できません**。これは最も危険で、簡単にアクセスできる修飾子でもあります。
 
-Ex.
+例.
 
 ```cadence
 pub(set) var x: String
 ```
 
-Write Scope - **All Scope**
+書き込みスコープ - **全てのスコープ**
 
-Read Scope - **All Scope**
+読み取りスコープ - **全てのスコープ**
 
 ### pub/access(all)
 
-`pub` is the same thing as `access(all)`. This is the next layer down from pub(set).
+`pub` は `access(all)` と同じものです。
+これは pub(set) の次のレイヤーです。
 
-Ex.
+例.
 
 ```cadence
 pub var x: String
@@ -94,15 +95,15 @@ pub fun testFuncOne() {}
 access(all) fun testFuncTwo() {}
 ```
 
-Write Scope - Current & Inner
+書き込みスコープ - カレント ＆ インナー
 
-Read Scope - **All Scope**
+読み取りスコープ - **全てのスコープ**
 
 ### access(account)
 
-`access(account)` is a little more restrictive than `pub` due to its read scope.
+`access(account)` は読み取りスコープがあるため、`pub` より少し制限的である。
 
-Ex.
+例.
 
 ```cadence
 access(account) var x: String
@@ -110,15 +111,15 @@ access(account) var x: String
 access(account) fun testFunc() {}
 ```
 
-Write Scope - Current & Inner
+書き込みスコープ - カレント ＆ インナー
 
-Read Scope - All Contracts in the Account
+読み取りスコープ - アカウント内の全てのコントラクト
 
 ### access(contract)
 
-`access(contract)` is a little more restrictive than `access(account)` due to its read scope.
+`access(contract)` は読み取りスコープがあるため、`access(account)` より少し制限的である。
 
-Ex.
+例.
 
 ```cadence
 access(contract) var x: String
@@ -126,15 +127,15 @@ access(contract) var x: String
 access(contract) fun testFunc() {}
 ```
 
-Write Scope - Current & Inner
+書き込みスコープ - カレント ＆ インナー
 
-Read Scope - Containing Contract
+読み取りスコープ - コントラクト内容？(Containing Contract)
 
 ### priv/access(self)
 
-`priv` is the same thing as `access(self)`. This is the most restrictive (and safe) access modifier.
+`priv` は `access(self)` と同じものです。これは最も制限的な（そして安全な）アクセス修飾子です。
 
-Ex.
+例.
 
 ```cadence
 priv var x: String
@@ -144,27 +145,27 @@ priv fun testFuncOne() {}
 access(self) fun testFuncTwo() {}
 ```
 
-Write Scope - Current & Inner
+書き込みスコープ - カレント ＆ インナー
 
-Read Scope - Current & Inner
+読み取りスコープ - カレント ＆ インナー
 
-## Very Important Notes
+## 重要な注意事項
 
 <img src="../images/pleasenote.jpeg" />
 
-After looking at our access modifiers, we must make an extremely important distinction: **Even though some access modifiers like `priv` make fields unreadable in your Cadence code, this does not mean people cannot read this info by looking at the blockchain. _Everything on the blockchain is public_, regardless of its read scope.** Access modifiers simply let you determine what is readable/writeable in the context of your Cadence code. Never store private information on the blockchain!
+アクセス修飾子を見た後、非常に重要な区別をしなければなりません：**`priv` のようなアクセス修飾子が Cadence のコードでフィールドを読めなくしているとしても、ブロックチェーンを見てその情報を読めないということではありません。ブロックチェーン上のすべてのものは、その読み取りスコープに関係なくパブリックです。**アクセス修飾子は、あなたの Cadence コードの文脈で何が読み取り可能か/書き込み可能かを判断させるだけです。ブロックチェーンには決して個人情報を保存しないでください！
 
-## Conclusion
+## まとめ
 
-We learned a LOT about access modifiers today. In order to test your understanding, we're going to do a lot of busy work in the quests for today. I honestly believe you will learn the most from doing the quests themselves.
+今日はアクセス修飾についてたくさん学びました。理解度を試すために、今日のクエストでは忙しい仕事をたくさんするつもりです。正直なところ、クエストをこなすことで最も多くを学べると信じている。
 
-See you in Chapter 4, folks! <3
+皆さん、第4章でお会いしましょう！<3
 
-## Quests
+## クエスト
 
-For today's quest, you will be looking at a contract and a script. You will be looking at 4 variables (a, b, c, d) and 3 functions (publicFunc, contractFunc, privateFunc) defined in `SomeContract`. In each AREA (1, 2, 3, and 4), I want you to do the following: for each variable (a, b, c, and d), tell me in which areas they can be read (read scope) and which areas they can be modified (write scope). For each function (publicFunc, contractFunc, and privateFunc), simply tell me where they can be called.
+今日のクエストでは、コントラクトとスクリプトを見てみよう。`SomeContract` で定義された4つの変数(a, b, c, d)と3つの関数(publicFunc , contractFunc , privateFunc)を見ていく。それぞれの領域(1、2、3、4) で以下のことをやってほしい：各変数(a, b, c, d)について、どの領域で読み取れるか(read scope)、どの領域で変更できるか(write scope)を教えてほしい。各関数（publicFunc ， contractFunc ， privateFunc）について、それがどこで呼び出せるかを教えてほしい。
 
-You can use this diagram to help you:
+この図を参考にしてください：
 <img src="../images/boxdiagram.PNG" />
 
 ```cadence
@@ -240,7 +241,7 @@ access(all) contract SomeContract {
 }
 ```
 
-This is a script that imports the contract above:
+これは上記のコントラクトをインポートするスクリプトである：
 
 ```cadence
 import SomeContract from 0x01
