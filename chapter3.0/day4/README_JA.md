@@ -1,29 +1,30 @@
-# Chapter 3 Day 4 - Resource/Struct Interfaces
+# 第3章4日目 - リソース/構造 インターフェイス
 
-Yooooo yo yo yo! We're BACK for another day of Cadence fun. Today, we'll be learning about resource interfaces.
+よー！よお、よお、よお！今日も cadence を楽しもう！
+今日はリソースインターフェースについて学びます。
 
-## Video
+## ビデオ
 
-If you'd like to watch a video on Resource Interfaces, you can go here: https://www.youtube.com/watch?v=5wnn9qsCXgE
+リソースインターフェイスに関するビデオをご覧になりたい方は、こちらをクリックしてください。: https://www.youtube.com/watch?v=5wnn9qsCXgE
 
-## What is an Interface?
+## インターフェイスとは何か？
 
-Interfaces are very common in traditional programming languages. There are two main things interfaces are used for:
+インターフェイスは、従来のプログラミング言語では非常に一般的なものです。インターフェイスの用途は主に2つあります：
 
-1. It specifies a set of requirements for something to implement
-2. It allows you to only expose certain things to certain people
+1. 何かを実装するための一連の要件を指定します。
+2. 特定の人に特定のものだけを公開することができます。
 
-Let's look at some code to figure out what I mean.
+どういうことかを理解するために、いくつかのコードを見てみましょう。
 
 <img src="../images/interfaces.png" />
 
-## Using Interfaces as Requirements
+## インターフェイスを要件として使用する
 
-In this lesson, I will only be using resource interfaces, however, **struct interfaces are exactly the same thing, just for structs. Lol.** Just keep that in mind.
+このレッスンでは、リソースインターフェースだけを使いますが、**構造体インターフェースも、構造体用というだけで、まったく同じものです。笑** そのことだけ覚えておいてください。
 
-In Cadence, resource/struct interfaces are essentially "requirements," or ways for you to expose data from a resource/struct. On their own, interfaces don't do anything. They just sit there. But when they're _applied_ to a resource/struct, that's when they do something.
+Cadence では、リソース/構造体インターフェースは基本的に「要件」であり、リソース/構造体からデータを公開する方法です。インターフェース単体では何もしません。ただそこに座っているだけです。しかし、リソース/構造体にインターフェイスを _適用_ することで、何かができるようになります。
 
-Resource interfaces are defined with the `resource interface` keyword (for structs it is `struct interface`):
+リソースインターフェースは `resource interface` キーワードで定義します。（構造体の場合は `struct interface` です）:
 
 ```cadence
 pub contract Stuff {
@@ -39,14 +40,14 @@ pub contract Stuff {
 }
 ```
 
-In the above example, you can see that we did two things:
+上の例では、2つのことをしているのがわかるでしょう：
 
-1. We defined an empty `resource interface` named `ITest`.
-2. We defined an empty `resource` named `Test`.
+1. 空の `ITest` という名前の `resource interface` を定義しました。
+2. 空の `Test` という名前の `resource` を定義しました。
 
-Personally, I always name interfaces with an "I" in front, because it helps me determine what it actually is.
+個人的には、インターフェイスの名前にはいつも頭に "I" を付けます、なぜなら、それが実際に何であるかを判断するのに役立つからです。
 
-In the above example, `ITest` doesn't actually do anything. It's just sitting there. Let's add some stuff to it.
+上の例では、`ITest` は実際には何もしません。ただそこに座っているだけです。これに何か追加してみましょう。
 
 ```cadence
 pub contract Stuff {
@@ -62,7 +63,7 @@ pub contract Stuff {
 }
 ```
 
-Now, `ITest` contains a `name` field. Cool! But ITest still isn't doing anything. It's just sitting there in space. So let's make `Test` _implement_ the `ITest` resource interface.
+これで `ITest` は `name` フィールドを含むようになりました。クールですね！しかし、ITest はまだ何もしていません。ただ空間に座っているだけです。そこで、`ITest` リソースインターフェイスを `Test` に _実装_ してみましょう。
 
 ```cadence
 pub contract Stuff {
@@ -82,9 +83,9 @@ pub contract Stuff {
 }
 ```
 
-Notice what we just did. We made `Test` implement `ITest` by adding the `: ITest` syntax. What that means is, "This resource implements the resource interfaces after the `:`".
+今やったことに注目してほしいです。`: ITest` 構文を追加することで、`Test` に `ITest` を実装させたのです。この意味は、「このリソースは `:` の後にリソースインターフェースを実装している」ということです。
 
-But you'll notice there's an error: "resource Stuff.Test does not conform to resource interface Stuff.ITest". Remember what we said above? Resource interfaces are _requirements_. If a resource implements a resource interface, it MUST define the things in the interface. Let's fix it.
+しかし、エラーがあることにお気づきでしょう：「リソース Stuff.Test はリソースインターフェース Stuff.ITest に適合していません」。上で言ったことを覚えているでしょうか？リソースインターフェースは _要求_ です。リソースがリソースインタフェースを実装している場合、リソースはそのインタフェースにあるものを定義しなければなりません。修正しましょう。
 
 ```cadence
 pub contract Stuff {
@@ -103,11 +104,11 @@ pub contract Stuff {
 }
 ```
 
-There's no errors now! Woohoo!
+今度はエラーはないです！わーい！
 
-## Using Interfaces to Expose Specific Things
+## インターフェイスを使って特定のものを公開する
 
-Above, we learned that resource interfaces make the resource implement certain things. But resource interfaces are actually much more important than that. Remember the 2nd thing they do? We said: "It allows you to only expose certain things to certain people". THAT is why they are powerful. Let's look below:
+上記では、リソース・インターフェースはリソースに特定のものを実装させるということを学びました。しかし、リソースインターフェースは実はそれ以上に重要です。2番目のことを思い出してください。私たちはこう言いました：「特定の人に特定のものだけを公開することができる」のです。これが、リソースインターフェースが強力な理由です。以下を見てみましょう：
 
 ```cadence
 pub contract Stuff {
@@ -141,18 +142,19 @@ pub contract Stuff {
 }
 ```
 
-Okay, what the heck just happened. There's a lot going on:
+さて、一体何が起こったのでしょうか。いろいろなことが起こっています：
 
-1. We made a function called `noInterface`. This function creates a new resource (with type `@Test`) and logs its `number` field. This works perfectly.
-2. We made a function called `yesInterface`. This function creates a new resource **that is restricted to the `ITest` interface** (with type `@Test{ITest}`) and tries to log the `number` field, but fails.
+1. `noInterface` という関数を作りました。この関数は新しいリソース（型は `@Test` ）を作成し、その `number` フィールドにログを記録します。これは完璧に動作します。
+2. `yesInterface` という関数を作りました。この関数は、**`ITest` インターフェースに制限された**新しいリソース（型は `@Test{ITest}` ）を作成し、`number` フィールドのログを記録しようとしますが、失敗します。
 
-In Cadence, you "restrict the type" of a resource by using `{RESOURCE_INTERFACE}` notation. You use `{}` brackets and put the name of the resource interface in the middle. That means: "this type is a resource **that can only use the things exposed by the interface**." If you understand this, you understand resource interfaces really well.
+Cadence では、`{RESOURCE_INTERFACE}` 記法を使ってリソースの「タイプを制限」します。`{}` 括弧を使い、真ん中にリソースインターフェースの名前を書きます。
+つまり「この型は、**インターフェイスによって公開されたものだけを使用できるリソースである**」ということです。これが理解できれば、リソースインターフェースを本当によく理解していることになります。
 
-So, why does the `log` in `yesInterface` fail? Well, it's because `ITest` does NOT expose the `number` field! So if we type the `test` variable to be `@Test{ITest}`, we won't be able to access it.
+では、なぜ `yesInterface` の `log` は失敗するのでしょうか？それは `ITest` が `number` フィールドを公開していないからです！だから `test` 変数を `@Test{ITest}` とタイプしても、それにアクセスすることはできません。
 
-## Complex Example
+## 複雑な例
 
-Here's a more complex example that also includes functions:
+以下は、関数も含めたより複雑な例です：
 
 ```cadence
 pub contract Stuff {
@@ -194,7 +196,7 @@ pub contract Stuff {
 }
 ```
 
-I wanted to show you another example to show you that you can also choose not to expose functions. There's so many things you can do! :D If we wanted to fix this code, we would do:
+別の例をお見せして、関数を公開しないという選択肢もあることをお見せしたかったのです。できることはたくさんあります！:D もしこのコードを修正したいのであれば、こうするでしょう：
 
 ```cadence
 pub contract Stuff {
@@ -239,19 +241,19 @@ pub contract Stuff {
 }
 ```
 
-Notice that when I added the function to `ITest`, I only put the function definition: `pub fun updateNumber(newNumber: Int): Int`. You cannot implement a function in an interface, you can only define it.
+関数を `ITest` に追加したとき、関数の定義だけを置いたことに注意してください： `pub fun updateNumber(newNumber: Int): Int`。インターフェイスで関数を実装することはできません。
 
-## Conclusion
+## まとめ
 
-Great job in getting through today's content. Resource interfaces will be extremely important when we start talking about account storage in Chapter 4.
+今日の内容をよく乗り切りました。リソースインターフェースは、第4章でアカウントストレージの話を始めるときに非常に重要になります。
 
-## Quests
+## クエスト
 
-1. Explain, in your own words, the 2 things resource interfaces can be used for (we went over both in today's content)
+1. リソース・インターフェイスが使える2つのことを、あなた自身の言葉で説明してください。(今日のコンテンツではこの2つについて説明しました)
 
-2. Define your own contract. Make your own resource interface and a resource that implements the interface. Create 2 functions. In the 1st function, show an example of not restricting the type of the resource and accessing its content. In the 2nd function, show an example of restricting the type of the resource and NOT being able to access its content.
+2. 独自のコントラクトを定義する。独自のリソースインターフェースと、そのインターフェースを実装したリソースを作成する。2つの関数を作りなさい。1つ目の関数では、リソースのタイプを制限せず、そのコンテンツにアクセスする例を示しなさい。2番目の関数では、リソースのタイプを制限し、そのコンテンツにアクセスできない例を示しなさい。
 
-3. How would we fix this code?
+3. このコードをどのように修正すればいいのか？
 
 ```cadence
 pub contract Stuff {
