@@ -1,80 +1,80 @@
-# Chapter 4 Day 4 - Creating an NFT Contract: Transferring, Minting, and Borrowing (Part 2/3)
+# 第4章4日目 - NFT コントラクトの作成：譲渡、ミント、借入（パート2/3）
 
-Let's keep building our NFT contract! :D
+NFT のコントラクトを構築し続けましょう！ :D
 
-## Video
+## ビデオ
 
-Today, we'll cover 20:35 - 31:20: https://www.youtube.com/watch?v=bQVXSpg6GE8
+今日は 20:35 - 31:20 までを取り上げます: https://www.youtube.com/watch?v=bQVXSpg6GE8
 
-## Recap so Far
+## これまでの総括
 
-In the last day, we went over how to create NFTs and store them inside of a Collection. The reason we made a Collection was so we could have all of our NFTs stored in one place in our account storage.
+前日、NFT を作成し、Collection の中に保存する方法について説明しました。Collection を作成したのは、すべての NFT をアカウントストレージの一箇所に保存するためです。
 
-But we left ourselves with somewhat of a problem: should we _really_ allow anybody to create an NFT? That seems a bit weird. What if we want to control who can mint an NFT? That's what we'll be talking about today.
+しかし、私たちは少々問題を残しました：_本当_ に誰でも NFT を作ることができるのでしょうか？それは少しおかしいです。誰が NFT をミントできるかを管理したいとしたらどうでしょうか？今日はその話をしましょう。
 
-## Transferring
+## 譲渡
 
-Before we get into controlling who can "mint" (or create) an NFT, let's talk about transferring. How can we transfer an NFT from one account to another?
+NFT を "ミント"（または作成）できる人のコントロールに入る前に、譲渡について説明しましょう。NFT をあるアカウントから別のアカウントに移すにはどうすればよいのでしょうか。
 
-Well, if you recall, only the owner of a Collection can `withdraw` from their Collection. However, anyone can `deposit` into another persons Collection. This is perfect for us, because it means we will only need access to 1 AuthAccount: the person who will be transferring (aka withdrawing) the NFT! Let's spin up a transaction to transfer an NFT:
+そういえば、コレクションの所有者だけが自分のコレクションから `withdraw` できます。しかし、誰でも他の人の Collection に `deposit` することができます。つまり、1つの AuthAccount にアクセスするだけでよいのです：NFT を譲渡（引き出し）する人！NFT を送金するトランザクションをスピンアップしてみましょう：
 
-_Note: This is assuming you've already set up both accounts with a Collection._
+_注意：これは、すでに両方のアカウントにコレクションを設定していることを前提としています。_
 
 ```cadence
 import CryptoPoops from 0x01
 
-// `id` is the `id` of the NFT
-// `recipient` is the person receiving the NFT
+// `id` は NFT の `id` です。
+// `recipient` とは、NFT を受ける人のことです。
 transaction(id: UInt64, recipient: Address) {
 
   prepare(signer: AuthAccount) {
-    // get a reference to the signer's Collection
+    // 署名者のコレクションへの参照を取得します。
     let signersCollection = signer.borrow<&CryptoPoops.Collection>(from: /storage/MyCollection)
                             ?? panic("Signer does not have a CryptoPoops Collection")
 
-    // Get a reference to the `recipient`s public Collection
+    // `recipient` のパブリックコレクションへの参照を取得します。
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>
                                   ?? panic("The recipient does not have a CryptoPoops Collection.")
 
-    // withdraws the NFT with id == `id` and moves it into the `nft` variable
+    // id で NFT を引き出す == `id` を変数  `nft` に移します。
     let nft <- signersCollection.withdraw(withdrawID: id)
 
-    // deposits the NFT into the recipient's Collection
+    // NFT は受取人のコレクションにデポジットされます。
     recipientsCollection.deposit(token: <- nft)
   }
 
 }
 ```
 
-Not too bad right? We should understand all of this after learning yesterday's content. Here are the steps:
+悪くないでしょう？昨日の内容を学べば、すべて理解できるはずです。手順はこうです：
 
-1. We first get a reference to the signer's Collection. We do not use a capability because we need to borrow directly from storage since we need to be able to call `withdraw`.
-2. We then get a _public_ reference to the recipient's Collection. We get this through a public capability because we don't have access to their AuthAccount, but this is fine since we only need to `deposit`.
-3. We `withdraw` the NFT with `id` out of the signer's Collection.
-4. We `deposit` the NFT into the recipient's Collection.
+1. まず、署名者のコレクションへの参照を取得します。`withdraw` を呼び出す必要があり、ストレージから直接参照する必要もあるため、ケイパビリティは使用しません。
+2. 次に、受信者のコレクションへの _パブリック_ リファレンスを取得します。私たちは相手の AuthAccount にアクセスできないので、パブリックケーパビリティを通してこれを取得します、 しかし、`deposit` するだけなのでこれは問題ありません。
+3. `id` を持つ NFT を署名者のコレクションから `withdraw`。
+4. NFT を受取人のコレクションに `deposit` 。
 
-## Minting
+## ミント
 
-Alright, so let's figure out how to prevent everyone from minting their own NFTs. The question now is, well, then WHO should have the ability to mint?
+よし、では、誰もが NFT をミントできないようにする方法を考えましょう。問題は、では誰がミント能力を持つべきかです。
 
-The beauty of Cadence is that we can decide for ourselves. Why don't we start by making a Resource that mints NFTs? Then, whoever owns the resource can have the ability to mint an NFT. Let's build on top of the contract we had previously:
+Cadence の良さは、自分たちで決められることです。まず、NFT をミントするリソースを作ってはどうでしょうか。そうすれば、リソースを所有する人は誰でも NFT をミントする能力を持つことができます。これまでのコントラクトの上に構築してみましょう：
 
 ```cadence
 pub contract CryptoPoops {
 
-  // ... other stuff here ...
+  // ... その他はこちら ...
 
   pub fun createEmptyCollection(): @Collection {
     return <- create Collection()
   }
 
-  // New resource: Minter
-  // Allows anyone who holds it to
-  // mint NFTs
+  // 新しいリソース： Minter
+  // 保有者は誰でも
+  //  NFT のミント
   pub resource Minter {
 
-    // mints a new NFT resource
+    // 新しい NFT リソースをミントします
     pub fun createNFT(): @NFT {
       return <- create NFT()
     }
@@ -86,19 +86,19 @@ pub contract CryptoPoops {
 }
 ```
 
-Here are the things that were added:
+以下は追加されたものです：
 
-1. We created a new resource called `Minter`
-2. We moved the `createNFT` function into the `Minter` resource
+1. `Minter` という新しいリソースを作成しました。
+2. 関数 `createNFT` を `Minter` リソースに移動しました。
 
-Now, anyone who holds the `Minter` resource is able to mint NFTs. Okay, that's cool and all, but who gets to have the minter now?
+これで `Minter` リソースを持っている人は誰でも NFT をミントできます。さて、それはクールなことですが、今度は誰が minter を持つようになるのでしょうか？
 
-The easiest solution is to give the `Minter` automatically to the account that is deploying the contract. We can do that by saving the `Minter` resource to the account storage of the contract deployer's account inside the `init` function:
+最も簡単な解決策は、コントラクトをデプロイするアカウントに `Minter` を自動的に渡すことです。そのためには、`init` 関数の中で `Minter` リソースをコントラクトをデプロイするアカウントのストレージに保存します：
 
 ```cadence
 pub contract CryptoPoops {
 
-  // ... other stuff here ...
+  // ... その他はこちら ...
 
   pub fun createEmptyCollection(): @Collection {
     return <- create Collection()
@@ -115,51 +115,51 @@ pub contract CryptoPoops {
   init() {
     self.totalSupply = 0
 
-    // Save the `Minter` resource to account storage here
+    // `Minter` リソースをアカウントストレージに保存します。
     self.account.save(<- create Minter(), to: /storage/Minter)
   }
 }
 ```
 
-When you're deploying the contract, inside the `init` function, you actually have access to the deploying account's `AuthAccount`! So we can save stuff to account storage there.
+コントラクトをデプロイするときに `init` 関数の中で、デプロイするアカウントの `AuthAccount` にアクセスすることができます！そこで、アカウントのストレージにデータを保存することができます。
 
-See what we did at the very end? We saved the `Minter` to account storage. Perfect! Now, only the account that deployed the contract has the ability to mint NFTs, and since there's no function to allow other users to get a `Minter`, it is completely safe!
+一番最後に何をしたかわかりますか？`Minter` をアカウントストレージに保存したのです。完璧です！これで、コントラクトをデプロイしたアカウントだけが NFT をミントできるようになり、他のユーザーに `Minter` を取得させる機能はないので、完全に安全です！
 
-Let's look at an example transaction of a `Minter` minting someone an NFT.
+`Minter` が誰かに NFT をミントするトランザクションの例を見てみましょう。
 
-_Note: Let's assume the `signer` was the one who deployed the contract, since only they have the `Minter` resource_
+_注意：`Minter` リソースを持っているのは彼らだけなので、`signer` がコントラクトをデプロイした人だと仮定しましょう。_
 
 ```cadence
 import CryptoPoops from 0x01
 
 transaction(recipient: Address) {
 
-  // Let's assume the `signer` was the one who deployed the contract, since only they have the `Minter` resource
+  // 彼らだけが `Minter` リソースを持っているので、`signer` がコントラクトを展開した人だと仮定しましょう。
   prepare(signer: AuthAccount) {
-    // Get a reference to the `Minter`
+    // `Minter` への参照を取得します。
     let minter = signer.borrow<&CryptoPoops.Minter>(from: /storage/Minter)
                     ?? panic("This signer is not the one who deployed the contract.")
 
-    // Get a reference to the `recipient`s public Collection
+    // `recipient` のパブリックコレクションへの参照を取得します。
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>
                                   ?? panic("The recipient does not have a Collection.")
 
-    // mint the NFT using the reference to the `Minter`
+    // `Minter` への参照を使って NFT をミントします。
     let nft <- minter.createNFT()
 
-    // deposit the NFT in the recipient's Collection
+    // NFT を受取人のコレクションに預けます。
     recipientsCollection.deposit(token: <- nft)
   }
 
 }
 ```
 
-Wooooooooohoooooooooooooo! We successfully implemented secure minting. This is a very important pattern to be aware of in Cadence: the ability to delegate some "Admin" functionality to a certain resource, like the `Minter` in this case. That "Admin" is most often given to the account storage of the account who deployed the contract.
+うーーーわーーー！安全なミントの実装に成功しました。これは Cadence において非常に重要なパターンです："Admin" の機能を特定のリソース（この場合は `Minter`）に委譲する機能です。この "Admin" は多くの場合、コントラクトをデプロイしたアカウントのストレージに与えられます。
 
-## Borrowing
+## 借入
 
-Alright, last thing. Remember yesterday we said that it is weird that we can't read our NFT without literally withdrawing it from the Collection? Well, let's add a function inside the `Collection` resource that lets us borrow the NFT:
+さてさて、最後に。昨日、NFT を文字通り Collection から取り出さないと読めないのは変だと言ったのを覚えているでしょうか？では、`Collection` リソースの中に関数を追加して、NFT を借りられるようにしてみましょう：
 
 ```cadence
 pub contract CryptoPoops {
@@ -168,8 +168,8 @@ pub contract CryptoPoops {
   pub resource NFT {
     pub let id: UInt64
 
-    // Added some more metadata here so we can
-    // read from it
+    // ここから読み取れるように
+    // さらにメタデータを追加しました。
     pub let name: String
     pub let favouriteFood: String
     pub let luckyNumber: Int
@@ -205,8 +205,8 @@ pub contract CryptoPoops {
       return self.ownedNFTs.keys
     }
 
-    // Added this function so now we can
-    // read our NFT
+    // この関数を追加し
+    // NFT を読み込めるようにしました。
     pub fun borrowNFT(id: UInt64): &NFT {
       return (&self.ownedNFTs[id] as &NFT?)!
     }
@@ -220,7 +220,7 @@ pub contract CryptoPoops {
     }
   }
 
-  // ... other stuff here ...
+  // ... その他はこちら ...
 
   init() {
     self.totalSupply = 0
@@ -229,7 +229,7 @@ pub contract CryptoPoops {
 }
 ```
 
-Super simple right! We even added some extra fields (or "metadata") to our NFT so we can read info about it when we borrow it's reference from the Collection. In order to get the reference, we use a new `borrowNFT` function inside our `Collection` to return a reference to one of our NFTs that is stored inside our `ownedNFTs` dictionary. If we redeploy our contract, setup our accounts and run a new transaction to mint an NFT:
+超シンプルではないですか？！さらに、NFT に追加のフィールド（または「メタデータ」）を追加して、Collection から参照を借りたときにそのNFTに関する情報を読み取ることができるようにした。参照を取得するには、`Collection`  内で新しい `borrowNFT` 関数を使用して、`ownedNFTs` マップ内に格納されている NFT の 1 つへの参照を返します。コントラクトを再デプロイし、アカウントをセットアップし、NFT をミントするために新しいトランザクションを実行します：
 
 ```cadence
 import CryptoPoops from 0x01
@@ -240,26 +240,26 @@ import CryptoPoops from 0x01
 transaction(recipient: Address, name: String, favouriteFood: String, luckyNumber: Int) {
 
   prepare(signer: AuthAccount) {
-    // Get a reference to the `Minter`
+    // `Minter` への参照を取得する。
     let minter = signer.borrow<&CryptoPoops.Minter>(from: /storage/Minter)
                     ?? panic("This signer is not the one who deployed the contract.")
 
-    // Get a reference to the `recipient`s public Collection
+    // `recipient` のパブリックコレクションへの参照を取得する。
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>
                                   ?? panic("The recipient does not have a Collection.")
 
-    // mint the NFT using the reference to the `Minter` and pass in the metadata
+    // `Minter` への参照を使用して NFT を作成し、メタデータを渡します。
     let nft <- minter.createNFT(name: name, favouriteFood: favouriteFood, luckyNumber: luckyNumber)
 
-    // deposit the NFT in the recipient's Collection
+    // NFT を受取人のコレクションに預ける。
     recipientsCollection.deposit(token: <- nft)
   }
 
 }
 ```
 
-Awesome! We minted an NFT into the recipient's account. Now let's go ahead and use our new `borrowNFT` function in a script to read the NFT's metadata that was deposited into the account:
+すごい！受取人のアカウントに NFT がデポジットされました。では、スクリプトで新しい関数 `borrowNFT` を使って、アカウントにデポジットされた NFT のメタデータを読み取ってみましょう：
 
 ```cadence
 import CryptoPoops from 0x01
@@ -275,26 +275,26 @@ pub fun main(address: Address, id: id) {
 }
 ```
 
-WAIT! We get an error! Why is that? Ahh, it's because we forgot to add `borrowNFT` to the `CollectionPublic` interface inside our contract, so it's not accessible to the public! Let's go ahead and fix that:
+待ってください！エラーが出てます！なぜでしょう？ああ、コントラクト内の `CollectionPublic` インターフェースに `borrowNFT` を追加するのを忘れたからでした！では、修正しましょう：
 
 ```cadence
 pub contract CryptoPoops {
 
-  // ... other stuff here ...
+  // ... その他はこちら ...
 
   pub resource interface CollectionPublic {
     pub fun deposit(token: @NFT)
     pub fun getIDs(): [UInt64]
-    // We added the borrowNFT function here
-    // so it's accessible to the public
+    // ここでborrowNFT関数を追加しました
+    // だから、一般の人もアクセスできます
     pub fun borrowNFT(id: UInt64): &NFT
   }
 
-  // ... other stuff here ...
+  // ... その他はこちら ...
 }
 ```
 
-Now, we can retry our script (assuming you mint the NFT all over again):
+これで、スクリプトを再試行することができます（ NFT のミントをやり直したと仮定して）：
 
 ```cadence
 import CryptoPoops from 0x01
@@ -310,26 +310,26 @@ pub fun main(address: Address, id: id) {
 }
 ```
 
-Yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaay!!! We read our NFT metadata without having to withdraw it from the collection ;)
+やーーーーーー！NFT のメタデータをコレクションから削除することなく読むことができました ;)
 
-## Conclusion
+## まとめ
 
-We have now written a full-fledged NFT smart contract. That is super cool. We have also completed Chapter 4.
+私たちは今、本格的な NFT スマートコントラクトを書きました。超クールです。第4章も完成しました。
 
-In the next Chapter, we finish this contract and we will start to learn how to make our contract more "official." That is, how to implement something called a contract interface so that other applications know our NFT smart contract _is_ in fact an NFT smart contract.
+次の章では、このコントラクトを完成させ、コントラクトをより "正式なもの" にする方法を学びます。つまり、NFT スマートコントラクトが実際に NFT スマートコントラクトで _あること_ を他のアプリケーションが認識できるよう、コントラクトインターフェースと呼ばれるものを実装する方法です。
 
-## Quests
+## クエスト
 
-Because we had a LOT to talk about during this Chapter, I want you to do the following:
+このチャプターでは話すことがたくさんありましたので、次のことをやってください：
 
-Take our NFT contract so far and add comments to every single resource or function explaining what it's doing in your own words. Something like this:
+これまでの NFT のコントラクトを参考に、リソースや機能のひとつひとつに、自分の言葉で何をしているのかを説明するコメントを付け加えてください。こんな感じです：
 
 ```cadence
 pub contract CryptoPoops {
   pub var totalSupply: UInt64
 
-  // This is an NFT resource that contains a name,
-  // favouriteFood, and luckyNumber
+  // これは、名前、favoriteFood、
+  // luckyNumberを含むNFTリソースです。
   pub resource NFT {
     pub let id: UInt64
 
@@ -346,7 +346,7 @@ pub contract CryptoPoops {
     }
   }
 
-  // This is a resource interface that allows us to... you get the point.
+  // これはリソースインターフェースであり、私たちが...要点を理解することを可能にします。
   pub resource interface CollectionPublic {
     pub fun deposit(token: @NFT)
     pub fun getIDs(): [UInt64]
