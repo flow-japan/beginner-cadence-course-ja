@@ -1,16 +1,16 @@
-# Chapter 5 Day 1 - Pre/Post Conditions & Events
+# 第5章1日目 - 事前条件／事後条件 ＆ イベント
 
-Today, we will learn 2 concepts that, although fairly easy, are very common in Cadence.
+今日は、かなり簡単ではありますが、Cadence で非常によく使われる2つのコンセプトを学びます。
 
-## Video
+## ビデオ
 
-Pre/Post Conditions: https://www.youtube.com/watch?v=WFqoCZY36b0
+事前条件／事後条件： https://www.youtube.com/watch?v=WFqoCZY36b0
 
-Events: https://www.youtube.com/watch?v=xRHG6Kgkxpg
+イベント： https://www.youtube.com/watch?v=xRHG6Kgkxpg
 
-## Pre/Post Conditions
+## 事前条件／事後条件
 
-So far, we have only learned of 1 way to abort a program if something isn't correct: the `panic` keyword. `panic` is a keyword that completely reverts what happened in the code if it's called, and it sends a message along with it. Here's an example:
+今までのところ、何かが正しくない場合にプログラムを中断させる方法は1つしか学んでいません：`panic` キーワードです。`panic` は、それが呼ばれた場合、コードで起こったことを完全に元に戻すキーワードであり、それと一緒にメッセージを送信します。以下はその例です：
 
 ```cadence
 pub fun main(): String {
@@ -24,11 +24,11 @@ pub fun main(): String {
 }
 ```
 
-This is kind of a silly example, but you get the point. It will never return because it will always panic.
+くだらない例ですが、言いたいことはわかるでしょう。常にパニックを起こすので、決して戻ることはありません。
 
-Often times, we want to handle errors in a clearer way, and also implement a concept called "fail fast." On the blockchain, operations are very expensive. That is why transactions cost expensive fees. "Fail fast" is a way of programming so that your code fails as soon as possible if something is wrong, so that you don't waste further execution time for no reason.
+多くの場合、エラーをより明確な方法で処理し、「フェイルファスト」と呼ばれるコンセプトも実装したいです。ブロックチェーンでは、オペレーションに非常にコストがかかります。トランザクションに高額な手数料がかかるのはそのためです。「フェイルファスト」とは、何か問題があればできるだけ早くコードが失敗するようにプログラミングすることで、無意味に実行時間を無駄にしないようにする方法です。
 
-Pre/post conditions are perfect for this. They allow us to specify a very clear way to fail if something is wrong before (pre) or after (post) a function is called. Let's look at an example:
+事前条件／事後条件はこれに最適です。関数が呼び出される前（事前）または後（事後）に何か問題があった場合、失敗する明確な方法を指定することができます。例を見てみましょう：
 
 ```cadence
 pub contract Test {
@@ -43,11 +43,11 @@ pub contract Test {
 }
 ```
 
-In the example above, we define a "pre-condition" on the function `logName`. It says "if the length of the name is not greater than 0, `panic` with this message: 'This name is too short.'"
+上の例では、関数 `logName` に「事前条件」を定義しています。名前の長さが 0 より大きくない場合、`panic` にこのようなメッセージを表示します：この名前は短すぎます。
 
-Pre-conditions and post-conditions **must** be defined as the first thing of a function, you can't put them in the middle or at the end. In order for a pre/post-condition to pass, the condition must be `true`, or else it will `panic` with the string after.
+事前条件と事後条件は関数の最初に定義**しなければ**なりません。事前条件／事後条件がパスするためには、その条件が `true` でなければなりません。そうでなければ、後の文字列で `panic` することになります。
 
-Post-conditions are the same thing, except they are checked at the end of a function (they still have to be defined at the start. I know, it's confusing, but you'll get used to it):
+事後条件は、関数の最後でチェックされることを除けば同じことです（それでも開始時に定義されていなければなりません。分かりにくいかもしれませんが、すぐに慣れるでしょう）：
 
 
 ```cadence
@@ -63,9 +63,10 @@ pub contract Test {
 }
 ```
 
-You may be wondering: "what the heck is that `result` variable? We never defined it." You're right! Post conditions are super cool because they come with a `result` variable already that equals the value of what's being returned. So if we return `x + y`, `result` will represent that. If there's no return value, `result` doesn't exist.
+あなたは不思議に思うかもしれません：
+「あの `result` 変数はいったい何なんだ？定義していないぞ」その通りです！事後条件は超クールで、返される値と等しい `result` 変数がすでに用意されています。つまり、もし `x + y` を返したら、`result` はその値を表します。もし戻り値がなければ、`result` は存在しません。
 
-Additionally, you can use a `before()` function inside your post condition to access the value of something before the function modified that thing, even after the function has taken place. 
+さらに、事後条件の中で `before()` 関数を使えば、関数が実行された後でも、その関数が何かを変更する前に何かの値にアクセスすることができます。
 
 ```cadence
 pub contract Test {
@@ -89,13 +90,13 @@ pub contract Test {
 }
 ```
 
-The above code will always work, because the post-condition is satisfied. It says "after the `updateNumber` function is run, make sure that the updated number is 1 greater than the value is was before this function was run." Which is always true in this case.
+事後条件が満たされているので、上記のコードは常に動作します。これは「 `updateNumber` 関数が実行された後、更新された数値がこの関数が実行される前の値より 1 大きいことを確認します。」この場合は常に真です。
 
-### Important Note
+### 重要な注意事項
 
-It's important to understand what `panic` or pre/post conditions actually do. They "abort" a transaction, which means none of the state is actually changed.
+`panic` や事前条件／事後条件が実際に何をするのかを理解することは重要です。これらはトランザクションを「中止」します、つまり、実際には状態は何も変更されていません。
 
-Example:
+例：
 ```cadence
 pub contract Test {
 
@@ -104,7 +105,7 @@ pub contract Test {
 
     pub fun updateNumber() {
       post {
-        self.number == 1000: "Will always panic!" // when this panics after the function is run, `self.number` gets reset back to 0
+        self.number == 1000: "Will always panic!" // この関数が実行された後にパニックになると、`self.number` は 0 にリセットさます。
       }
       self.number = self.number + 1
     }
@@ -118,18 +119,18 @@ pub contract Test {
 }
 ```
 
-## Events
+## イベント
 
-Events are a way for a smart contract to communicate to the outside world that something happened. 
+イベントは、スマートコントラクトが外部に何かが起こったことを伝えるための手段です。
 
-For example, if we mint an NFT, we want the outside world to know that an NFT was minted. Of course, we could just constantly check the contract to see if the `totalSupply` was updated or something, but that's really innefficient. Why not just have the contract tell *us*?
+例えば、NFT をミントする場合、NFT がミントされたことを外部に知らせたいとします。もちろん、常にコントラクトをチェックして、`totalSupply` が更新されたかどうかを確認することもできますが、それは非効率的です。なぜ、コントラクトから*私たち*に教えてくれないのですか？
 
-Here's how you can define an event in Cadence:
+Cadenceでイベントを定義する方法を説明します：
 
 ```cadence
 pub contract Test {
 
-  // define an event here
+  // ここでイベントを定義します
   pub event NFTMinted(id: UInt64)
 
   pub resource NFT {
@@ -138,7 +139,7 @@ pub contract Test {
     init() {
       self.id = self.uuid
 
-      // broadcast the event to the outside world
+      // イベントを外部にブロードキャストします
       emit NFTMinted(id: self.id)
     }
 
@@ -147,31 +148,31 @@ pub contract Test {
 }
 ```
 
-You can see we defined an event called `NFTMinted` like so: `pub event NFTMinted(id: UInt64)`. Note that events are ALWAYS `pub`/`access(all)`. We then broadcast the event using the `emit` keyword, which sends it off to the blockchain.
+`NFTMinted` というイベントを次のように定義したのがわかるでしょう：`pub event NFTMinted(id: UInt64)` 。イベントは常に `pub`/`access(all)` であることに注意してください。次に `emit` キーワードを使ってイベントをブロードキャストし、ブロックチェーンに送信します。
 
-You can also pass parameters into the event so you can send data to the outside world. In this case, we want to tell the world that an NFT with a certain id was minted, so that whatever client is reading our events knows that specific NFT was minted.
+イベントにパラメータを渡すことで、外部にデータを送信することもできます。この場合、特定の ID を持つ NFT がミントされたことを世界に伝えたいので、イベントを読むクライアントは特定の NFT がミントされたことを知ることになります。
 
-The purpose of this is so that clients (people reading from our contract) can know when something happens, and update their code accordingly. Maybe we could make a cool website that shoots off a firework with my face on it every time an NFT is minted! :D
+その目的は、クライアント（コントラクトを読んでいる人たち）が何かが起こったときにそれを知ることができ、それに応じてコードを更新できるようにするためです。NFT がミントされるたびに、私の顔が描かれた花火が打ち上がるようなクールなウェブサイトを作ることもできるかもしれません！:D
 
-## Conclusion
+## まとめ
 
-That's all for today! I hope you enjoyed the shorter lesson. 
+今日はここまでです！短いレッスンを楽しんでいただけたなら幸いです。
 
-## Quests
+## クエスト
 
-1. Describe what an event is, and why it might be useful to a client.
+1. イベントとは何か、なぜそれがクライアントに役立つのかを説明します。
 
-2. Deploy a contract with an event in it, and emit the event somewhere else in the contract indicating that it happened.
+2. イベントを含むコントラクトをデプロイし、そのイベントが起こったことを示すために、コントラクトのどこか他の場所でイベントを発生させます。
 
-3. Using the contract in step 2), add some pre conditions and post conditions to your contract to get used to writing them out.
+3. ステップ 2 ）のコントラクトを使って、コントラクトに事前条件と事後条件を追加し、書き出すことに慣れます。
 
-4. For each of the functions below (numberOne, numberTwo, numberThree), follow the instructions.
+4. 以下の各関数（numberOne、numberTwo、numberThree）について、指示に従ってください。
 
 ```cadence
 pub contract Test {
 
-  // TODO
-  // Tell me whether or not this function will log the name.
+  // やること
+  // この関数が名前を記録するかどうかを教えてください。
   // name: 'Jacob'
   pub fun numberOne(name: String) {
     pre {
@@ -180,8 +181,8 @@ pub contract Test {
     log(name)
   }
 
-  // TODO
-  // Tell me whether or not this function will return a value.
+  // やること
+  // この関数が値を返すかどうかを教えてください。
   // name: 'Jacob'
   pub fun numberTwo(name: String): String {
     pre {
@@ -196,9 +197,9 @@ pub contract Test {
   pub resource TestResource {
     pub var number: Int
 
-    // TODO
-    // Tell me whether or not this function will log the updated number.
-    // Also, tell me the value of `self.number` after it's run.
+    // やること
+    // この機能が更新された番号を記録するかどうかを教えてください。
+    // また、実行後の `self.number` の値も教えてください。
     pub fun numberThree(): Int {
       post {
         before(self.number) == result + 1
