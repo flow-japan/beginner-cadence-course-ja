@@ -1,41 +1,41 @@
-# Chapter 6 Day 3 - Now What?
+# 第6章3日目 - さて、どうしますか？
 
-Well... that's it folks. You did the course AND the extra credit. Sheesh, why are you such a tryhard?
+さて...これで終わりです。コースとエクストラクレジットをやりましたね。おいおい、なんでそんなに頑固なんですか？
 
-## Now What?
+## さて、どうしますか？
 
-Now that you're done, you may be wondering "What the heck do I do now?"
+さて、終わったところで 「これから一体どうすればいいんだ？」と思うかもしれません。
 
-### Create Your Own Contract
+### 独自のコントラクトを作成する
 
-My suggestion is to find a partner (it's also okay to work by yourself) and create a smart contract together. But this time, don't do NFTs. Make something else. Something cooler.
+私の提案は、パートナーを見つけて（一人でやっても構いません）、一緒にスマートコントラクトを作ることです。ただし、今回は NFT はやめましょう。他のものを作ってください。もっとクールなものを。
 
-Here are some suggestions:
+いくつか提案しましょう：
 
-1. A voting contract
-2. A fungible token contract
-3. A Wordle (https://www.nytimes.com/games/wordle/index.html) contract 
-4. Be creative!
+1. 投票コントラクト
+2. ファンジブルトークンコントラクト
+3. ワールド( https://www.nytimes.com/games/wordle/index.html ) コントラクト
+4. 創造的であること！
 
-### Take our DApp Course!
+### DApp コースを受講してください！
 
-Now that you have tons of Cadence knowledge, you might want to start applying it to real-world applications. How does <a href="https://nbatopshot.com/">NBATopShot</a> run? How does <a href="https://floats.city/">FLOAT</a> actually work?
+Cadence の知識をたくさん得た今、あなたはそれを実際のアプリケーションに応用したいと思うかもしれません。<a href="https://nbatopshot.com/">NBATopShot</a> はどのように動作しますか？<a href="https://floats.city/">FLOAT</a> は実際はどのように機能しますか？
 
-Behind the scenes, it's a lot of contracts. But there's more to it...
-- Frontend development
-- Backend development
-- Styling
-- Deploying a DApp
-- and more more...
+その裏では、多くのコントラクトが交わされています。しかし、それ以外にも...
+- フロントエンド開発
+- バックエンド開発
+- スタイリング
+- DApp のデプロイ
+- などなど...
 
-The good news is, we have a <a href="https://github.com/emerald-dao/beginner-dapp-course">Beginner DApp Course</a>, just like this one, to help you make your own DApp. You have wayyyyyyy more Cadence knowledge than you need for our DApp course. In fact, you can completely skip Chapter 1 and Chapter 3 Days 1-2. 
+良いニュースとしては、<a href="https://github.com/emerald-dao/beginner-dapp-course">初心者 DApp コース</a> があります。あなたは、私たちの DApp コースに必要な知識よりも、はるかに多くの Cadence の知識を持っています。実際、第1章と第3章1-2日は完全にスキップすることができます。
 
-### Stick Around
+### その周辺
 
-Stick around in the broader Emerald City DAO and find/ask for projects you want to work on! There are always tons of areas to contribute on with proper Cadence knowledge.
+より広い Emerald City DAO に張り付いて、あなたが取り組みたいプロジェクトを見つけてください！適切な Cadence の知識があれば、貢献できる領域は常に山ほどあります。
 
-Even if you have a random idea for Emerald City, and you want to build it, we would be more than happy to support you.
+Emerald City のために適当なアイデアを持っていて、それを作りたいという方でも、私たちは喜んでサポートします。
 
-### Goodbye
+### さようなら
 
-I don't like goodbyes so... goodbye! I'll miss u <3
+さよならは好きじゃないから...さよなら！寂しくなるよ <3
