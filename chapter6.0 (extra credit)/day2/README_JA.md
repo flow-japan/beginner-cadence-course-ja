@@ -1,108 +1,108 @@
-# Chapter 6 Day 2 - Interacting With Our Contract on Testnet
+# 第6章2日目 - テストネットでのコントラクトとのやり取り
 
-Now that we deployed our contract to testnet, we can interact with it in our terminal using the Flow CLI. Wooohooo! This is only going to get more complicated. I hope you all get super lost!
+コントラクトをテストネットにデプロイしたので、ターミナルで Flow CLI を使ってコントラクトとやり取りできます。うぉーーーー！ますます複雑になりそうです。みなさんが超迷子になることを願っています！
 
-Today things will be a little different. It's going to involve doing things together. I'm not gonna give you all the answers ;)
+今日は少し違います。一緒に何かをすることになるのです。すべての答えを教えるつもりはありません ;)
 
-## Interacting with our Contract
+## コントラクトとのやり取り
 
-Now that we deployed our contract to testnet, we can interact with it in our terminal using the Flow CLI.
+コントラクトをテストネットにデプロイしたので、ターミナルで Flow CLI を使ってコントラクトとやり取りできます。
 
-### Reading our Total Supply
+### 総供給量の読み方
 
-Let's read the total supply of our smart contract!
+スマートコントラクトの総供給量を読み取ってみましょう！
 
-> Step 1: Make a script that reads the totalSupply of our contract and returns it.
+> ステップ1：契約の総供給量を読み取り、それを返すスクリプトを作成します。
 
-> Step 2: Paste that script into your scripts folder and name it `read_total_supply.cdc`
+> ステップ2：スクリプトを scripts フォルダに貼り付け、名前を `read_total_supply.cdc` とします。
 
-> Step 3: Open up your terminal in the base directory of the project and run:
+> ステップ3：プロジェクトのベースディレクトリでターミナルを開き、実行します：
 
 ```bash
 flow scripts execute ./scripts/read_total_supply.cdc --network=testnet
 ```
 
-If it works properly, you should see the total supply in your console (should be 0 if you haven't minted anything yet).
+正しく動作していれば、コンソールに総供給量が表示されるはずです（まだ何もミントしていない場合は 0 になるはずです）。
 
 <img src="../images/read-total-supply.png" alt="read the total supply" />
 
-### Setting Up Our Collection
+### コレクションのセットアップ
 
-Let's run a transaction to set up our NFT Collection on Testnet.
+トランザクションを実行して、テストネットで NFT コレクションをセットアップしてみましょう。
 
-> Step 1: If you haven't already, make a transaction to set up a user's collection to store their NFTs.
+> ステップ1：まだであれば、NFT を保存するためにユーザーのコレクションをセットアップするトランザクションを行います。
 
-> Step 2: Add a `setup_collection.cdc` file in your transactions folder with the Cadence code in it.
+> ステップ2：Transactions フォルダに、Cadence コードを含む `setup_collection.cdc` ファイルを追加します。
 
-> Step 3: Open up your terminal in the base directory of the project and run:
+> ステップ3：プロジェクトのベースディレクトリでターミナルを開き、実行します：
 
 ```bash
 flow transactions send ./transactions/setup_collection.cdc --network=testnet --signer=testnet-account
 ```
 
-If it works properly, you should see the transasction is sealed (completed) and worked!
+正しく機能すれば、トランザクションが封印され（完了し）、機能したことが確認できるはずです！
 
 <img src="../images/setup-collection.png" alt="setup collection transaction" />
 
-NICEEEEEE!!! We successfully set up our NFT Collection on testnet. This is so cool.
+ナイス――!!! テストネットで NFT コレクションのセットアップに成功しました。これはとてもクールです。
 
-### How to Pass Arguments Using the Flow CLI
+### Flow CLI 使用して引数を渡す方法
 
-So far, we haven't shown you how to pass arguments into a script or transaction using the Flow CLI.
+これまで、Flow CLI を使用してスクリプトやトランザクションに引数を渡す方法を紹介してきませんでした。
 
-In order to do that, you simply put them after the file paths of the transaction or script.
+そのためには、トランザクションやスクリプトのファイルパスの後にそれらを置くだけでよいです。
 
-Example #1:
+例 #1:
 
 ```bash
 flow transactions send ./transactions/mint_nft.cdc 0xfa88aefbb588049d --network=testnet --signer=testnet-account
 ```
 
-If your `mint_nft.cdc` transaction took in a `recipient: Address`, it would be `0xfa88aefbb588049d` in this case.
+`mint_nft.cdc` トランザクションが `recipient: Address` を受け取った場合、`0xfa88aefbb588049d`となります。
 
-Example #2:
+例 #2:
 
 ```bash
 flow scripts execute ./scripts/read_nft.cdc 0xfa88aefbb588049d 3  --network=testnet
 ```
 
-If your `read_nft.cdc` script took in a `recipient: Address, id: UInt64`, it would be `0xfa88aefbb588049d` and `3` in this case.
+もし `read_nft.cdc` スクリプトが `recipient: Address, id: UInt64` を受け取った場合、`0xfa88aefbb588049d` と `3` になります。
 
-Example #3:
+例 #3:
 
 ```bash
 flow transactions send ./transactions/mint_nft.cdc 0xfa88aefbb588049d "Jacob the Legend" --network=testnet --signer=testnet-account
 ```
 
-If your `mint_nft.cdc` transaction took in a `recipient: Address, name: String`, it would be `0xfa88aefbb588049d` and `Jacob the Legend` in this case.
+`mint_nft.cdc` トランザクションが `recipient: Address, name: String` を受け取った場合、`0xfa88aefbb588049d` と `Jacob the Legend` となります。
 
-## Conclusion
+## まとめ
 
-That was a lot today, but how cool is this?! We deployed our own contract to Flow Testnet, ran a script to read our `totalSupply`, and then ran a transaction to setup our collection. You are all doing amazing!
+今日も盛りだくさんでしたが、これはなんとクールなことでしょう！私たちは Flow テストネットに自分たちのコントラクトをデプロイし、スクリプトを実行して `totalSupply` を読み取り、トランザクションを実行してコレクションをセットアップしました。みんな、すごいことをやっています！
 
-## Quests
+## クエスト
 
-1. Figure out how to mint an NFT to yourself by sending a transaction using the Flow CLI, like we did today when we set up our collection. You will also likely have to pass an argument as well.
+1. 今日コレクションをセットアップしたときに行ったように、Flow CLI を使用してトランザクションを送信し、自分自身に NFT をミントする方法を見つけます。また、引数も渡さなければならない可能性が高いです。
 
-*Helpful tip*: Remember that only the owner of the contract has access to the `Minter` resource. This works in our favor because the `signer` of the transaction will be the one who deployed the contract, so we have access to the `Minter`.
+*役に立つヒント #1*：`Minter` リソースにアクセスできるのはコントラクトの所有者のみであることを忘れないでください。なぜなら、トランザクションの `signer` はコントラクトをデプロイした人なので、 `Minter` にアクセスできるからです。
 
-*Helpful tip #2*: Also remember that in order to set up a collection, you must sign a transaction so the transaction has access to your `AuthAccount`. In this case, because we only have 1 created testnet account (the one who deployed the contract), we will be minting the NFT to ourselves to make it easier.
+*役に立つヒント #2*：また、コレクションをセットアップするには、トランザクションが自分の `AuthAccount` にアクセスできるようにトランザクションに署名する必要があることを覚えておいてください。この場合、作成されたテストネットアカウントは 1 つしかないため（コントラクトをデプロイしたアカウント）、NFT を簡単に作成するために自分自身にミントを作成します。
 
-2. Run a script to read the new `totalSupply` using the Flow CLI
+2. Flow CLI を使用して、新しい `totalSupply` を読み込むスクリプトを実行します。
 
-3. Run a script to read the ids of NFTs in someone's collection using the Flow CLI
+3. Flow CLI を使用して、誰かのコレクション内の NFT の ID を読み取るスクリプトを実行します。
 
-4. Run a script to read a specific NFT's metadata from someone's collection using the Flow CLI
+4. Flow CLI を使用して、誰かのコレクションから特定の NFT のメタデータを読み取るスクリプトを実行します。
 
-5. Run a script to read the GoatedGoats `totalSupply` on **Flow Mainnet**. Their contract lives here: https://flow-view-source.com/mainnet/account/0x2068315349bdfce5/contract/GoatedGoats
+5. スクリプトを実行して、**Flow メインネット** 上の GoatedGoats `totalSupply` を読み込みます。彼らのコントラクトはここにあります： https://flow-view-source.com/mainnet/account/0x2068315349bdfce5/contract/GoatedGoats
 
-*Helpful tip #1*: In order to run scripts on Mainnet, simply switch the `--network=testnet` flag to `--network=mainnet`
+*役に立つヒント #1*：メインネット上でスクリプトを実行するには、`--network=testnet` フラグを `--network=mainnet` に切り替えるだけでよいです。
 
-*Helpful tip #2*: Because you will be running the script from a local file, you will have to hardcode in the mainnet address of the GoatedGoats contract into your script, like:
+*役に立つヒント #2*：ローカルファイルからスクリプトを実行するので、GoatedGoats コントラクトのメインネットアドレスをスクリプトにハードコードする必要があります：
 ```cadence
 import GoatedGoats from 0x2068315349bdfce5
 ```
 
-Unfortunately you will now get compile errors (the VSCode extension won't be able to understand the import), but it will still work.
+残念ながら、コンパイルエラーが発生します（VSCodeエクステンションがインポートを理解できないです）。
 
-6. Figure out how to read someone's GoatedGoats NFTs from their collection and run a script using the Flow CLI to do it.
+6. 誰かのコレクションから GoatedGoats NFT を読み取る方法を見つけ、Flow CLI を使用してスクリプトを実行する。
