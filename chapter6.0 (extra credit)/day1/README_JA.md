@@ -1,83 +1,80 @@
-# Chapter 6 Day 1 - Creating a Testnet Account & Deploying to Testnet
+# 第6章1日目 - テストネットアカウントの作成とテストネットへのデプロイメント
+***
+オタク諸君。今日のレッスンでは、新しいテストネットアカウントを作成し、NFT コントラクトを Flow テストネットにデプロイする方法を学びます。
+## Cadence VSCode Extension のインストール
+***
+*VSCode をインストールしたことがない方は、こちらでインストールすることができます：*
+https://code.visualstudio.com/
 
-Heyo nerds. In today's lesson, we will learn how to create a new testnet account and deploy our NFT contract to Flow Testnet.
+プレイグラウンドがなくなった今、Cadence のコーディングの際に、VSCode にエラーを表示させたいです。そのための拡張機能があるんです！
 
-## Installing the Cadence VSCode Extension
+>VSCode を開きます。VSCode の左側に、四角が 4 つ並んだようなアイコンがあります。それをクリックして"Cadence"と検索してください。
 
-*If you haven't installed VSCode before, you can do that here: https://code.visualstudio.com/*
+>以下の拡張機能をクリックし、"Install"をクリックしてください：
 
-Now that we're no longer on the playground, we want to be able to have errors show up in our VSCode when we're coding Cadence. There's an extension to do that!
+![MyzmyT43CugKPbzNwha6S4c9TLZ2/20MxJv729o3w1LI8.jpg](https://firebasestorage.googleapis.com:443/v0/b/type-c1c71.appspot.com/o/MyzmyT43CugKPbzNwha6S4c9TLZ2%2F20MxJv729o3w1LI8.jpg?alt=media&token=54da57ef-b57a-4b77-8cba-f1cdea574138)
 
-> Open VSCode. On the left side of VSCode, there's an icon that looks like 4 squares. Click that and search "Cadence".
+## Flow CLI と flow.json のインストール
+***
+Flow CLI は、ターミナルからトランザクションとスクリプトを実行し、コントラクトのデプロイなど、Flow の他の機能を実行できるようにするものです。
 
-> Click on the following extension and press "Install":
-
-<img src="../images/cadence-vscode-extension.png" />
-
-## Installing the Flow CLI & flow.json
-
-The Flow CLI will allow us to run transactions & scripts from the terminal, and allow us to do other Flow stuff like deploying a contract.
-
-> Install the [Flow CLI](https://docs.onflow.org/flow-cli/install/). You can do that by:
+>[Flow CLI](https://docs.onflow.org/flow-cli/install/)をインストールします。次の方法で実行できます：
 
 **Mac**
-- Pasting `sh -ci "$(curl -fsSL https://storage.googleapis.com/flow-cli/install.sh)"` into a terminal
+* ターミナルに `sh -ci "$(curl -fsSL https://storage.googleapis.com/flow-cli/install.sh)"` を貼り付けます
 
 **Windows**
-- Pasting `iex "& { $(irm 'https://storage.googleapis.com/flow-cli/install.ps1') }"` into PowerShell
+* PowerShell に `iex "& { $(irm 'https://storage.googleapis.com/flow-cli/install.ps1') }"` を貼り付けます
 
-**Linux** 
-- Pasting `sh -ci "$(curl -fsSL https://storage.googleapis.com/flow-cli/install.sh)"` into a terminal
+**Linux**
+* ターミナルに `sh -ci "$(curl -fsSL https://storage.googleapis.com/flow-cli/install.sh)"` を貼り付けます
 
-You can confirm the Flow CLI is installed by going to a terminal and typing `flow version`. If a version appears, you're good to go.
+Flow CLI がインストールされているかどうかは、ターミナルで `flow version` と入力することで確認できます。バージョンが表示されれば OK です。
 
-## Flow Folder
+## Flow フォルダ
 
-Inside of our base directory, let's make a new folder called `flow`.
+ベースディレクトリの中に、`flow` という新しいフォルダを作りましょう。
 
-Inside of the `flow` folder, let's make another folder called `cadence`.
+`flow` フォルダの中に、`cadence` というフォルダをもう一つ作りましょう。
 
-Inside of the `cadence` folder, let's make a `contracts` folder, a `transactions` folder, and a `scripts` folder.
+`cadence` フォルダの中に、`contract` フォルダ、`transactions` フォルダ、`scripts` フォルダを作りましょう。
 
-Inside of the `contracts` folder, add a new file called `CONTRACT_NAME.cdc`. Replace CONTRACT_NAME with the name of your contract. In that file, put your contract code from Chapter 5. For the sake of this lesson, we will be calling this contract "ExampleNFT", but please make sure to replace that with your own contract's name.
+`contracts` フォルダの中に、`CONTRACT_NAME.cdc` というファイルを新規に追加してください。CONTRACT_NAME は、あなたのコントラクトの名前に置き換えてください。そのファイルに、第5章で作成したコントラクトコードを入れます。このレッスンでは、このコントラクトを"ExampleNFT"と呼びますが、必ずあなた自身のコントラクトの名前に置き換えてください。
 
-Notice at the top, we now need to import from a local file path instead of a random Flow playground address. We aren't importing from `0x01` anymore, that was just a playground thing. In this case, we are importing from a local contract that exists in our project.
+一番上にある、ランダムな Flow プレイグラウンドのアドレスの代わりに、ローカルファイルのパスからインポートする必要があることに注意してください。`0x01` からインポートすることはもうありません。それは単なるプレイグラウンドの問題でした。この場合、プロジェクトに存在するローカルコントラクトからインポートしています。
 
-> Change the import at the top to be: `import NonFungibleToken from "./NonFungibleToken.cdc"`
+>一番上のインポートを次のように変更します： `import NonFungibleToken from "./NonFungibleToken.cdc"`
 
-For this to work, we also need to add the `NonFungibleToken` contract interface to our `contracts` folder as well. Make sure to name the file `NonFungibleToken.cdc`.
+これを動作させるには、`NonFungibleToken` コントラクトインターフェースを `contracts` フォルダに追加する必要があります。ファイル名は  `NonFungibleToken.cdc` にしてください。
 
----
+***
 
-Inside the transactions folder, make a bunch of files called `TRANSACTION_NAME.cdc`. Replace TRANSACTION_NAME with the names of your transactions.
+トランザクションフォルダ内に、`TRANSACTION_NAME.cdc` というファイル群を作成します。TRANSACTION_NAME をトランザクションの名前に置き換えてください。
 
-Notice that the imports are also now all wrong. We aren't importing from `0x01` anymore, that was just a playground thing. In this case, we are importing from a local contract that exists in our project. So change the imports to something like this format:
+インポートもすべて間違っていることに注意してください。`0x01` からインポートすることはもうありません。それは単なる遊び心でした。この場合、プロジェクトに存在するローカルコントラクトからインポートしています。そこで、インポートを次のような形式に変更してください。
 
-```cadence
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
-```
+```import ExampleNFT from "../contracts/ExampleNFT.cdc"```
 
---- 
+***
 
-Inside the scripts folder, make a bunch of files called `SCRIPT_NAME.cdc`. Replace SCRIPT_NAME with the names of your scripts.
+scripts フォルダの中に、`SCRIPT_NAME.cdc` という名前のファイル群を作ってください。SCRIPT_NAME をあなたのスクリプトの名前に置き換えてください。
 
----
+***
 
 ### flow.json
 
-> Now that we have our contract in our project directory, go to your terminal and `cd` into the base project directory. 
+>プロジェクトディレクトリにコントラクトができたので、ターミナルから `cd` でベースプロジェクトディレクトリに移動します。
 
-> Type `flow init`
+>タイプ `flow init`
 
-This will create a `flow.json` file inside your project. This is needed to deploy contracts and to give us compile errors inside our Cadence code.
+これにより、プロジェクト内に `flow.json` ファイルが作成されます。これはコントラクトをデプロイしたり、Cadence のコード内でコンパイルエラーを出すために必要なものです。
 
-## Deploying our NFT Contract to TestNet
-
-Sweet! Now let's deploy our contract to TestNet so that we can start interacting with it.
-
-## Configuring `flow.json`
-
-> Inside of your `flow.json` file, make the "contracts" object look like this:
+## NFTコントラクトのテストネットへの展開
+***
+素晴らしいです！では、このコントラクトをテストネットにデプロイして、対話できるようにしましょう。
+## `flow.json` の設定
+***
+> `flow.json` ファイルの中で、「コントラクト」オブジェクトを次のようにします。
 
 ```json
 "contracts": {
@@ -91,23 +88,24 @@ Sweet! Now let's deploy our contract to TestNet so that we can start interacting
 },
 ```
 
-> Make sure replace "ExampleNFT" with whatever your contract's name is
+>"ExampleNFT" をコントラクト名と同じ名前に置き換えてください。
 
-This will allow your `flow.json` to know where your contracts live. Note that `NonFungibleToken` already exists on Flow Testnet, which is why it looks more complicated.
 
-### Creating an Account
+これにより、`flow.json` はあなたのコントラクトがどこにあるのかを知ることができます。なお、`NonFungibleToken` は Flow テストネットにすでに存在しており、そのためより複雑に見えます。
 
-> 🔐 Generate a **deployer address** by typing `flow keys generate --network=testnet` into a terminal. Make sure to save your public key and private key somewhere, you will need them soon.
+### アカウントの作成
 
-<img src="https://i.imgur.com/HbF4C73.png" alt="generate key pair" />
+>🔐 ターミナルに `flow keys generate --network=testnet` と入力し、デプロイアアドレスを生成します。公開鍵と秘密鍵は必ずどこかに保存しておいてください。
 
-> 👛 Create your **deployer account** by going to https://testnet-faucet.onflow.org/, pasting in your public key from above, and clicking `CREATE ACCOUNT`: 
+![MyzmyT43CugKPbzNwha6S4c9TLZ2/PW4O1So2eYOsZCWb.jpg](https://firebasestorage.googleapis.com:443/v0/b/type-c1c71.appspot.com/o/MyzmyT43CugKPbzNwha6S4c9TLZ2%2FPW4O1So2eYOsZCWb.jpg?alt=media&token=7c755a1c-be8b-4cb9-88e8-9b350040afeb)
 
-<img src="https://i.imgur.com/73OjT3K.png" alt="configure testnet account on the website" />
+> 👛 https://testnet-faucet.onflow.org/ にアクセスし、上記の公開鍵を貼り付けて、`CREATE ACCOUNT` をクリックして、デプロイアアカウントを作成します：
 
-> After it finishes, click `COPY ADDRESS` and make sure to save that address somewhere. You will need it!
+![MyzmyT43CugKPbzNwha6S4c9TLZ2/TTe5XCOnFVwl8rIX.jpg](https://firebasestorage.googleapis.com:443/v0/b/type-c1c71.appspot.com/o/MyzmyT43CugKPbzNwha6S4c9TLZ2%2FTTe5XCOnFVwl8rIX.jpg?alt=media&token=0d8aba35-2276-4d72-a387-7bdb5c693757)
 
-> ⛽️ Add your new testnet account to your `flow.json` by modifying the following lines of code. Paste your address you copied above to where it says "YOUR GENERATED ADDRESS", and paste your private key where it says "YOUR PRIVATE KEY".
+> 終了後、`COPY ADDRESS` をクリックし、そのアドレスをどこかに保存しておいてください。必ず必要です！
+
+> ⛽️ 以下のコードを修正して、`flow.json` に新しいテストネットのアカウントを追加します。"YOUR GENERATED ADDRESS"と書いてあるところに上でコピーしたアドレスを貼り付け、 "YOUR PRIVATE KEY"と書いてあるところに秘密鍵を貼り付けます。
 
 ```json
 "accounts": {
@@ -135,17 +133,15 @@ This will allow your `flow.json` to know where your contracts live. Note that `N
 }
 ```
 
-> Make sure to change "ExampleNFT" to whatever your contract's name is.
+> "ExampleNFT"をコントラクトの名前に変更してください。
 
-> 🚀 Deploy your "ExampleNFT" smart contract:
+> 🚀"ExampleNFT"スマートコントラクトをデプロイします：
 
 ```sh
 flow project deploy --network=testnet
 ```
+![MyzmyT43CugKPbzNwha6S4c9TLZ2/3hbASbM0OYnNMGLa.jpg](https://firebasestorage.googleapis.com:443/v0/b/type-c1c71.appspot.com/o/MyzmyT43CugKPbzNwha6S4c9TLZ2%2F3hbASbM0OYnNMGLa.jpg?alt=media&token=e78820c8-638a-42f6-9526-d2aa977ab408)
+## クエスト
+1. https://flow-view-source.com/testnet/ にアクセスします。"Account"と書いてあるところに、作成した Flowアドレス を貼り付けて、"Go"をクリックします。左側に、あなたの NFT コントラクトが表示されるはずです。テストネットでライブで見られるなんて、とてもクールだと思いませんか？そして、そのページの URL を送信します。
 
-<img src="../images/deploy-contract.png" alt="deploy contract to testnet" />
-
-## Quests
-
-1. Go to https://flow-view-source.com/testnet/. Where it says "Account", paste in the Flow address you generated and click "Go". On the left hand side, you should see your NFT contract. Isn't it so cool to see it live on Testnet? Then, send the URL to the page. 
-- EXAMPLE: https://flow-view-source.com/testnet/account/0x90250c4359cebac7/
+・例：https://flow-view-source.com/testnet/account/0x90250c4359cebac7/
