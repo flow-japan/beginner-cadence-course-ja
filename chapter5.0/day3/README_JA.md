@@ -1,24 +1,24 @@
-# Chapter 5 Day 3 - Creating an NFT Contract: Implementing the NonFungibleToken Standard (Part 3/3)
+# 第5章3日目 - NFT コントラクトの作成：NonFungibleToken 標準の実装（パート3/3）
 
-Let's finish our CryptoPoops NFT Contract from Chapter 4 using our new knowledge of the NonFungibleToken standard.
+NonFungibleToken 規格に関する新しい知識を使って、第4章の CryptoPoops NFT コントラクトを完成させましょう。
 
-We will spend this entire day just reforming our NFT Contract to fit the standard, found here: https://github.com/onflow/flow-nft/blob/master/contracts/NonFungibleToken.cdc
+私たちは今日一日、NFT コントラクトをここにある基準に合うように修正するだけに費やします： https://github.com/onflow/flow-nft/blob/master/contracts/NonFungibleToken.cdc
 
-## Video
+## ビデオ
 
-Today, we'll cover 31:20 - The End: https://www.youtube.com/watch?v=bQVXSpg6GE8
+今日は、31:20 - 終わりまでです。： https://www.youtube.com/watch?v=bQVXSpg6GE8
 
-## Implementing the NonFungibleToken Standard
+## NonFungibleToken 規格の実装
 
-There's a LOT in the NonFungibleToken standard. Let's take a peak at it:
+NonFungibleToken 規格にはたくさんのことが書かれています。少し見てみましょう：
 
 ```cadence
 /**
-## The Flow Non-Fungible Token standard
+## Flow Non-Fungible Token 規格
 */
 
-// The main NFT contract interface. Other NFT contracts will
-// import and implement this interface
+// NFT コントラクトのメインインターフェースです。
+// 他の NFT コントラクトはこのインターフェースをインポートして実装します。
 //
 pub contract interface NonFungibleToken {
 
@@ -31,7 +31,7 @@ pub contract interface NonFungibleToken {
     pub event Deposit(id: UInt64, to: Address?)
 
     pub resource interface INFT {
-        // The unique ID that each NFT has
+        // 各 NFT が持つ固有の ID
         pub let id: UInt64
     }
 
@@ -59,21 +59,21 @@ pub contract interface NonFungibleToken {
 
     pub resource Collection: Provider, Receiver, CollectionPublic {
 
-        // Dictionary to hold the NFTs in the Collection
+        // コレクション内の NFT を保持する辞書です
         pub var ownedNFTs: @{UInt64: NFT}
 
-        // withdraw removes an NFT from the collection and moves it to the caller
+        // withdraw はコレクションから NFT を削除し、呼び出し元に移動します
         pub fun withdraw(withdrawID: UInt64): @NFT
 
-        // deposit takes a NFT and adds it to the collections dictionary
-        // and adds the ID to the id array
+        // deposit は NFT を受け取り、コレクション辞書に追加します。
+        // そして、その ID を id 配列に追加します。
         pub fun deposit(token: @NFT)
 
-        // getIDs returns an array of the IDs that are in the collection
+        // getIDs は、コレクションに含まれる ID の配列を返します。
         pub fun getIDs(): [UInt64]
 
-        // Returns a borrowed reference to an NFT in the collection
-        // so that the caller can read data and call methods from it
+        // コレクション内の NFT への借用参照を返します。
+        // 呼び出し元がデータを読み込み、そこからメソッドを呼び出せるようにします。
         pub fun borrowNFT(id: UInt64): &NFT {
             pre {
                 self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
@@ -90,9 +90,9 @@ pub contract interface NonFungibleToken {
 ```
 
 <img src="../images/homealone.jpg" />
-Wow. I'm scared.
+うわぁ。怖いですね。
 
-The good news is that we have actually implemented most of it. Believe it or not, I am such a good teacher that I had us implement 75% of this contract without you even knowing it. Damn, I'm good! Let's look at the contract we wrote so far:
+良い知らせは、そのほとんどを実際に実施したということです。信じられないかもしれないが、私は優秀な教師なので、君たちが知らないうちにこのコントラクトの 75％ を実施させました。ちくしょう、私は優秀です！これまでに書いたコントラクトを見てみましょう：
 
 ```cadence
 pub contract CryptoPoops {
@@ -173,20 +173,20 @@ pub contract CryptoPoops {
 }
 ```
 
-Not bad, right!? I think we're kicking butt. Remember, in order to implement a contract interface, we have to use the `: {contract interface}` syntax, so let's do that here...
+悪くないでしょう？いい感じでしょ？コントラクトインターフェースを実装するには、`: {contract interface}` 構文を使わなければなりません。では、ここでそうしましょう...
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-*Note: because these contracts are getting long, I'm going to start abbreviating them like I did above, and replacing the other content that should be there with "...other stuff..."*
+*注意：これらのコントラクトは長くなってきたので、上記のように省略し始め、そこにあるべき他の内容は「...その他...」と置き換えるつもりです。*
 
-Remember from last chapter that a contract interface specifies some things we need in our contract if we want to implement it. You'll notice we get a TON of errors in our contract now that we implement it. No worries, we'll fix them. 
+前章で、コントラクトインターフェースは、それを実装するためにコントラクトに必要なものをいくつか指定していることを思い出してください。これを実装すると、コントラクトのエラーが大量に発生することに気づくでしょう。心配しないでください。
 
-The first things you see in the `NonFungibleToken` contract interface are these things:
+`NonFungibleToken` のコントラクトインターフェースで最初に目にするのは、以下のものです：
 
 ```cadence
 pub var totalSupply: UInt64
@@ -198,7 +198,7 @@ pub event Withdraw(id: UInt64, from: Address?)
 pub event Deposit(id: UInt64, to: Address?)
 ```
 
-We already have `totalSupply`, but we need to put the events in our `CryptoPoops` contract or it will complain that they are missing. Let's do that below:
+`totalSupply` はすでにありますが、イベントを `CryptoPoops` コントラクトに入れる必要があります。以下にそれを説明します：
 
 ```cadence
 import NonFungibleToken from 0x02
@@ -209,11 +209,11 @@ pub contract CryptoPoops: NonFungibleToken {
   pub event Withdraw(id: UInt64, from: Address?)
   pub event Deposit(id: UInt64, to: Address?)
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-Sweet! The next thing the NonFungibleToken standard says we have to do is have an `NFT` resource with an `id` field and it also has to implement `NonFungibleToken.INFT`. Well, we already do the first two things, but it does not implement the `NonFungibleToken.INFT` resource interface like it does in the standard. So let's add that to our contract as well.
+素晴らしいです！次に NonFungibleToken の標準によると、`id` フィールドを持つ `NFT` リソースが必要で、`NonFungibleToken.INFT` を実装する必要があります。最初の 2 つはすでに実装していますが、標準にあるような `NonFungibleToken.INFT` リソースインターフェースは実装していません。そこで、これもコントラクトに追加しましょう。
 
 ```cadence
 import NonFungibleToken from 0x02
@@ -224,7 +224,7 @@ pub contract CryptoPoops: NonFungibleToken {
   pub event Withdraw(id: UInt64, from: Address?)
   pub event Deposit(id: UInt64, to: Address?)
 
-  // The only thing we added here is:
+  // ここに追加したのはただひとつ：
   // `: NonFungibleToken.INFT`
   pub resource NFT: NonFungibleToken.INFT {
     pub let id: UInt64
@@ -242,13 +242,13 @@ pub contract CryptoPoops: NonFungibleToken {
     }
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-Amazing. We're about halfway done.
+驚きました。もう半分終わったところです。
 
-The next thing you'll see inside the standard is these three resource interfaces:
+規格の中で次に目にするのは、これら 3 つのリソースインターフェースです：
 
 ```cadence
 pub resource interface Provider {
@@ -270,33 +270,33 @@ pub resource interface CollectionPublic {
 }
 ```
 
-It seems like a lot of code, right? The good news is that, if you remember from the last day, we don't have to re-implement resource interfaces inside our own contract that uses the standard. These interfaces are only defined so that our `Collection` resource can implement them.
+たくさんのコードがあるように見えるでしょう？良いニュースは、もし昨日のことを覚えていれば、標準を使用する私たち自身のコントラクトの中でリソースインターフェースを再実装する必要がないということです。これらのインターフェースは `Collection` リソースが実装できるように定義されているだけです。
 
-Before we make our `Collection` implement these resource interfaces, I will explain what they do:
+`Collection` にこれらのリソースインターフェースを実装する前に、これらが何をするのかを説明しましょう：
 
-### Provider
-First is the `Provider`. It makes sure that anything that implements it has a `withdraw` function that takes in a `withdrawID` and returns an `@NFT`. **IMPORTANT: Note the type of the return value: `@NFT`.** What NFT resource is that talking about? Is it talking about the `NFT` type inside our `CryptoPoops` contract? No! It's referring to the type inside the `NonFungibleToken` contract interface. Thus, when we implement these functions themselves, we have to make sure we put `@NonFungibleToken.NFT`, and not just `@NFT`. We talked about this in the last chapter as well.
+### プロバイダー
+まずは `Provider` です。この関数は `withdrawID` を受け取り、`@NFT` を返します。**重要：戻り値の型に注意：`@NFT`.** どの NFT リソースのことでしょうか？`CryptoPoops` コントラクト内の `NFT` 型のことでしょうか？いいえ！`NonFungibleToken` コントラクトのインターフェイスにある型を指しているのです。したがって、これらの関数を実装する際には、`@NFT` だけではなく、`@NonFungibleToken.NFT` と記述する必要があります。これについても前章で説明しました。
 
-So let's implement the `Provider` now on our Collection:
+それでは、Collection に `Provider` を実装してみましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
-  // Collection now implements NonFungibleToken.Provider
+  // コレクションが NonFungibleToken.Provider を実装するようになりました。
   pub resource Collection: NonFungibleToken.Provider {
     pub var ownedNFTs: @{UInt64: NFT}
 
-    // Notice that the return type is now `@NonFungibleToken.NFT`, 
-    // NOT just `@NFT`
+    // 戻り値の型が `@NonFungibleToken.NFT` になっていることに注目してください、 
+    // `@NFT` だけではありません
     pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
       let nft <- self.ownedNFTs.remove(key: withdrawID) 
               ?? panic("This NFT does not exist in this Collection.")
       return <- nft
     }
 
-    // ...other stuff...
+    // ...その他...
 
     init() {
       self.ownedNFTs <- {}
@@ -307,19 +307,19 @@ pub contract CryptoPoops: NonFungibleToken {
     }
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-### Receiver
-Cool! What about the `Receiver` contract interface? It says anything that implements it needs to have a `deposit` function that takes in a `token` parameter that is of `@NonFungibleToken.NFT` type. Let's add `NonFungibleToken.Receiver` to our Collection below:
+### レシーバー
+クールです！`Receiver` コントラクトインターフェースはどうですか？これを実装するものは `@NonFungibleToken.NFT` 型の `token` パラメータを受け取る `deposit` 関数を持つ必要があります。以下、`NonFungibleToken.Receiver` を Collection に追加してみましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
-  // Collection now implements NonFungibleToken.Receiver
+  // コレクションが NonFungibleToken.Receiver を実装するようになりました。
   pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver {
     pub var ownedNFTs: @{UInt64: NFT}
 
@@ -329,13 +329,13 @@ pub contract CryptoPoops: NonFungibleToken {
       return <- nft
     }
 
-    // Notice that the `token` parameter type is now 
-    // `@NonFungibleToken.NFT`, NOT just `@NFT`
+    // `token` パラメータの型が次のようになっていることに注目してください。
+    // `@NFT` ではなく、`@NonFungibleToken.NFT`です。
     pub fun deposit(token: @NonFungibleToken.NFT) {
       self.ownedNFTs[token.id] <-! token
     }
 
-    // ...other stuff...
+    // ...その他...
 
     init() {
       self.ownedNFTs <- {}
@@ -346,44 +346,44 @@ pub contract CryptoPoops: NonFungibleToken {
     }
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-Sweet. Our `withdraw` function and `deposit` functions are now working with the correct types. But there's a few things we can add here:
-1. Let's `emit` the `Withdraw` event inside the `withdraw` function
-2. Let's `emit` the `Deposit` event inside the `deposit` function
-3. Since our `Collection` needs to fit the `NonFungibleToken` contract interface, we need to change `ownedNFTs` to store `@NonFungibleToken.NFT` token types, not just `@NFT` types from our contract. If we don't do this, our `Collection` won't properly fit the standard.
+スウィート。これで `withdraw` 関数と `deposit` 関数が正しい型を使って動作するようになりました。しかし、ここで追加できることがいくつかあります：
+1. `Withdraw` 関数の中で `Withdraw` イベントを `emit` してみましょう
+2. `deposit` 関数の中で `Deposit` イベントを `emit` してみましょう
+3. この `Collection` は `NonFungibleToken` コントラクトのインターフェースに適合する必要があるため、`ownedNFTs` を変更し、コントラクトの `@NFT` 型だけでなく、`@NonFungibleToken.NFT` 型のトークンも格納できるようにする必要があります。これを行わないと、`Collection` が標準に適合しなくなります。
 
-Let's make these three changes below:
+以下の3つの変更を行ってみましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
   pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver {
-    // 3. We changed this to `@NonFungibleToken.NFT`
+    // 3. これを `@NonFungibleToken.NFT` に変更しました。
     pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
     pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
       let nft <- self.ownedNFTs.remove(key: withdrawID) 
             ?? panic("This NFT does not exist in this Collection.")
 
-      // 1. emit the `Withdraw` event
+      // 1. `Withdraw` イベントを発行します
       emit Withdraw(id: nft.id, from: self.owner?.address)
 
       return <- nft
     }
 
     pub fun deposit(token: @NonFungibleToken.NFT) {
-      // 2. emit the `Deposit` event
+      // 2. `Deposit` イベントを発行します
       emit Deposit(id: token.id, to: self.owner?.address)
 
       self.ownedNFTs[token.id] <-! token
     }
 
-    // ...other stuff...
+    // ...その他...
 
     init() {
       self.ownedNFTs <- {}
@@ -394,22 +394,22 @@ pub contract CryptoPoops: NonFungibleToken {
     }
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-Amazing. There's one question you may have:
+驚きました。ひとつ質問があります：
 
-**What is `self.owner?.address`?**
+**`self.owner?.address` とは何ですか?**
 
- `self.owner` is a piece of code you can use inside any resource that an account is holding. Since a Collection resource will live inside an account's storage, we can use `self.owner` to get the current account that is holding that specific Collection inside their storage. This is super helpful for identifying who is doing an action, especially in the case where we want to communicate who we're depositing to and withdrawing from. `self.owner?.address` is merely the address of the owner.
+`self.owner` は、アカウントが保持しているリソース内で使用できるコードです。Collection リソースはアカウントのストレージ内に存在するので、`self.owner` を使用することで、特定の Collection をストレージ内に保持している現在のアカウントを取得することができます。これは、誰がアクションを実行しているのかを特定するのに非常に役立ちます。特に、誰に入金し、誰から出金しているのかを伝えたい場合に便利です。`self.owner?.address` は単に所有者のアドレスです。
 
-Next, think about what the `@NonFungibleToken.NFT` type is. It's a more generic type than just `@NFT`. Technically, literally any NFT on Flow all fit the `@NonFungibleToken.NFT` type. This has pros and cons, but one definite con is that now, anyone can deposit their own NFT type into our Collection. For example, if my friend defines a contract called `BoredApes`, they can technically deposit that into our Collection since it has an `@NonFungibleToken.NFT` type. Thus, we have to add something called a "force cast" to our `deposit` function:
+次に、`@NonFungibleToken.NFT` 型とは何かを考えてみましょう。これは単なる `@NFT` よりも汎用的な型です。技術的には、文字通り Flow 上のあらゆる NFT が `@NonFungibleToken.NFT` 型に当てはまります。これには長所と短所がありますが、決定的な短所は、誰でも独自の NFT 型をコレクションに預けることができるようになったことです。例えば、私の友人が `BoredApes` というコントラクトを定義した場合、そのコントラクトは `@NonFungibleToken.NFT` 型を持っているので、技術的には私たちの Collection に預けることができます。したがって、「強制キャスト」と呼ばれるものを `deposit` 関数に追加する必要があります：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
   pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver {
     pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
@@ -422,16 +422,16 @@ pub contract CryptoPoops: NonFungibleToken {
     }
 
     pub fun deposit(token: @NonFungibleToken.NFT) {
-      // We "force cast" the `token` to a `@NFT` type
-      // using the `as!` syntax. This says:
-      // "if `token` is an `@NFT` type, move it to the 
-      // `nft` variable. If it's not, panic."
+      // `token` to a `@NFT` type`token` を `@NFT` 型に「強制キャスト」します
+      // `as!` 構文を使っています。これはこう言います：
+      //  「もし `token` が `@NFT` 型なら、
+      // それを `nft` 変数に移します。そうでない場合はパニックになります。」
       let nft <- token as! @NFT
       emit Deposit(id: nft.id, to: self.owner?.address)
       self.ownedNFTs[nft.id] <-! nft
     }
 
-    // ...other stuff...
+    // ...その他...
 
     init() {
       self.ownedNFTs <- {}
@@ -442,15 +442,14 @@ pub contract CryptoPoops: NonFungibleToken {
     }
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-You'll see we use the "force cast" operator `as!`. In the code above, `@NonFungibleToken.NFT` is a more generic type than `@NFT`. **So, we have to use `as!`, which basically "downcasts" our generic type (`@NonFungibleToken.NFT`) to be a more specific type (`@NFT`).** In this case, `let nft <- token as! @NFT` says: "if `token` is an `@NFT` type, "downcast" it and move it to the `nft` variable. If it's not, panic." Now we can be sure that we can only deposit CryptoPoops into our Collection.
-
+「強制キャスト」演算子 `as!` を使っているのがわかるでしょう。上記のコードでは、`@NonFungibleToken.NFT` は `@NFT` よりも汎用的な型です。**つまり、`as!` を使わなければなりません。これは基本的に、一般的な型（ `@NonFungibleToken.NFT` ）をより特殊な型（ `@NFT` ）に「ダウンキャスト」します。**この場合、`let nft <- token as！NFT` は言います：「もし `token` が `@NFT` 型なら、それを「ダウンキャスト」して `nft` 変数に移します。そうでない場合は、パニックになります。」これで、CryptoPoops だけをコレクションに預けることができるようになりました。
 
 ### CollectionPublic
-The last resource interface we need to implement is `CollectionPublic`, which looks like this:
+最後に実装する必要があるリソースインターフェースは `CollectionPublic` で、次のようになります：
 
 ```cadence
 pub resource interface CollectionPublic {
@@ -460,14 +459,14 @@ pub resource interface CollectionPublic {
 }
 ```
 
-Well, we already have `deposit`, but we need `getIDs` and `borrowNFT`. Let's add the `NonFungibleToken.CollectionPublic` to our Collection below:
+さて、すでに `deposit` はあるが、`getIDs` と `borrowNFT` が必要です。`NonFungibleToken.CollectionPublic` を Collection に追加しましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
-  // Collection now implements NonFungibleToken.CollectionPublic
+  // Collection が NonFungibleToken.CollectionPublic を実装するようになりました
   pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
     pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
@@ -489,9 +488,9 @@ pub contract CryptoPoops: NonFungibleToken {
       return self.ownedNFTs.keys
     }
 
-    // Added this function. We already did this before, but
-    // We have to change the types to `&NonFungibleToken.NFT` 
-    // to fit the standard.
+    // この機能を追加しました。以前からすでにやっていましたが、
+    // 標準に合わせるために、型を `&NonFungibleToken.NFT`に
+    // 変更しなければなりません。
     pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
       return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
     }
@@ -505,36 +504,36 @@ pub contract CryptoPoops: NonFungibleToken {
     }
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-Cool! We added both `getIDs` (which didn't change from what we had previously), and `borrowNFT`. We had to change the types to `&NonFungibleToken.NFT` instead of just `&NFT` to fit the standard.
+クールです！`getIDs` （以前と変わっていないです）と `borrowNFT` の両方を追加しました。標準に合わせるために、型を  `&NFT` ではなく `&NonFungibleToken.NFT` に変更する必要がありました。
 
-Booooooooooyah! We are SO CLOSE to being done. The last thing the standard wants us to implement is the `createEmptyCollection` function, which we already have! Let's add it below:
+やったー－！あと少しです。規格が最後に実装することを求めているのは `createEmptyCollection` 関数です！下に追加しましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
   // Add the `createEmptyCollection` function.
   pub fun createEmptyCollection(): @NonFungibleToken.Collection {
     return <- create Collection()
   }
 
-  // ...other stuff...
+  // ...その他...
 }
 ```
 
-Of course, we have to make the return type `@NonFungibleToken.Collection` as well.
+もちろん、戻り値の型も `@NonFungibleToken.Collection` にしなければなりません。
 
-Lastly, we want to use the `ContractInitialized` event inside the contract's `init`:
+最後に、コントラクトの `init` 内で `ContractInitialized` イベントを使用します：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
-  // ...other stuff...
+  // ...その他...
 
   init() {
     self.totalSupply = 0
@@ -543,17 +542,17 @@ pub contract CryptoPoops: NonFungibleToken {
 }
 ```
 
-Now that we have correctly implemented the standard, lets add back our minting functionality as well:
+さて、標準を正しく実装したところで、ミント機能も追加してみましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
 pub contract CryptoPoops: NonFungibleToken {
   
-  // ...other stuff...
+  // ...その他...
 
-   // Define a Minter resource
-   // so we can manage how
-   // NFTs are created
+   // ミントリソースを定義し、
+   // NFT の作成方法を
+   // 管理できるようにします。
    pub resource Minter {
 
     pub fun createNFT(name: String, favouriteFood: String, luckyNumber: Int): @NFT {
@@ -570,13 +569,13 @@ pub contract CryptoPoops: NonFungibleToken {
     self.totalSupply = 0
     emit ContractInitialized()
 
-    // Save the minter to account storage:
+    // ミント機能をアカウントストレージに保存します：
     self.account.save(<- create Minter(), to: /storage/Minter)
   }
 }
 ```
 
-AAAAAAND WE'RE DONE!!!!!!!!!!!!!!!! Let's look at the whole contract now:
+これで終わりです！！！！！！では、コントラクト全体を見てみましょう：
 
 ```cadence
 import NonFungibleToken from 0x02
@@ -660,13 +659,13 @@ pub contract CryptoPoops: NonFungibleToken {
 }
 ```
 
-## The Problem
+## 問題点
 
-There is one issue with this CryptoPoops contract. If you look closely, you will notice that there's a very big problem with how the `borrowNFT` function is written inside of the `Collection`. It returns a `&NonFungibleToken.NFT` type instead of a `&NFT` type. Can you see what's bad about that?
+この CryptoPoops コントラクトには 1 つ問題があります。よく見ると、`BorrowNFT` 関数の `Collection` 内での書き方に非常に大きな問題があることに気づくでしょう。この関数は `&NFT` 型ではなく `&NonFungibleToken.NFT` 型を返します。何が悪いかわかりますか？
 
-The whole point of `borrowNFT` is to allow us to read the NFT's metadata. But what is exposed by the `&NonFungibleToken.NFT` type? Only the `id` field! Uh oh, we can no longer read the other metadata of our NFT resource.
+`borrowNFT` の要点は、NFT のメタデータを読めるようにすることです。しかし、`&NonFungibleToken.NFT` 型で何が公開されるのでしょうか？`id` フィールドだけです！これで NFT リソースの他のメタデータは読めなくなりました。
 
-To fix that, we need to use something called an `auth` reference. If you remember the "force cast" operator `as!` above, it "downcasts" a generic type to a more specific type, and if it doesn't work, it panics. With references, in order to "downcast" you need an "authorized reference" that is marked with the `auth` keyword. We can do that like so:
+これを解決するには、`auth` 参照というものを使う必要があります。上記の 「強制キャスト 」演算子 `as!` を覚えているのであれば、汎用の型をより特定の型に「ダウンキャスト 」し、うまくいかなければパニックになります。参照の場合、「ダウンキャスト」するためには、`auth` キーワードでマークされた「認可された参照」が必要です。そのためには次のようにします：
 
 ```cadence
 pub fun borrowAuthNFT(id: UInt64): &NFT {
@@ -675,25 +674,25 @@ pub fun borrowAuthNFT(id: UInt64): &NFT {
 }
 ```
 
-See what we did? We got an authorized reference to the `&NonFungibleToken.NFT` type by putting `auth` in front of it, and then "downcasted" the type using `as!` to an `&NFT` type. When using references, if you want to downcast, you **must** have an `auth` reference. 
+私たちが何をしたかわかりますか？その前に `auth` を置くことで、`&NonFungibleToken.NFT` 型への正規参照を取得し、`as!` を使って `&NFT` 型に「ダウンキャスト」しました。リファレンスを使用する場合、ダウンキャストしたいのであれば、 `auth` リファレンスを持って**いなければなりません**。
 
-If `ref` wasn't an `&NFT` type, it would panic, but we know it will always work since in our deposit function we make sure we're storing `@NFT` types.
+もし `ref` が `&NFT` 型でなかったらパニックになりますが、deposit関数では `@NFT` 型を保存していることを確認しているので、常に機能することは分かっています。
 
-Yaaaaay! Now we can read our NFTs metadata with the `borrowAuthNFT` function. But there's one more problem: `borrowAuthNFT` isn't accessible to the public, because it's not inside `NonFungibleToken.CollectionPublic`. You will solve this problem in your quests.
+やったぁぁぁぁ！これで `borrowAuthNFT` 関数を使って NFT のメタデータを読むことができます。なぜなら `NonFungibleToken.CollectionPublic` 内にないからです。この問題はクエストで解決してください。
 
-## Conclusion
+## まとめ
 
-You have successfully completed your very own NFT contract. And even better, it is now officially a NonFungibleToken contract, meaning you could use this anywhere you want and applications would know they are working with an NFT contract. That is amazing.
+これであなただけの NFT コントラクトが完成しました。さらに素晴らしいことに、これは正式に NonFungibleToken コントラクトとなり、好きな場所でこれを使用することができ、アプリケーションは NFT コントラクトで動作していることを認識することができます。これはすごいことです。
 
-Additionally, you have officially completed the first main section of the course. You can call yourself a Cadence developer! I would suggest pausing this course and implementing some of your own contracts, because you now have the knowledge to do so. In the next chapter, we will learn how to deploy our contract to Flow Testnet and interact with it.
+さらに、コースの最初のメインセクションを正式に修了しました。あなたは Cadence の開発者を名乗ることができます！このコースを一時中断し、あなた自身のコントラクトをいくつか実装することをお勧めします。次の章では、Flow Testnet にコントラクトをデプロイし、コントラクトと対話する方法を学びます。
 
-## Quests
+## クエスト
 
-1. What does "force casting" with `as!` do? Why is it useful in our Collection?
+1. `as！` を使った「強制キャスト」は何をするのですか？なぜコレクションで役に立つのですか？
 
-2. What does `auth` do? When do we use it?
+2. `auth` は何をするのですか？いつ使うのですか？
 
-3. This last quest will be your most difficult yet. Take this contract:
+3. この最後のクエストは、これまでで最も難しいものになるでしょう。このコントラクトをみてください：
 
 ```cadence
 import NonFungibleToken from 0x02
@@ -777,6 +776,6 @@ pub contract CryptoPoops: NonFungibleToken {
 }
 ```
 
-and add a function called `borrowAuthNFT` just like we did in the section called "The Problem" above. Then, find a way to make it publically accessible to other people so they can read our NFT's metadata. Then, run a script to display the NFTs metadata for a certain `id`.
+上記でやったように `borrowAuthNFT` という関数を追加します。そして、他の人が NFT のメタデータを読むことができるように、この関数をパブリックにアクセスできるようにする方法を見つけます。次に、ある `id` の NFT のメタデータを表示するスクリプトを実行します。
 
-You will have to write all the transactions to set up the accounts, mint the NFTs, and then the scripts to read the NFT's metadata. We have done most of this in the chapters up to this point, so you can look for help there :)
+アカウントを設定するためのトランザクションをすべて記述し、NFT を作成し、NFT のメタデータを読み込むためのスクリプトを記述する必要があります。ここまでの章ではそのほとんどを説明していますので、そちらを参考にしてください。:)
