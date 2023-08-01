@@ -1,21 +1,22 @@
-# Chapter 4 Day 3 - Creating an NFT Contract: Collections (Part 1/3)
+# 第4章3日目 - NFT コントラクトの作成：コレクション（パート1/3）
 
-You have learned a lot so far. Let's apply everything you've learned to make your own NFT contract.
+これまで多くのことを学んできました。学んだことをすべて応用して、自分の NFT コントラクトを作ってみましょう。
 
-## Video
+## ビデオ
 
-In the next few chapters, we'll be doing exactly what I do in this video. Today, we'll only go from 00:00 - 20:35: https://www.youtube.com/watch?v=bQVXSpg6GE8
+次の数章では、このビデオで私がやっていることをそのままやっていきます。
+今日は 00:00 から 20:35 までです：https://www.youtube.com/watch?v=bQVXSpg6GE8
 
-## Review
+## レビュー
 
 <img src="../images/accountstorage1.PNG" />
 <img src="../images/capabilities.PNG" />
 
-## NFT (NonFungibleToken) Example
+## NFT (NonFungibleToken) の例
 
-Let's spend the next few days working through a NonFungibleToken example. We are going to create our very own NFT contract called CryptoPoops. This way you will review all the previous concepts you've learned so far, and implement your own NFT!
+これから数日間、NonFungibleToken の例を見ていきます。CryptoPoops と呼ばれる独自の NFT コントラクトを作成します。こうすることで、これまでに学んだすべての概念を復習し、独自の NFT を実装することができます！
 
-Let's start by making a contract:
+まずはコントラクトを作成することから始めます：
 
 ```cadence
 pub contract CryptoPoops {
@@ -25,8 +26,8 @@ pub contract CryptoPoops {
     pub let id: UInt64
 
     init() {
-      // NOTE: every resource on Flow has it's own unique `uuid`. There
-      // will never be resources with the same `uuid`.
+      // 注意：Flow 上のすべてのリソースは、それぞれ固有の `uuid` を持ちます。
+      // そこで 同じ `uuid` を持つリソースが存在することはありません。
       self.id = self.uuid
     }
   }
@@ -41,28 +42,28 @@ pub contract CryptoPoops {
 }
 ```
 
-We start off by:
+まずは、次のことから始めます：
 
-1. Defining a `totalSupply` (setting it to 0 initially)
-2. Creating an `NFT` type. We give the `NFT` 1 field: `id`. The `id` is set to `self.uuid`, which is a unique identifier that every resource has on Flow. There will never be two resources with the same `uuid`, so it works perfectly as an `id` for an NFT, since a NFT is a token that is completely unique from any other token.
-3. Creating a `createNFT` function that returns an `NFT` resource, so anyone can mint their own NFT.
+1. `totalSupply` を定義します。（最初は0に設定します）
+2. `NFT` 型を作成します。`NFT` には 1つのフィールド  `id` を与えます。`id` には `self.uuid` が設定されます。これは、すべてのリソースが Flow 上で持つ一意の識別子であるからです。同じ `uuid` を持つリソースが2つ存在することはないので、NFT の `id` として完璧に機能します。
+3. `NFT ` リソースを返す `createNFT` 関数を作成し、誰でも自分の NFT を作成できるようにします。
 
-Alright, that's easy. Let's store an NFT in our account storage and make it readable to the public.
+よし、簡単ですね。NFT をアカウントストレージに保存し、一般公開できるようにしましょう。
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // store an NFT to the `/storage/MyNFT` storage path
+    // NFT を `/storage/MyNFT` ストレージパスに保存します。
     signer.save(<- CryptoPoops.createNFT(), to: /storage/MyNFT)
 
-    // link it to the public so anyone can read my NFT's `id` field
+    // 誰でも私の NFT の `id` フィールドを読むことができるように、それをパブリックにリンクします。
     signer.link<&CryptoPoops.NFT>(/public/MyNFT, target: /storage/MyNFT)
   }
 }
 ```
 
-Nice! You should understand this now because of the last chapter. We first save the NFT to account storage, and then link a reference to it to the public so we can read its `id` field with a script. Well, let's do that!
+いいですね！この章では、まず NFT をアカウントストレージに保存します。まず NFT をアカウントストレージに保存し、その参照をパブリックにリンクして、スクリプトでその `id` フィールドを読めるようにします。さて、そうしましょう！
 
 ```cadence
 import CryptoPoops from 0x01
@@ -71,19 +72,19 @@ pub fun main(address: Address): UInt64 {
               .borrow<&CryptoPoops.NFT>()
               ?? panic("An NFT does not exist here.")
 
-  return nft.id // 3525 (some random number, because it's the `uuid` of
-                // the resource. This will probably be different for you.)
+  return nft.id // 3525 （リソースの `uuid` なので、何らかのランダムな数字です。
+                // これはおそらく、あなたにとっては違うことでしょう。)
 }
 ```
 
-Awesome! We did some good stuff. But let's think about this for a second. What would happen if we want to store _another_ NFT in our account?
+素晴らしい！私たちはいいことをしました。しかし、ちょっと考えてみましょう。もし私たちが_別の_ NFT をアカウントに保存したいとしたらどうなるでしょうか？
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // ERROR: "failed to save object: path /storage/MyNFT
-    // in account 0x1 already stores an object"
+    // エラー： "オブジェクトの保存に失敗しました： パス /storage/MyNFT
+    // にはすでにオブジェクトが保存されています。"
     signer.save(<- CryptoPoops.createNFT(), to: /storage/MyNFT)
 
     signer.link<&CryptoPoops.NFT>(/public/MyNFT, target: /storage/MyNFT)
@@ -91,13 +92,13 @@ transaction() {
 }
 ```
 
-Look what happened. We got an error! Why? Because an NFT already exists at that storage path. How can we fix this? Well, we could just specify a different storage path...
+どうした？エラーが出たんだ！なぜか？そのストレージパスにはすでに NFT が存在するからです。どうすれば解決できるのでしょうか？まあ、別のストレージパスを指定すればいいのですが...
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Note we use `MyNFT02` as the path now
+    // パスには `MyNFT02` を使っていることに注意。
     signer.save(<- CryptoPoops.createNFT(), to: /storage/MyNFT02)
 
     signer.link<&CryptoPoops.NFT>(/public/MyNFT02, target: /storage/MyNFT02)
@@ -105,13 +106,14 @@ transaction() {
 }
 ```
 
-This works, but it's not great. If we wanted to have a ton of NFTs, we would have to remember ALL the storage paths we gave it, and that's super annoying and inefficient.
+これは機能しますが、あまり良くありません。NFT を大量に持とうと思ったら、NFT に与えたすべてのストレージパスを覚えておかなければなりません。
 
-The second problem is that nobody can give us NFTs. Since only the account owner can store an NFT in their account storage directly, no one can mint us an NFT. That's not good either.
+2つ目の問題は、誰も NFT をくれないことです。アカウントの所有者だけが直接アカウントのストレージに NFT を保存できるため、誰も NFT をミントできません。これも良くありません。
 
-### Collections
+### コレクション
 
-The way to fix both of these problems is to create a "Collection," or a container that wraps all of our NFTs into one. Then, we can store the Collection at 1 storage path, and also allow others to "deposit" into that Collection.
+この2つの問題を解決する方法は、 "Collection," つまりすべての NFT を1つにまとめるコンテナを作成することです。そして、Collection を1つのストレージパスに保存し、他の人がその Collection に "deposit(預ける)" ことができるようにします。
+
 
 ```cadence
 pub contract CryptoPoops {
@@ -130,28 +132,28 @@ pub contract CryptoPoops {
   }
 
   pub resource Collection {
-    // Maps an `id` to the NFT with that `id`
+    // `id` をその `id` を持つ NFT にマップする。
     //
-    // Example: 2353 => NFT with id 2353
+    // 例：2353 => ID 2353のNFT
     pub var ownedNFTs: @{UInt64: NFT}
 
-    // Allows us to deposit an NFT
-    // to our Collection
+    // NFTをコレクションに
+    // 預けることができる。
     pub fun deposit(token: @NFT) {
       self.ownedNFTs[token.id] <-! token
     }
 
-    // Allows us to withdraw an NFT
-    // from our Collection
+    // NFT を私たちのコレクションから
+    // デポジットするができます。
     //
-    // If the NFT does not exist, it panics
+    // NFT が存在しないとパニックに陥ります
     pub fun withdraw(withdrawID: UInt64): @NFT {
       let nft <- self.ownedNFTs.remove(key: withdrawID)
               ?? panic("This NFT does not exist in this Collection.")
       return <- nft
     }
 
-    // Returns an array of all the NFT ids in our Collection
+    // コレクション内のすべての NFT id の配列を返します。
     pub fun getIDs(): [UInt64] {
       return self.ownedNFTs.keys
     }
@@ -175,40 +177,40 @@ pub contract CryptoPoops {
 }
 ```
 
-Awesome. We've defined a `Collection` resource that does a few things:
+すごいです。いくつかのことを行う `Collection` リソースを定義しました：
 
-1. Stores a dictionary called `ownedNFTs` that maps an `id` to the `NFT` with that `id`.
-2. Defines a `deposit` function to be able to deposit `NFT`s.
-3. Defines a `withdraw` function to be able to withdraw `NFT`s.
-4. Defines a `getIDs` function so we can get a list of all the NFT ids in our Collection.
-5. Defines a `destroy` function. In Cadence, **whenever you have resources inside of resources, you MUST declare a `destroy` function that manually destroys those "nested" resources with the `destroy` keyword.**
+1. `id` とその `id` を持つ `NFT` を対応付ける `ownedNFTs` というマップを格納します。
+2. `NFT` を預けるための `deposit` 関数を定義します。
+3. `NFT` を引き出すための `withdraw` 関数を定義します。
+4. コレクション内のすべての NFT id のリストを取得するための `getIDs` 関数を定義します。
+5. `destroy` 関数を定義します。Cadence では、**リソースの中にリソースがある場合は必ず `destroy` 関数を宣言しなければいけません。**
 
-We also defined a `createEmptyCollection` function so we can save a `Collection` to our account storage so we can manage our NFTs better. Let's do that now:
+また、`createEmptyCollection` 関数を定義して、 `Collection` をアカウントストレージに保存できるようにしましま。それではやってみましょう：
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Store a `CryptoPoops.Collection` in our account storage.
+    // アカウントのストレージに `CryptoPoops.Collection` を保存します。
     signer.save(<- CryptoPoops.createEmptyCollection(), to: /storage/MyCollection)
 
-    // Link it to the public.
+    // パブリックとリンクさせます。
     signer.link<&CryptoPoops.Collection>(/public/MyCollection, target: /storage/MyCollection)
   }
 }
 ```
 
-Take a few minutes to really read that code. What is wrong with it? Think about some security problems with it. Why is it bad that we expose `&CryptoPoops.Collection` to the public?
+そのコードを数分かけて本当に読んでみてください。何が問題なのでしょうか？セキュリティ上の問題について考えてみましょう。なぜ `&CryptoPoops.Collection` を公開することが悪いのでしょうか？
 
 ....
 
 ....
 
-Did you think of it yet? The reason is because now, **anyone can withdraw from our Collection!** That's really bad.
+もう考えましたか？なぜかというと、**誰でも私たちのコレクションから引き出すことができるようになったからです！** それは本当に悪いことです。
 
-The problem, though, is that we do want the public to be able to `deposit` NFTs into our Collection, and we want them to also read the NFT ids that we own. How can we solve this issue?
+しかし問題なのは、一般の人々が私たちのコレクションに NFT を `deposit` できるようにしたいし、私たちが所有する NFT の ID も読んでもらいたいということです。どうすればこの問題を解決できるでしょうか？
 
-Resource interfaces, woop woop! Let's define a resource interface to restrict what we expose to the public:
+リソース・インターフェース 、おおおおおおおおお！公開するものを制限するために、リソースインターフェースを定義しましょう：
 
 ```cadence
 pub contract CryptoPoops {
@@ -226,13 +228,13 @@ pub contract CryptoPoops {
     return <- create NFT()
   }
 
-  // Only exposes `deposit` and `getIDs`
+  // `deposit` と `getIDs` のみを公開します。
   pub resource interface CollectionPublic {
     pub fun deposit(token: @NFT)
     pub fun getIDs(): [UInt64]
   }
 
-  // `Collection` implements `CollectionPublic` now
+  // `Collection` は  `CollectionPublic` を実装するようになりました。
   pub resource Collection: CollectionPublic {
     pub var ownedNFTs: @{UInt64: NFT}
 
@@ -269,40 +271,40 @@ pub contract CryptoPoops {
 }
 ```
 
-Now we can restrict what the public can see when we save our Collection to account storage:
+これで、コレクションをアカウントストレージに保存するときに、一般公開される内容を制限できるようになりました：
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Store a `CryptoPoops.Collection` in our account storage.
+    // `CryptoPoops.Collection` をアカウントストレージに保存します。
     signer.save(<- CryptoPoops.createEmptyCollection(), to: /storage/MyCollection)
 
-    // NOTE: We expose `&CryptoPoops.Collection{CryptoPoops.CollectionPublic}`, which
-    // only contains `deposit` and `getIDs`.
+    // 注意： 我々は、`&CryptoPoops.Collection{CryptoPoops.CollectionPublic}` を
+    // 公開します。これは、`deposit` と `getIDs` のみを含みます。
     signer.link<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>(/public/MyCollection, target: /storage/MyCollection)
   }
 }
 ```
 
 <img src="../images/thanos.png" />
-Now this... does put a smile on my face. Let's experiment by depositing an NFT to our account and withdrawing it.
+さて、これは...私の顔に笑顔をもたらします。NFT をアカウントに預け、引き出して実験してみましょう。
 
 ```cadence
 import CryptoPoops from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
-    // Get a reference to our `CryptoPoops.Collection`
+    // `CryptoPoops.Collection` への参照を取得します。
     let collection = signer.borrow<&CryptoPoops.Collection>(from: /storage/MyCollection)
                       ?? panic("The recipient does not have a Collection.")
 
-    // deposits an `NFT` to our Collection
+    // コレクションに `NFT` を預ける
     collection.deposit(token: <- CryptoPoops.createNFT())
 
     log(collection.getIDs()) // [2353]
 
-    // withdraw the `NFT` from our Collection
-    let nft <- collection.withdraw(withdrawID: 2353) // We get this number from the ids array above
+    // コレクションから `NFT` を引き出します
+    let nft <- collection.withdraw(withdrawID: 2353) // 上記の id 配列からこの数字を取得します。
 
     log(collection.getIDs()) // []
 
@@ -311,26 +313,26 @@ transaction() {
 }
 ```
 
-Awesome! So everything is working well. Now let's see if someone else can deposit to OUR Collection instead of doing it ourselves:
+素晴らしいです！すべてがうまくいっています。では、自分たちでデポジットする代わりに、誰かが私たちのコレクションにデポジットしてくれるかどうか見てみましょう：
 
 ```cadence
 import CryptoPoops from 0x01
 transaction(recipient: Address) {
 
   prepare(otherPerson: AuthAccount) {
-    // Get a reference to the `recipient`s public Collection
+    // `recipient` のパブリック Collection への参照を取得します。
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>()
                                   ?? panic("The recipient does not have a Collection.")
 
-    // deposits an `NFT` to our Collection
+    // コレクションに `NFT` を預ける
     recipientsCollection.deposit(token: <- CryptoPoops.createNFT())
   }
 
 }
 ```
 
-Niiiiiice. We deposited to someone elses account, which is fully possible because they linked `&CryptoPoops.Collection{CryptoPoops.CollectionPublic}` to the public. And this is fine. Who cares if we give someone a free NFT? That's awesome!
+いいいいいね！`&CryptoPoops.Collection{CryptoPoops.CollectionPublic}` をパブリックにリンクさせたので、他の誰かのアカウントにデポジットしました。そして、これは問題ありません。誰かに無料で NFT を提供しても、誰が気にしますか？それは素晴らしいことです！
 
 Now, what happens if we try to withdraw from someone's Collection?
 
@@ -339,21 +341,21 @@ import CryptoPoops from 0x01
 transaction(recipient: Address, withdrawID: UInt64) {
 
   prepare(otherPerson: AuthAccount) {
-    // Get a reference to the `recipient`s public Collection
+    // `recipient` のパブリックコレクションへの参照を取得する。
     let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
                                   .borrow<&CryptoPoops.Collection{CryptoPoops.CollectionPublic}>()
                                   ?? panic("The recipient does not have a Collection.")
 
-    // ERROR: "Member of restricted type is not accessible: withdraw"
+    // エラー: "制限された型のメンバーにはアクセスできません: 引き出し"
     recipientsCollection.withdraw(withdrawID: withdrawID)
   }
 
 }
 ```
 
-We get an error! Perfect, the hacker cannot steal our NFTs :)
+エラーが出ました！完璧です。ハッカーは我々の NFT を盗めない :)
 
-Lastly, let's try to read the NFTs in our account using a script:
+最後に、スクリプトを使ってアカウント内の NFT を読み取ってましょう：
 
 ```cadence
 import CryptoPoops from 0x01
@@ -366,22 +368,22 @@ pub fun main(address: Address): [UInt64] {
 }
 ```
 
-Boom. Done.
+どーん。完了。
 
-## Conclusion
+## まとめ
 
-Collections are not just for NFTs. You will see the concept of a Collection being used eeeeverrryyywhere in the Flow ecosystem. If you ever want users to store a resource, but they may have multiple of that resource, you will almost always use a Collection to wrap around them so you can store them all in one place. It's a very important concept to understand.
+Collection は NFT だけのものではありません。Flow エコシステムのあらゆる場所で、Collection の概念が使用されています。ユーザーがリソースを保存したいが、そのリソースを複数持っている可能性がある場合、ほとんどの場合、Collection を使用してリソースを囲み、1つの場所にすべてを保存できるようにします。これは、理解すべき非常に重要な概念です。
 
-And with that, give yourself a round of applause. You implemented a functioning NFT contract! You're getting good, my friend! Heck, you may catch up to me soon. Just kidding, that's not possible. I'm so much better than you.
+そして、自分自身に拍手を送りましょう！あなたは NFT コントラクトを機能させました！よくやった、友よ！すぐに私に追いつくでしょう。冗談です。僕は君よりずっとうまいんだ。
 
-## Quests
+## クエスト
 
-1. Why did we add a Collection to this contract? List the two main reasons.
+1. なぜこのコントラクトにコレクションを追加したのですか？主な理由を2つ挙げてください。
 
-2. What do you have to do if you have resources "nested" inside of another resource? ("Nested resources")
+2. リソースの中に別のリソースが「入れ子」になっている場合、どうすればいいのでしょうか？(入れ子のリソース)
 
-3. Brainstorm some extra things we may want to add to this contract. Think about what might be problematic with this contract and how we could fix it.
+3. このコントラクトに追加したい事項をいくつかブレインストーミングします。このコントラクトの何が問題で、どうすればそれを解決できるかを考えます。
 
-   - Idea #1: Do we really want everyone to be able to mint an NFT? 🤔.
+   - アイデアその1：本当に全員が NFT をミントできるようにしたいのですか？🤔
 
-   - Idea #2: If we want to read information about our NFTs inside our Collection, right now we have to take it out of the Collection to do so. Is this good?
+   - アイデアその2：コレクション内の NFT に関する情報を読みたい場合、今はコレクションから取り出さなければなりません。これは良いことですか？
