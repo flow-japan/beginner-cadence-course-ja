@@ -80,6 +80,25 @@ transaction() {
 
 これで誰でもこのリソースの `name` フィールドを読み取るスクリプトを実行することができますが、スクリプトの説明の前にいくつかの他のことを紹介する必要があります。
 
+**`.link()` 関数は新しいバージョンでは非推奨になります**
+
+`.link()` 関数は新しいバージョンでは非推奨になります。代わりに、 `capabilities.storage.issue()` と `capabilities.publish()` を使います.
+
+```cadence
+import Stuff from 0x01
+transaction() {
+  prepare(signer: AuthAccount) {
+    // Publish our resource to the public so other people can now access it
+    let resource = signer.capabilities.storage.issue<&Stuff.Test>(/storage/MyTestResource)
+    signer.capabilities.publish(resource, at: /public/MyTestResource)
+  }
+
+  execute {
+
+  }
+}
+```
+
 ## ケイパビリティ
 
 何かを `/public/` や `/private/` のパスに「リンク」するとき、あなたはケイパビリティと呼ばれるものを作成しています。実際には、何も `/public/` や `/private/` のパスには存在せず、全ては `/storage/` に存在します。しかし、ケイパビリティは `/public/` や `/private/` のパスから、関連する `/storage/` のパスへの「ポインタ」のように考えることができます。以下の図をみてみましょう。
@@ -124,6 +143,23 @@ pub fun main(address: Address): String {
 4. 名前を返します：`return testResource.name`
 
 なぜ `.borrow()` のときに参照先の型を指定する必要がなかったのか、不思議に思うかもしれません。答えは、ケイパビリティがすでに型を指定しているので、その型で借用できると仮定しているからです。もし、型が異なっていたり、ケイパビリティがそもそも存在しなかったりした場合は、`nil`を返してパニックになります。
+
+**`getCapability()` は新しいバージョンでは非推奨になります**
+
+`getCapability()` は新しいバージョンでは非推奨になります。代わりに、 `capabilities.get()` を使います。
+
+```cadence
+import Stuff from 0x01
+pub fun main(address: Address): String {
+  // gets the public capability that is pointing to a `&Stuff.Test` type
+  let publicCapability: Capability<&Stuff.Test> = getAccount(address).capabilities.get<&Stuff.Test>(/public/MyTestResource) ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+
+  // Borrow the `&Stuff.Test` from the public capability
+  let testResource: &Stuff.Test = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+
+  return testResource.name // "Jacob"
+}
+```
 
 ## 型を制限するためにパブリックケイパビリティを使用する
 
