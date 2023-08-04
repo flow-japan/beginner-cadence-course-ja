@@ -223,6 +223,7 @@ pub contract interface ITest {
 
 実装コントラクト：
 ```cadence
+import ITest from 0x01
 pub contract Test {
   pub var number: Int
   
