@@ -678,7 +678,7 @@ pub fun borrowAuthNFT(id: UInt64): &NFT {
 
 もし `ref` が `&NFT` 型でなかったらパニックになりますが、deposit関数では `@NFT` 型を保存していることを確認しているので、常に機能することは分かっています。
 
-やったぁぁぁぁ！これで `borrowAuthNFT` 関数を使って NFT のメタデータを読むことができます。なぜなら `NonFungibleToken.CollectionPublic` 内にないからです。この問題はクエストで解決してください。
+やったぁぁぁぁ！これで `borrowAuthNFT` 関数を使って NFT のメタデータを読むことができます。しかし、問題がもう一つあります。 `borrowAuthNFT` は公開されていません。なぜなら `NonFungibleToken.CollectionPublic` 内にないからです。この問題はクエストで解決してください。
 
 ## まとめ
 
